@@ -4,34 +4,35 @@ Welcome to the Reference Tier! This tier provides auto-generated API and compone
 
 ## Quick Navigation
 
-| Section | Purpose |
-|---------|---------|
-| [API](./api/) | REST API endpoints & methods |
-| [Components](./components/) | Component library reference |
-| [Types](./types/) | TypeScript type definitions |
-| [Hooks](./hooks/) | Custom React hooks reference |
+| Section | Purpose | Status |
+|---------|---------|--------|
+| [API](./api/) | REST API endpoints & methods | ✅ Complete |
+| [Components](./components/) | Component library reference | ✅ Complete |
+| [Types](./types/) | TypeScript type definitions | ⏳ Ready |
+| [Hooks](./hooks/) | Custom React hooks reference | ⏳ Ready |
 
 ## What's Here
 
-### API Documentation
+### API Documentation ✅
 - Complete API endpoints
 - Request/response formats
 - Error handling
-- Authentication
+- Authentication & rate limiting
 
-### Component Library
+### Component Library ✅
 - Component overview
-- Component API (props, methods)
+- Organization by category
+- Component template
 - Usage examples
-- Styling information
+- Styling & accessibility info
 
-### Type Definitions
+### Type Definitions ⏳
 - Core types
 - Component prop types
 - API types
 - Utility types
 
-### Hooks Reference
+### Hooks Reference ⏳
 - Available hooks
 - Hook signatures
 - Usage examples
@@ -65,20 +66,34 @@ Welcome to the Reference Tier! This tier provides auto-generated API and compone
 
 ## Quick Links
 
-- **Most Used Components**: Button, Input, Card, Modal
-- **Common Hooks**: useChat, useConfig, useWindowSize
-- **Main APIs**: `/api/chat`, `/api/models`, `/api/auth`
-- **Core Types**: Chat, Message, Config, User
+### Most Used Components
+- Button - Clickable button with variants
+- Input - Text and form inputs
+- Card - Container component
+- Modal - Modal dialog
+
+### Common Hooks
+- useChat - Chat state management
+- useConfig - Configuration access
+- useWindowSize - Window dimensions
+- useMobileScreen - Mobile detection
+
+### Main APIs
+- `/api/chat` - Chat operations
+- `/api/models` - Model management
+- `/api/config` - Configuration
+- `/api/auth` - Authentication
 
 ## Auto-Generated Content
 
-This tier is automatically generated from:
+This tier includes automatically generated documentation from:
 - ✅ TypeScript prop types
 - ✅ JSDoc comments
 - ✅ Component exports
 - ✅ Test examples
 
 Last generated: 2025-10-15
+Next auto-gen: 2025-10-22
 
 ---
 
