@@ -1,0 +1,413 @@
+// Project Status Component Styles
+
+.project-status {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 0.875rem;
+
+  .status-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.25rem 0;
+
+    .status-label {
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .status-value {
+      font-weight: 600;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+
+      &.loading {
+        color: var(--text-secondary);
+        background: var(--bg-secondary);
+      }
+
+      &.green {
+        color: var(--success-color);
+        background: var(--success-bg);
+      }
+
+      &.yellow {
+        color: var(--warning-color);
+        background: var(--warning-bg);
+      }
+
+      &.red {
+        color: var(--error-color);
+        background: var(--error-bg);
+      }
+
+      &.error {
+        color: var(--error-color);
+        background: var(--error-bg);
+      }
+    }
+  }
+
+  .status-details {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+}
+
+.project-card {
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+    gap: 1rem;
+
+    .project-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0;
+      flex: 1;
+    }
+
+    .project-badges {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+
+      .badge {
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        text-transform: uppercase;
+
+        &.priority-critical {
+          color: var(--error-color);
+          background: var(--error-bg);
+        }
+
+        &.priority-high {
+          color: var(--warning-color);
+          background: var(--warning-bg);
+        }
+
+        &.priority-medium {
+          color: var(--info-color);
+          background: var(--info-bg);
+        }
+
+        &.priority-low {
+          color: var(--text-secondary);
+          background: var(--bg-secondary);
+        }
+
+        &.stage-idea {
+          color: var(--text-secondary);
+          background: var(--bg-secondary);
+        }
+
+        &.stage-plan {
+          color: var(--info-color);
+          background: var(--info-bg);
+        }
+
+        &.stage-design {
+          color: var(--primary-color);
+          background: var(--primary-bg);
+        }
+
+        &.stage-implementation {
+          color: var(--success-color);
+          background: var(--success-bg);
+        }
+
+        &.stage-testing {
+          color: var(--warning-color);
+          background: var(--warning-bg);
+        }
+
+        &.stage-review {
+          color: var(--info-color);
+          background: var(--info-bg);
+        }
+
+        &.stage-deployment {
+          color: var(--primary-color);
+          background: var(--primary-bg);
+        }
+
+        &.stage-completion {
+          color: var(--success-color);
+          background: var(--success-bg);
+        }
+
+        &.health-green {
+          color: var(--success-color);
+          background: var(--success-bg);
+        }
+
+        &.health-yellow {
+          color: var(--warning-color);
+          background: var(--warning-bg);
+        }
+
+        &.health-red {
+          color: var(--error-color);
+          background: var(--error-bg);
+        }
+      }
+    }
+  }
+
+  .project-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+
+    .meta-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .meta-label {
+        font-weight: 500;
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+      }
+
+      .meta-value {
+        color: var(--text-primary);
+        font-size: 0.875rem;
+      }
+    }
+  }
+
+  .project-progress {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    padding: 0.75rem;
+    background: var(--bg-secondary);
+    border-radius: 6px;
+
+    .progress-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .progress-label {
+        font-weight: 500;
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+      }
+
+      .progress-value {
+        font-weight: 600;
+        font-size: 0.875rem;
+
+        &.success {
+          color: var(--success-color);
+        }
+
+        &.warning {
+          color: var(--warning-color);
+        }
+
+        &.error {
+          color: var(--error-color);
+        }
+      }
+    }
+  }
+
+  .project-validation {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+    padding: 0.5rem;
+    background: var(--bg-secondary);
+    border-radius: 6px;
+
+    .validation-errors,
+    .validation-warnings {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      .validation-label {
+        font-weight: 500;
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+      }
+
+      .validation-count {
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
+
+        &.error {
+          color: var(--error-color);
+          background: var(--error-bg);
+        }
+
+        &.warning {
+          color: var(--warning-color);
+          background: var(--warning-bg);
+        }
+      }
+    }
+  }
+
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+
+    .tag {
+      padding: 0.25rem 0.5rem;
+      background: var(--primary-bg);
+      color: var(--primary-color);
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+  }
+}
+
+.project-list {
+  .project-list-header {
+    margin-bottom: 1rem;
+
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0;
+    }
+  }
+
+  .project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .loading,
+  .error,
+  .empty {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-secondary);
+    font-style: italic;
+  }
+
+  .error {
+    color: var(--error-color);
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .project-status {
+    padding: 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .project-card {
+    padding: 0.75rem;
+
+    .project-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+
+      .project-badges {
+        width: 100%;
+        justify-content: flex-start;
+      }
+    }
+
+    .project-meta,
+    .project-progress {
+      .meta-item,
+      .progress-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+      }
+    }
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .project-status,
+  .project-card {
+    --bg-color: #1a1a1a;
+    --bg-secondary: #2a2a2a;
+    --border-color: #333;
+    --text-primary: #ffffff;
+    --text-secondary: #cccccc;
+    --primary-color: #3b82f6;
+    --primary-bg: rgba(59, 130, 246, 0.1);
+    --success-color: #10b981;
+    --success-bg: rgba(16, 185, 129, 0.1);
+    --warning-color: #f59e0b;
+    --warning-bg: rgba(245, 158, 11, 0.1);
+    --error-color: #ef4444;
+    --error-bg: rgba(239, 68, 68, 0.1);
+    --info-color: #06b6d4;
+    --info-bg: rgba(6, 182, 212, 0.1);
+  }
+}
+
+// Light mode support
+@media (prefers-color-scheme: light) {
+  .project-status,
+  .project-card {
+    --bg-color: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --border-color: #e9ecef;
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --primary-color: #0d6efd;
+    --primary-bg: rgba(13, 110, 253, 0.1);
+    --success-color: #198754;
+    --success-bg: rgba(25, 135, 84, 0.1);
+    --warning-color: #fd7e14;
+    --warning-bg: rgba(253, 126, 20, 0.1);
+    --error-color: #dc3545;
+    --error-bg: rgba(220, 53, 69, 0.1);
+    --info-color: #0dcaf0;
+    --info-bg: rgba(13, 202, 240, 0.1);
+  }
+}

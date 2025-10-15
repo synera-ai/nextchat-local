@@ -30,6 +30,8 @@ import { type ClientApi, getClientApi } from "../client/api";
 import { useAccessStore } from "../store";
 import clsx from "clsx";
 import { initializeMcpSystem, isMcpEnabled } from "../mcp/actions";
+import { ProjectSystemProvider } from "../core/providers/project-provider";
+import { ProjectStatus, ProjectList } from "./project-status";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -77,6 +79,13 @@ const Sd = dynamic(async () => (await import("./sd")).Sd, {
 
 const McpMarketPage = dynamic(
   async () => (await import("./mcp-market")).McpMarketPage,
+  {
+    loading: () => <Loading noLogo />,
+  },
+);
+
+const ProjectsPage = dynamic(
+  async () => (await import("./projects-page")).ProjectsPage,
   {
     loading: () => <Loading noLogo />,
   },
@@ -202,6 +211,7 @@ function Screen() {
             <Route path={Path.Chat} element={<Chat />} />
             <Route path={Path.Settings} element={<Settings />} />
             <Route path={Path.McpMarket} element={<McpMarketPage />} />
+            <Route path={Path.Projects} element={<ProjectsPage />} />
           </Routes>
         </WindowContent>
       </>
@@ -264,9 +274,11 @@ export function Home() {
 
   return (
     <ErrorBoundary>
-      <Router>
-        <Screen />
-      </Router>
+      <ProjectSystemProvider>
+        <Router>
+          <Screen />
+        </Router>
+      </ProjectSystemProvider>
     </ErrorBoundary>
   );
 }
