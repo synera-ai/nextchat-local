@@ -1,0 +1,46 @@
+# NextChat Kubernetes Kustomization Configuration
+# Base kustomization for all environments
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: nextchat-base
+  labels:
+    app: nextchat
+
+resources:
+- deployment.yaml
+- service.yaml
+- configmap.yaml
+- ingress.yaml
+- hpa.yaml
+- pdb.yaml
+- networkpolicy.yaml
+- rbac.yaml
+
+commonLabels:
+  app: nextchat
+  version: v1.0.0
+  managed-by: kustomize
+
+commonAnnotations:
+  deployment.kubernetes.io/revision: "1"
+  kubernetes.io/change-cause: "Initial deployment"
+
+patchesStrategicMerge:
+- |-
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: nextchat
+  spec:
+    template:
+      spec:
+        containers:
+        - name: nextchat
+          env:
+          - name: DEPLOYMENT_ENVIRONMENT
+            value: "base"
+          - name: DEPLOYMENT_VERSION
+            value: "v1.0.0"

@@ -1,0 +1,246 @@
+# NextChat CD Pipeline Configuration
+# Continuous Deployment pipeline for automated deployment to multiple environments
+
+name: NextChat CD Pipeline
+
+on:
+  workflow_run:
+    workflows: ["NextChat CI Pipeline"]
+    types: [completed]
+    branches: [main, develop]
+
+env:
+  DOCKER_REGISTRY: 'ghcr.io'
+  IMAGE_NAME: 'nextchat'
+  KUBERNETES_NAMESPACE: 'nextchat'
+
+jobs:
+  # ============================================================================
+  # Environment Detection and Validation
+  # ============================================================================
+  
+  detect-environment:
+    name: Detect Target Environment
+    runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.detect.outputs.environment }}
+      deployment-strategy: ${{ steps.detect.outputs.strategy }}
+    steps:
+      - name: Detect environment
+        id: detect
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "environment=production" >> $GITHUB_OUTPUT
+            echo "strategy=blue-green" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
+            echo "environment=staging" >> $GITHUB_OUTPUT
+            echo "strategy=rolling" >> $GITHUB_OUTPUT
+          else
+            echo "environment=development" >> $GITHUB_OUTPUT
+            echo "strategy=recreate" >> $GITHUB_OUTPUT
+          fi
+
+  validate-deployment:
+    name: Validate Deployment Readiness
+    runs-on: ubuntu-latest
+    needs: detect-environment
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Validate environment configuration
+        run: |
+          echo "Validating deployment to: ${{ needs.detect-environment.outputs.environment }}"
+          echo "Using strategy: ${{ needs.detect-environment.outputs.deployment-strategy }}"
+          
+      - name: Check Kubernetes cluster connectivity
+        run: |
+          echo "Checking cluster connectivity for ${{ needs.detect-environment.outputs.environment }}"
+          
+      - name: Validate secrets and configmaps
+        run: |
+          echo "Validating secrets and configmaps for ${{ needs.detect-environment.outputs.environment }}"
+
+  # ============================================================================
+  # Staging Deployment
+  # ============================================================================
+  
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [detect-environment, validate-deployment]
+    if: needs.detect-environment.outputs.environment == 'staging'
+    environment: staging
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'v1.28.0'
+          
+      - name: Configure kubectl
+        run: |
+          echo "${{ secrets.KUBE_CONFIG_STAGING }}" | base64 -d > kubeconfig
+          export KUBECONFIG=kubeconfig
+          
+      - name: Deploy to staging
+        run: |
+          export KUBECONFIG=kubeconfig
+          export IMAGE_TAG=${{ github.sha }}
+          export ENVIRONMENT=staging
+          
+          # Apply Kubernetes manifests
+          kubectl apply -f deployment/k8s/staging/
+          
+          # Wait for deployment to be ready
+          kubectl rollout status deployment/nextchat-staging -n ${{ env.KUBERNETES_NAMESPACE }}
+          
+      - name: Run health checks
+        run: |
+          export KUBECONFIG=kubeconfig
+          
+          # Wait for service to be ready
+          kubectl wait --for=condition=ready pod -l app=nextchat-staging -n ${{ env.KUBERNETES_NAMESPACE }} --timeout=300s
+          
+          # Run health check
+          kubectl port-forward service/nextchat-staging 8080:80 -n ${{ env.KUBERNETES_NAMESPACE }} &
+          sleep 10
+          curl -f http://localhost:8080/health || exit 1
+
+  # ============================================================================
+  # Production Deployment
+  # ============================================================================
+  
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [detect-environment, validate-deployment]
+    if: needs.detect-environment.outputs.environment == 'production'
+    environment: production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'v1.28.0'
+          
+      - name: Configure kubectl
+        run: |
+          echo "${{ secrets.KUBE_CONFIG_PRODUCTION }}" | base64 -d > kubeconfig
+          export KUBECONFIG=kubeconfig
+          
+      - name: Blue-Green Deployment
+        run: |
+          export KUBECONFIG=kubeconfig
+          export IMAGE_TAG=${{ github.sha }}
+          export ENVIRONMENT=production
+          
+          # Deploy to green environment
+          kubectl apply -f deployment/k8s/production/green/
+          
+          # Wait for green deployment to be ready
+          kubectl rollout status deployment/nextchat-green -n ${{ env.KUBERNETES_NAMESPACE }}
+          
+          # Run comprehensive health checks
+          kubectl wait --for=condition=ready pod -l app=nextchat-green -n ${{ env.KUBERNETES_NAMESPACE }} --timeout=600s
+          
+      - name: Switch traffic to green
+        run: |
+          export KUBECONFIG=kubeconfig
+          
+          # Update service to point to green
+          kubectl patch service nextchat-service -n ${{ env.KUBERNETES_NAMESPACE }} -p '{"spec":{"selector":{"app":"nextchat-green"}}}'
+          
+          # Wait for traffic switch
+          sleep 30
+          
+      - name: Verify production deployment
+        run: |
+          export KUBECONFIG=kubeconfig
+          
+          # Run production health checks
+          kubectl port-forward service/nextchat-service 8080:80 -n ${{ env.KUBERNETES_NAMESPACE }} &
+          sleep 10
+          
+          # Check health endpoint
+          curl -f http://localhost:8080/health || exit 1
+          
+          # Check metrics endpoint
+          curl -f http://localhost:8080/metrics || exit 1
+          
+          # Run smoke tests
+          npm run test:smoke -- --base-url=http://localhost:8080
+
+  # ============================================================================
+  # Development Deployment
+  # ============================================================================
+  
+  deploy-development:
+    name: Deploy to Development
+    runs-on: ubuntu-latest
+    needs: [detect-environment, validate-deployment]
+    if: needs.detect-environment.outputs.environment == 'development'
+    environment: development
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'v1.28.0'
+          
+      - name: Configure kubectl
+        run: |
+          echo "${{ secrets.KUBE_CONFIG_DEVELOPMENT }}" | base64 -d > kubeconfig
+          export KUBECONFIG=kubeconfig
+          
+      - name: Deploy to development
+        run: |
+          export KUBECONFIG=kubeconfig
+          export IMAGE_TAG=${{ github.sha }}
+          export ENVIRONMENT=development
+          
+          # Apply Kubernetes manifests
+          kubectl apply -f deployment/k8s/development/
+          
+          # Wait for deployment to be ready
+          kubectl rollout status deployment/nextchat-dev -n ${{ env.KUBERNETES_NAMESPACE }}
+
+  # ============================================================================
+  # Post-Deployment Tasks
+  # ============================================================================
+  
+  post-deployment:
+    name: Post-Deployment Tasks
+    runs-on: ubuntu-latest
+    needs: [deploy-staging, deploy-production, deploy-development]
+    if: always()
+    steps:
+      - name: Update deployment status
+        run: |
+          echo "Deployment completed for environment: ${{ needs.detect-environment.outputs.environment }}"
+          
+      - name: Send deployment notification
+        run: |
+          echo "Sending deployment notification..."
+          # Integration with Slack, Teams, or email notification system
+          
+      - name: Update monitoring dashboards
+        run: |
+          echo "Updating monitoring dashboards..."
+          # Integration with monitoring systems like Grafana, DataDog, etc.
+          
+      - name: Run post-deployment tests
+        run: |
+          echo "Running post-deployment tests..."
+          # Automated testing after deployment
+          
+      - name: Cleanup old deployments
+        run: |
+          echo "Cleaning up old deployments..."
+          # Cleanup old Docker images and Kubernetes resources

@@ -1,0 +1,14 @@
+# NextChat Kubernetes Pod Disruption Budget Configuration
+# Ensures availability during cluster maintenance
+
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: nextchat-pdb
+  labels:
+    app: nextchat
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: nextchat

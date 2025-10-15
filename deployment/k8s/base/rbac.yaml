@@ -1,0 +1,79 @@
+# NextChat Kubernetes RBAC Configuration
+# Role-based access control for the application
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: nextchat-service-account
+  labels:
+    app: nextchat
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: nextchat-role
+  labels:
+    app: nextchat
+rules:
+- apiGroups: [""]
+  resources: ["configmaps", "secrets"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["services"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["networking.k8s.io"]
+  resources: ["ingresses"]
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: nextchat-role-binding
+  labels:
+    app: nextchat
+subjects:
+- kind: ServiceAccount
+  name: nextchat-service-account
+  namespace: nextchat
+roleRef:
+  kind: Role
+  name: nextchat-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: nextchat-cluster-role
+  labels:
+    app: nextchat
+rules:
+- apiGroups: [""]
+  resources: ["nodes"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["namespaces"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["metrics.k8s.io"]
+  resources: ["nodes", "pods"]
+  verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: nextchat-cluster-role-binding
+  labels:
+    app: nextchat
+subjects:
+- kind: ServiceAccount
+  name: nextchat-service-account
+  namespace: nextchat
+roleRef:
+  kind: ClusterRole
+  name: nextchat-cluster-role
+  apiGroup: rbac.authorization.k8s.io

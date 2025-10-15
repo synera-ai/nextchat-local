@@ -1,0 +1,176 @@
+# NextChat Kubernetes Staging Kustomization Configuration
+# Staging environment overrides
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: nextchat-staging
+  labels:
+    app: nextchat
+    environment: staging
+
+namespace: nextchat-staging
+
+resources:
+- ../base
+
+commonLabels:
+  app: nextchat
+  version: v1.0.0
+  environment: staging
+  managed-by: kustomize
+
+commonAnnotations:
+  deployment.kubernetes.io/revision: "1"
+  kubernetes.io/change-cause: "Staging deployment"
+
+patchesStrategicMerge:
+- |-
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: nextchat
+  spec:
+    replicas: 2
+    template:
+      spec:
+        containers:
+        - name: nextchat
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          env:
+          - name: NODE_ENV
+            value: "staging"
+          - name: DEPLOYMENT_ENVIRONMENT
+            value: "staging"
+          - name: LOG_LEVEL
+            value: "info"
+          - name: METRICS_ENABLED
+            value: "true"
+          - name: FEATURE_DEBUG_MODE
+            value: "true"
+          - name: RATE_LIMIT_MAX
+            value: "500"
+          - name: DB_POOL_MAX
+            value: "10"
+          - name: REDIS_MAX_RETRIES
+            value: "3"
+          - name: AI_AGENT_MAX_CONCURRENT
+            value: "20"
+          - name: PLUGIN_VALIDATION_ENABLED
+            value: "true"
+          - name: PLUGIN_SANDBOX_ENABLED
+            value: "true"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 30
+- |-
+  apiVersion: autoscaling/v2
+  kind: HorizontalPodAutoscaler
+  metadata:
+    name: nextchat-hpa
+  spec:
+    minReplicas: 2
+    maxReplicas: 10
+    metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
+    behavior:
+      scaleDown:
+        stabilizationWindowSeconds: 300
+        policies:
+        - type: Percent
+          value: 10
+          periodSeconds: 60
+        - type: Pods
+          value: 1
+          periodSeconds: 60
+        selectPolicy: Min
+      scaleUp:
+        stabilizationWindowSeconds: 60
+        policies:
+        - type: Percent
+          value: 50
+          periodSeconds: 60
+        - type: Pods
+          value: 2
+          periodSeconds: 60
+        selectPolicy: Max
+- |-
+  apiVersion: policy/v1
+  kind: PodDisruptionBudget
+  metadata:
+    name: nextchat-pdb
+  spec:
+    minAvailable: 1
+- |-
+  apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: nextchat-config
+  data:
+    NODE_ENV: "staging"
+    LOG_LEVEL: "info"
+    API_TIMEOUT: "30000"
+    MAX_REQUEST_SIZE: "10mb"
+    DB_POOL_MIN: "2"
+    DB_POOL_MAX: "10"
+    DB_TIMEOUT: "30000"
+    REDIS_TIMEOUT: "5000"
+    REDIS_RETRY_DELAY: "100"
+    REDIS_MAX_RETRIES: "3"
+    CORS_ORIGIN: "*"
+    RATE_LIMIT_WINDOW: "900000"
+    RATE_LIMIT_MAX: "500"
+    METRICS_ENABLED: "true"
+    METRICS_PORT: "9090"
+    HEALTH_CHECK_INTERVAL: "30000"
+    FEATURE_PLUGINS_ENABLED: "true"
+    FEATURE_ANALYTICS_ENABLED: "true"
+    FEATURE_DEBUG_MODE: "true"
+    PLUGIN_MARKETPLACE_URL: "https://staging-plugins.nextchat.com"
+    PLUGIN_VALIDATION_ENABLED: "true"
+    PLUGIN_SANDBOX_ENABLED: "true"
+    AI_AGENT_TIMEOUT: "60000"
+    AI_AGENT_MAX_CONCURRENT: "20"
+    AI_AGENT_RETRY_ATTEMPTS: "3"
+    DEPLOYMENT_VERSION: "v1.0.0"
+    DEPLOYMENT_ENVIRONMENT: "staging"
+    DEPLOYMENT_REGION: "us-west-2"

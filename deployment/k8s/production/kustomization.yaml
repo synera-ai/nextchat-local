@@ -1,0 +1,176 @@
+# NextChat Kubernetes Production Kustomization Configuration
+# Production environment overrides
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: nextchat-production
+  labels:
+    app: nextchat
+    environment: production
+
+namespace: nextchat
+
+resources:
+- ../base
+
+commonLabels:
+  app: nextchat
+  version: v1.0.0
+  environment: production
+  managed-by: kustomize
+
+commonAnnotations:
+  deployment.kubernetes.io/revision: "1"
+  kubernetes.io/change-cause: "Production deployment"
+
+patchesStrategicMerge:
+- |-
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: nextchat
+  spec:
+    replicas: 5
+    template:
+      spec:
+        containers:
+        - name: nextchat
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+          env:
+          - name: NODE_ENV
+            value: "production"
+          - name: DEPLOYMENT_ENVIRONMENT
+            value: "production"
+          - name: LOG_LEVEL
+            value: "warn"
+          - name: METRICS_ENABLED
+            value: "true"
+          - name: FEATURE_DEBUG_MODE
+            value: "false"
+          - name: RATE_LIMIT_MAX
+            value: "1000"
+          - name: DB_POOL_MAX
+            value: "20"
+          - name: REDIS_MAX_RETRIES
+            value: "5"
+          - name: AI_AGENT_MAX_CONCURRENT
+            value: "50"
+          - name: PLUGIN_VALIDATION_ENABLED
+            value: "true"
+          - name: PLUGIN_SANDBOX_ENABLED
+            value: "true"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 30
+- |-
+  apiVersion: autoscaling/v2
+  kind: HorizontalPodAutoscaler
+  metadata:
+    name: nextchat-hpa
+  spec:
+    minReplicas: 5
+    maxReplicas: 50
+    metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 60
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 70
+    behavior:
+      scaleDown:
+        stabilizationWindowSeconds: 600
+        policies:
+        - type: Percent
+          value: 5
+          periodSeconds: 60
+        - type: Pods
+          value: 1
+          periodSeconds: 60
+        selectPolicy: Min
+      scaleUp:
+        stabilizationWindowSeconds: 30
+        policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 60
+        - type: Pods
+          value: 10
+          periodSeconds: 60
+        selectPolicy: Max
+- |-
+  apiVersion: policy/v1
+  kind: PodDisruptionBudget
+  metadata:
+    name: nextchat-pdb
+  spec:
+    minAvailable: 3
+- |-
+  apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: nextchat-config
+  data:
+    NODE_ENV: "production"
+    LOG_LEVEL: "warn"
+    API_TIMEOUT: "60000"
+    MAX_REQUEST_SIZE: "50mb"
+    DB_POOL_MIN: "5"
+    DB_POOL_MAX: "20"
+    DB_TIMEOUT: "60000"
+    REDIS_TIMEOUT: "10000"
+    REDIS_RETRY_DELAY: "200"
+    REDIS_MAX_RETRIES: "5"
+    CORS_ORIGIN: "https://nextchat.com,https://www.nextchat.com"
+    RATE_LIMIT_WINDOW: "900000"
+    RATE_LIMIT_MAX: "1000"
+    METRICS_ENABLED: "true"
+    METRICS_PORT: "9090"
+    HEALTH_CHECK_INTERVAL: "30000"
+    FEATURE_PLUGINS_ENABLED: "true"
+    FEATURE_ANALYTICS_ENABLED: "true"
+    FEATURE_DEBUG_MODE: "false"
+    PLUGIN_MARKETPLACE_URL: "https://plugins.nextchat.com"
+    PLUGIN_VALIDATION_ENABLED: "true"
+    PLUGIN_SANDBOX_ENABLED: "true"
+    AI_AGENT_TIMEOUT: "120000"
+    AI_AGENT_MAX_CONCURRENT: "50"
+    AI_AGENT_RETRY_ATTEMPTS: "5"
+    DEPLOYMENT_VERSION: "v1.0.0"
+    DEPLOYMENT_ENVIRONMENT: "production"
+    DEPLOYMENT_REGION: "us-west-2"

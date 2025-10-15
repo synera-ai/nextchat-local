@@ -1,0 +1,27 @@
+# NextChat Kubernetes Service Configuration
+# Service definition for load balancing and service discovery
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nextchat-service
+  labels:
+    app: nextchat
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9090"
+    prometheus.io/path: "/metrics"
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 3000
+    protocol: TCP
+    name: http
+  - port: 9090
+    targetPort: 9090
+    protocol: TCP
+    name: metrics
+  selector:
+    app: nextchat
+  sessionAffinity: None

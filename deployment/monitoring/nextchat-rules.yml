@@ -1,0 +1,336 @@
+# NextChat Prometheus Alerting Rules
+# Alert rules for NextChat application monitoring
+
+groups:
+  # ============================================================================
+  # NextChat Application Alerts
+  # ============================================================================
+  
+  - name: nextchat-app
+    rules:
+      # High error rate
+      - alert: NextChatHighErrorRate
+        expr: rate(nextchat_http_requests_total{status=~"5.."}[5m]) > 0.1
+        for: 2m
+        labels:
+          severity: critical
+          service: nextchat
+        annotations:
+          summary: "NextChat high error rate"
+          description: "NextChat error rate is {{ $value }} errors per second for the last 5 minutes"
+
+      # High response time
+      - alert: NextChatHighResponseTime
+        expr: histogram_quantile(0.95, rate(nextchat_http_request_duration_seconds_bucket[5m])) > 2
+        for: 5m
+        labels:
+          severity: warning
+          service: nextchat
+        annotations:
+          summary: "NextChat high response time"
+          description: "NextChat 95th percentile response time is {{ $value }} seconds"
+
+      # Application down
+      - alert: NextChatDown
+        expr: up{job="nextchat-app"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: nextchat
+        annotations:
+          summary: "NextChat is down"
+          description: "NextChat application is not responding"
+
+      # High memory usage
+      - alert: NextChatHighMemoryUsage
+        expr: (container_memory_usage_bytes{name="nextchat"} / container_spec_memory_limit_bytes{name="nextchat"}) > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          service: nextchat
+        annotations:
+          summary: "NextChat high memory usage"
+          description: "NextChat memory usage is {{ $value | humanizePercentage }}"
+
+      # High CPU usage
+      - alert: NextChatHighCPUUsage
+        expr: (rate(container_cpu_usage_seconds_total{name="nextchat"}[5m]) / container_spec_cpu_quota{name="nextchat"} * container_spec_cpu_period{name="nextchat"}) > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          service: nextchat
+        annotations:
+          summary: "NextChat high CPU usage"
+          description: "NextChat CPU usage is {{ $value | humanizePercentage }}"
+
+      # Database connection issues
+      - alert: NextChatDatabaseConnectionIssues
+        expr: nextchat_database_connections_failed_total > 10
+        for: 2m
+        labels:
+          severity: critical
+          service: nextchat
+        annotations:
+          summary: "NextChat database connection issues"
+          description: "NextChat has {{ $value }} failed database connections"
+
+      # Redis connection issues
+      - alert: NextChatRedisConnectionIssues
+        expr: nextchat_redis_connections_failed_total > 5
+        for: 2m
+        labels:
+          severity: warning
+          service: nextchat
+        annotations:
+          summary: "NextChat Redis connection issues"
+          description: "NextChat has {{ $value }} failed Redis connections"
+
+      # Plugin system issues
+      - alert: NextChatPluginSystemIssues
+        expr: nextchat_plugins_errors_total > 5
+        for: 2m
+        labels:
+          severity: warning
+          service: nextchat
+        annotations:
+          summary: "NextChat plugin system issues"
+          description: "NextChat has {{ $value }} plugin errors"
+
+      # AI Agent issues
+      - alert: NextChatAIAgentIssues
+        expr: nextchat_ai_agents_errors_total > 3
+        for: 2m
+        labels:
+          severity: warning
+          service: nextchat
+        annotations:
+          summary: "NextChat AI agent issues"
+          description: "NextChat has {{ $value }} AI agent errors"
+
+  # ============================================================================
+  # Kubernetes Infrastructure Alerts
+  # ============================================================================
+  
+  - name: kubernetes-infrastructure
+    rules:
+      # Node down
+      - alert: KubernetesNodeDown
+        expr: up{job="kubernetes-nodes"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: kubernetes
+        annotations:
+          summary: "Kubernetes node is down"
+          description: "Kubernetes node {{ $labels.instance }} is down"
+
+      # High node CPU usage
+      - alert: KubernetesNodeHighCPUUsage
+        expr: (100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)) > 80
+        for: 5m
+        labels:
+          severity: warning
+          service: kubernetes
+        annotations:
+          summary: "Kubernetes node high CPU usage"
+          description: "Kubernetes node {{ $labels.instance }} CPU usage is {{ $value }}%"
+
+      # High node memory usage
+      - alert: KubernetesNodeHighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 80
+        for: 5m
+        labels:
+          severity: warning
+          service: kubernetes
+        annotations:
+          summary: "Kubernetes node high memory usage"
+          description: "Kubernetes node {{ $labels.instance }} memory usage is {{ $value }}%"
+
+      # High node disk usage
+      - alert: KubernetesNodeHighDiskUsage
+        expr: (1 - (node_filesystem_avail_bytes / node_filesystem_size_bytes)) * 100 > 80
+        for: 5m
+        labels:
+          severity: warning
+          service: kubernetes
+        annotations:
+          summary: "Kubernetes node high disk usage"
+          description: "Kubernetes node {{ $labels.instance }} disk usage is {{ $value }}%"
+
+      # Pod restarting frequently
+      - alert: KubernetesPodRestartingFrequently
+        expr: rate(kube_pod_container_status_restarts_total[15m]) > 0
+        for: 5m
+        labels:
+          severity: warning
+          service: kubernetes
+        annotations:
+          summary: "Kubernetes pod restarting frequently"
+          description: "Kubernetes pod {{ $labels.pod }} is restarting frequently"
+
+      # Pod not ready
+      - alert: KubernetesPodNotReady
+        expr: kube_pod_status_phase{phase!="Running"} == 1
+        for: 5m
+        labels:
+          severity: warning
+          service: kubernetes
+        annotations:
+          summary: "Kubernetes pod not ready"
+          description: "Kubernetes pod {{ $labels.pod }} is not ready"
+
+      # Deployment not available
+      - alert: KubernetesDeploymentNotAvailable
+        expr: kube_deployment_status_available_replicas < kube_deployment_spec_replicas
+        for: 5m
+        labels:
+          severity: critical
+          service: kubernetes
+        annotations:
+          summary: "Kubernetes deployment not available"
+          description: "Kubernetes deployment {{ $labels.deployment }} is not available"
+
+  # ============================================================================
+  # Database Alerts
+  # ============================================================================
+  
+  - name: database
+    rules:
+      # PostgreSQL down
+      - alert: PostgreSQLDown
+        expr: up{job="postgresql"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: postgresql
+        annotations:
+          summary: "PostgreSQL is down"
+          description: "PostgreSQL database is not responding"
+
+      # PostgreSQL high connections
+      - alert: PostgreSQLHighConnections
+        expr: pg_stat_database_numbackends / pg_settings_max_connections > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          service: postgresql
+        annotations:
+          summary: "PostgreSQL high connections"
+          description: "PostgreSQL has {{ $value | humanizePercentage }} of max connections"
+
+      # PostgreSQL slow queries
+      - alert: PostgreSQLSlowQueries
+        expr: rate(pg_stat_database_tup_returned[5m]) / rate(pg_stat_database_tup_fetched[5m]) < 0.1
+        for: 5m
+        labels:
+          severity: warning
+          service: postgresql
+        annotations:
+          summary: "PostgreSQL slow queries"
+          description: "PostgreSQL has slow queries"
+
+  # ============================================================================
+  # Redis Alerts
+  # ============================================================================
+  
+  - name: redis
+    rules:
+      # Redis down
+      - alert: RedisDown
+        expr: up{job="redis"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: redis
+        annotations:
+          summary: "Redis is down"
+          description: "Redis cache is not responding"
+
+      # Redis high memory usage
+      - alert: RedisHighMemoryUsage
+        expr: redis_memory_used_bytes / redis_memory_max_bytes > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          service: redis
+        annotations:
+          summary: "Redis high memory usage"
+          description: "Redis memory usage is {{ $value | humanizePercentage }}"
+
+      # Redis high key eviction rate
+      - alert: RedisHighKeyEvictionRate
+        expr: rate(redis_evicted_keys_total[5m]) > 10
+        for: 5m
+        labels:
+          severity: warning
+          service: redis
+        annotations:
+          summary: "Redis high key eviction rate"
+          description: "Redis is evicting {{ $value }} keys per second"
+
+  # ============================================================================
+  # Network Alerts
+  # ============================================================================
+  
+  - name: network
+    rules:
+      # High network errors
+      - alert: HighNetworkErrors
+        expr: rate(node_network_receive_errs_total[5m]) + rate(node_network_transmit_errs_total[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+          service: network
+        annotations:
+          summary: "High network errors"
+          description: "Network error rate is {{ $value }} errors per second"
+
+      # High network packet loss
+      - alert: HighNetworkPacketLoss
+        expr: rate(node_network_receive_drop_total[5m]) + rate(node_network_transmit_drop_total[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+          service: network
+        annotations:
+          summary: "High network packet loss"
+          description: "Network packet loss rate is {{ $value }} packets per second"
+
+  # ============================================================================
+  # Security Alerts
+  # ============================================================================
+  
+  - name: security
+    rules:
+      # High failed login attempts
+      - alert: HighFailedLoginAttempts
+        expr: rate(nextchat_auth_failed_logins_total[5m]) > 0.1
+        for: 2m
+        labels:
+          severity: warning
+          service: nextchat
+        annotations:
+          summary: "High failed login attempts"
+          description: "NextChat has {{ $value }} failed login attempts per second"
+
+      # Suspicious activity
+      - alert: SuspiciousActivity
+        expr: rate(nextchat_security_suspicious_requests_total[5m]) > 0.05
+        for: 2m
+        labels:
+          severity: warning
+          service: nextchat
+        annotations:
+          summary: "Suspicious activity detected"
+          description: "NextChat has {{ $value }} suspicious requests per second"
+
+      # SSL certificate expiration
+      - alert: SSLCertificateExpiringSoon
+        expr: (ssl_cert_not_after - time()) / 86400 < 30
+        for: 1h
+        labels:
+          severity: warning
+          service: ssl
+        annotations:
+          summary: "SSL certificate expiring soon"
+          description: "SSL certificate expires in {{ $value }} days"
