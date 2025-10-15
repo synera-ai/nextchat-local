@@ -200,3 +200,15 @@ None currently identified.
 **Project Manager:** AI Assistant  
 **Stakeholders:** Project maintainers, English-speaking users  
 **Estimated Completion:** TBD based on content analysis
+
+## Version Information
+
+### Current Version
+- **Version**: v1.0.0
+- **Created**: 2025-01-15
+- **Last Updated**: 2025-10-15
+- **Migration Date**: 2025-10-15
+
+### Version History
+- **v1.0.0**: Initial version (migrated from date-based naming)
+

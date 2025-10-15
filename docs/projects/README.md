@@ -1,282 +1,302 @@
-# Document-Driven Project Management Architecture
+# Project Management System
 
 ## Overview
-
-This system provides a comprehensive documentation framework for managing software projects from ideation through deployment. Designed for one human developer coordinating with multiple AI coding agents, it ensures both strategic oversight and clear execution guidance.
-
-## Philosophy
-
-- **Documentation as Single Source of Truth**: All project information lives in structured markdown files
-- **Human-AI Collaboration**: Documentation serves both human strategic needs and AI execution requirements
-- **Staged Development**: Clear lifecycle stages with defined transitions
-- **Agent Coordination**: Structured handoffs between AI agents with preserved context
-- **Standalone System**: No code integration, pure documentation approach
+Comprehensive project management system with version-controlled development, plan analysis, and automated commit integration.
 
 ## Directory Structure
 
 ```
 /docs/projects/
-├── README.md                          # This guide
-├── .project-schema.json              # JSON schema for validation
-├── templates/                         # Project templates
-│   ├── feature.md                    # New feature template
-│   ├── bugfix.md                     # Bug fix template
-│   ├── refactoring.md                # Code refactoring template
-│   └── documentation.md              # Documentation project template
-├── active/                           # Currently active projects
-├── completed/                        # Finished projects (archive)
-└── ideas/                           # Project ideas and proposals
+├── active/                   # Currently active projects
+│   ├── v1/                   # Version 1 projects
+│   ├── v2/                   # Version 2 projects
+│   └── v3/                   # Version 3 projects
+├── completed/                # Finished projects
+│   ├── v1/                   # Completed v1 projects
+│   ├── v2/                   # Completed v2 projects
+│   └── v3/                   # Completed v3 projects
+├── ideas/                    # Initial project concepts
+├── plans/                    # Plan analysis documents
+├── templates/                # Project templates
+├── versions/                 # Version tracking
+│   ├── v1.0.0/              # Version-specific docs
+│   ├── v1.1.0/
+│   └── v2.0.0/
+├── README.md                 # This file
+├── MIGRATION_LOG.md          # Migration history
+├── AGENT_PROMPTS.md          # Agent interaction prompts
+└── STATUS_TEMPLATE.md        # Status report template
 ```
+
+## File Naming Convention
+
+### Version-First Naming
+```
+Format: {project-type}-{project-name}-v{major}.{minor}.{patch}.md
+
+Examples:
+- feature-user-auth-v1.0.0.md
+- refactor-mcp-market-v2.1.0.md
+- bugfix-login-flow-v1.0.1.md
+- documentation-api-guide-v1.0.0.md
+```
+
+### Project Types
+- **feature**: New feature development
+- **refactor**: Code refactoring and restructuring
+- **bugfix**: Bug fixes and issue resolution
+- **documentation**: Documentation updates and creation
+- **infrastructure**: Infrastructure and tooling improvements
+
+## Version Control
+
+### Semantic Versioning
+- **Major (X.0.0)**: Breaking changes, major architectural changes
+- **Minor (1.X.0)**: New features, significant enhancements
+- **Patch (1.0.X)**: Bug fixes, minor improvements
+
+### Version Progression
+- **v1.0.0**: Initial release and foundation
+- **v1.1.0**: Feature additions and enhancements
+- **v1.2.0**: Additional features and improvements
+- **v2.0.0**: Major architectural changes or breaking changes
 
 ## Project Lifecycle
 
-Each project follows these stages:
+### 1. Ideas Phase
+- Initial concept and research
+- Feasibility assessment
+- Resource estimation
+- Stakeholder alignment
 
-1. **Idea** - Initial concept with problem/opportunity statement
-2. **Plan** - Detailed planning with architecture decisions
-3. **Design** - Technical design and specifications
-4. **Implementation** - Active development work
-5. **Testing** - Testing and quality assurance
-6. **Review** - Code review and refinement
-7. **Deployment** - Release and deployment activities
-8. **Completion** - Post-deployment and retrospective
+### 2. Plan Phase
+- Detailed planning and architecture
+- Task breakdown and estimation
+- Risk assessment and mitigation
+- Timeline and milestone planning
 
-## Quick Start
+### 3. Design Phase
+- Technical design and specification
+- Architecture decisions
+- Interface design
+- Implementation strategy
 
-### For New Users
-- **[User Guide](https://github.com/your-repo/docs/projects-guide/)** - Complete multi-page guide with visual diagrams
-- **[Getting Started](https://github.com/your-repo/docs/projects-guide/getting-started.md)** - Quick setup and first project
-- **[Agent Interaction](https://github.com/your-repo/docs/projects-guide/agent-interaction.md)** - Working with AI agents
+### 4. Implementation Phase
+- Active development
+- Regular commits and progress tracking
+- Quality assurance
+- Integration testing
 
-### Quick Prompts
-Use these 2-3 word prompts with AI agents:
+### 5. Testing Phase
+- Comprehensive testing
+- Performance validation
+- Security testing
+- User acceptance testing
+
+### 6. Review Phase
+- Code review and refinement
+- Documentation review
+- Stakeholder review
+- Final validation
+
+### 7. Deployment Phase
+- Release preparation
+- Deployment execution
+- Monitoring and validation
+- Rollback planning
+
+### 8. Completion Phase
+- Post-deployment monitoring
+- Lessons learned
+- Documentation finalization
+- Project retrospective
+
+## Commit Integration
+
+### Commit Message Format
+```
+{type}({project}): {description} [v{major}.{minor}.{patch}]
+
+{detailed-description}
+
+- Files changed: {count} files
+- Lines added: {count} lines
+- Lines removed: {count} lines
+- Tasks completed: {completed}/{total}
+- Blockers resolved: {count} blockers
+- Next phase: {next-phase}
+```
+
+### Commit Types
+- **phase**: Project phase completion
+- **milestone**: Milestone achievement
+- **feat**: New feature implementation
+- **fix**: Bug fix or blocker resolution
+- **refactor**: Code refactoring
+- **docs**: Documentation updates
+- **test**: Testing implementation
+- **daily**: Daily progress updates
+- **complete**: Project completion
+
+### Automated Triggers
+- **Pre-commit**: Project context validation
+- **Post-commit**: Progress tracking and metrics update
+- **Phase completion**: Automatic phase commits
+- **Milestone achievement**: Milestone commits
+
+## Plan Analysis
+
+### Analysis Components
+- **Scope Analysis**: Project boundaries and dependencies
+- **Risk Assessment**: Technical and timeline risks
+- **Resource Planning**: Team, time, and budget allocation
+- **Quality Assurance**: Testing and validation strategies
+- **Version Planning**: Release and compatibility planning
+
+### Validation Checklist
+- [ ] Scope clearly defined and bounded
+- [ ] Dependencies identified and validated
+- [ ] Resource requirements realistic and available
+- [ ] Timeline achievable with appropriate buffers
+- [ ] Risk mitigation strategies in place
+- [ ] Quality criteria measurable and testable
+- [ ] Version strategy defined and communicated
+
+## Quick Commands
+
+### Core Project Management
 - `project new` - Start new project workflow
-- `project status` - Show current project status  
+- `project status` - Show current project status
 - `project continue` - Resume last active project
-- `project backlog` - Review ideas and suggest next work
-- `guide show` - Display user guide index
+- `project complete` - Mark current project as complete
+- `project version` - Show project version information
+- `project plan` - Show project plan analysis
 
-### Starting a New Project
+### Version Management
+- `version bump` - Increment project version
+- `version history` - Show version history
+- `version compare` - Compare project versions
+- `version rollback` - Rollback to previous version
 
-1. **Choose Template**: Copy the appropriate template from `/templates/`
-   - `feature.md` - For new features
-   - `bugfix.md` - For bug fixes
-   - `refactoring.md` - For code refactoring
-   - `documentation.md` - For documentation projects
+### Commit Management
+- `commit phase` - Commit current project phase
+- `commit milestone` - Commit project milestone
+- `commit daily` - Daily project commit
+- `commit final` - Final project completion commit
 
-2. **Create Project File**: Save to `/ideas/` with naming convention:
-   ```
-   YYYY-MM-DD-descriptive-project-name.md
-   ```
-   Example: `2025-01-15-user-authentication-redesign.md`
+### Plan Analysis
+- `plan analyze` - Analyze project plan
+- `plan validate` - Validate project plan
+- `plan optimize` - Optimize project plan
+- `plan track` - Track plan progress
 
-3. **Fill Metadata**: Complete the metadata section with:
-   - Project ID (kebab-case)
-   - Title and description
-   - Initial stage (usually "idea")
-   - Creation date
-   - Assigned agents (if known)
+## Status Reporting
 
-4. **Define Context**: Fill in both human and AI agent context sections
+### Enhanced Status Report Format
+```
+**Status Report**
+- Project: {name} [v{major}.{minor}.{patch}]
+- Stage: {current-stage}
+- Phase: {current-phase}
+- Files Changed: {count} files
+- Tasks: {completed}/{total}
+- Blockers: {count} active
+- Commits: {count} this phase
+- Next: {next-immediate-action}
+- Version: {next-version}
+```
 
-5. **Move to Active**: When planning is complete, move the file to `/active/`
+### Metrics Tracking
+- Task completion percentage
+- Blocker count and priority
+- Estimated vs actual time
+- File change count
+- Commit frequency
+- Version progression
+- Plan adherence percentage
 
-### During Development
+## Quality Assurance
 
-1. **Update Progress**: Add entries to the progress log regularly
-2. **Document Decisions**: Record key decisions as they're made
-3. **Track Blockers**: Update the blockers section with current issues
-4. **Stage Transitions**: Update the stage field as the project advances
-5. **Agent Handoffs**: Add handoff notes when switching between AI agents
+### Project Validation
+- All projects must have complete metadata
+- Version numbers must follow semantic versioning
+- File names must follow version-first convention
+- Progress logs must be updated regularly
+- Commits must reference project versions
 
-### Completing a Project
+### Code Quality Integration
+- All code changes must align with project goals
+- Acceptance criteria must be validated
+- Project constraints must be respected
+- Architectural decisions must be documented
+- Performance impact must be assessed
 
-1. **Final Updates**: Complete all remaining sections
-2. **Lessons Learned**: Document what worked well and what didn't
-3. **Archive**: Move the file to `/completed/`
-4. **Cross-References**: Update any related projects with completion notes
+## Automation Integration
 
-## File Naming Conventions
+### Git Hooks
+- **Pre-commit**: Validate project context and commit message format
+- **Post-commit**: Update project progress and metrics
+- **Pre-push**: Validate project completeness
+- **Post-merge**: Update project dependencies
 
-### Project Files
-- **Format**: `YYYY-MM-DD-descriptive-project-name.md`
-- **Examples**:
-  - `2025-01-15-user-authentication-redesign.md`
-  - `2025-01-20-fix-login-validation-bug.md`
-  - `2025-01-25-refactor-api-layer.md`
-
-### Documentation Files
-- **Human Documentation**: `lower-case.md` (getting-started.md, workflows.md)
-- **AI Documentation**: `UPPER_CASE.md` (AGENT_PROMPTS.md, STATUS_TEMPLATE.md)
-- **Project Files**: `YYYY-MM-DD-kebab-case.md`
-
-## Document Structure
-
-Each project document contains these sections:
-
-### Metadata
-- Project identification and basic info
-- Current stage and dates
-- Assigned agents and priority
-- Tags for categorization
-
-### Human Context
-- Problem statement and business value
-- Success criteria and constraints
-- Stakeholder information
-- Strategic considerations
-
-### AI Agent Context
-- Technical requirements and dependencies
-- Acceptance criteria and implementation guidelines
-- File references and code context
-- Agent-specific instructions
-
-### Current Stage
-- Stage-specific details and tasks
-- Deliverables and milestones
-- Agent assignments per task
-- Progress tracking
-
-### Progress Log
-- Chronological updates
-- Agent contributions
-- Files changed
-- Stage transitions
-
-### Decisions
-- Key architectural decisions
-- Rationale and alternatives
-- Impact assessment
-- Decision makers
-
-### Blockers
-- Current issues and dependencies
-- Priority and status
-- Assignment and resolution tracking
-- Impact on timeline
-
-### Handoff Notes
-- Context for agent transitions
-- Completed work summary
-- Next steps and priorities
-- Important notes and warnings
-
-## AI Agent Coordination
-
-### Agent Assignment
-- Clearly specify which agents work on which tasks
-- Define context boundaries for each agent
-- Establish communication protocols
-
-### Context Preservation
-- Document all relevant context for handoffs
-- Include file references and code locations
-- Maintain decision history and rationale
-
-### Success Verification
-- Define clear acceptance criteria
-- Establish testing and validation procedures
-- Document verification steps
-
-### Handoff Protocol
-1. **Complete Current Work**: Finish assigned tasks
-2. **Update Progress Log**: Record what was accomplished
-3. **Document Context**: Add handoff notes with:
-   - Current state and progress
-   - Next steps and priorities
-   - Important warnings or considerations
-   - File changes and locations
-4. **Notify Next Agent**: Update agent assignment
+### CI/CD Integration
+- **Build triggers**: Automatic builds on phase and milestone commits
+- **Test execution**: Automated testing on feature commits
+- **Deployment triggers**: Deployment on project completion commits
+- **Quality gates**: Quality checks on all commit types
 
 ## Best Practices
 
-### For Human Developers
-- Review project status regularly
-- Make strategic decisions promptly
-- Document business context clearly
-- Coordinate agent assignments effectively
+### Project Creation
+- Always check for existing projects before creating new ones
+- Use appropriate project type and naming convention
+- Include complete metadata and context
+- Define clear acceptance criteria and success metrics
 
-### For AI Agents
-- Read full project context before starting
-- Update progress log after each session
+### Development Workflow
+- Work within project scope and constraints
+- Update progress logs regularly
+- Commit frequently with proper message format
 - Document decisions and rationale
-- Follow handoff protocol strictly
-- Validate work against acceptance criteria
 
-### Documentation Quality
-- Use clear, concise language
-- Include specific file paths and code references
-- Maintain chronological order in logs
-- Keep metadata current and accurate
+### Version Management
+- Use semantic versioning consistently
+- Increment versions appropriately
+- Maintain version history and documentation
+- Plan version progression and compatibility
 
-## Validation
+### Plan Analysis
+- Analyze plans thoroughly before implementation
+- Validate assumptions and dependencies
+- Assess risks and mitigation strategies
+- Optimize plans for efficiency and quality
 
-Use the JSON schema (`.project-schema.json`) to validate project documents:
+## Migration History
 
-```bash
-# Example validation (requires json-schema-validator)
-validate-json project-file.md .project-schema.json
-```
+### v1.0.0 Migration (2025-01-15)
+- Migrated from date-based naming to version-based naming
+- Reorganized directory structure by version
+- Implemented commit integration system
+- Added plan analysis framework
+- Created comprehensive documentation
 
-## Integration Points
+### Benefits of Migration
+- **Version Control**: Clear version tracking and progression
+- **Plan Analysis**: Better support for plan analysis and optimization
+- **Commit Integration**: Improved commit message standards and automation
+- **Organization**: Version-organized directory structure
+- **Scalability**: Better support for multiple versions and branches
 
-While this system is standalone, it integrates with the existing codebase through:
+## Support and Documentation
 
-- **File References**: Absolute paths to relevant code files
-- **Cross-References**: Links to existing documentation
-- **Related Projects**: References between dependent projects
-- **Codebase Structure**: Alignment with existing directory structure
-
-## AI Agent Integration
-
-### Status Reports
-AI agents provide status reports after every code change:
-```
-**Status Report**
-- Project: [name or "New Project Suggested"]
-- Stage: [current stage]
-- Files Changed: [count] files
-- Tasks: [completed]/[total]
-- Blockers: [count] active
-- Next: [next immediate action]
-```
-
-### Quick Prompts Reference
-- **[Complete Prompt Reference](https://github.com/your-repo/docs/projects-guide/prompts.md)** - All available prompts with examples
-- **[Agent Prompts](AGENT_PROMPTS.md)** - AI-specific prompt reference
-- **[Status Template](STATUS_TEMPLATE.md)** - Standard status report format
-
-## Troubleshooting
-
-### Common Issues
-
-**Missing Context**: Ensure all sections are filled out completely
-**Stale Information**: Update metadata and progress regularly
-**Agent Confusion**: Provide clear handoff notes and context
-**Lost Progress**: Maintain detailed progress logs
+### Additional Resources
+- **Templates**: `/templates/` - Project templates for different types
+- **Plans**: `/plans/` - Plan analysis framework and tools
+- **Versions**: `/versions/` - Version-specific documentation
+- **Migration Log**: `MIGRATION_LOG.md` - Migration history and notes
 
 ### Getting Help
-
-1. **[Troubleshooting Guide](https://github.com/your-repo/docs/projects-guide/troubleshooting.md)** - Common issues and solutions
-2. **[Visual Guide](https://github.com/your-repo/docs/projects-guide/visual-guide.md)** - System diagrams and flowcharts
-3. Review example projects in `/ideas/` or `/completed/`
-4. Use `project validate` to check document completeness
-5. Use `guide show` to display help index
-
-## Examples
-
-See the example project in `/ideas/` for a complete demonstration of proper usage.
-
-## Contributing
-
-When adding new templates or improving the system:
-
-1. Follow existing patterns and structure
-2. Update this README with changes
-3. Validate against the JSON schema
-4. Test with example projects
-
-## Version History
-
-- **v1.0** - Initial implementation with basic templates and structure
+- Review project templates for guidance
+- Check plan analysis framework for planning help
+- Use quick commands for common operations
+- Refer to version documentation for version-specific information

@@ -312,3 +312,15 @@ None currently identified.
   - Build completed successfully with only minor warnings (WebSocket optimization dependencies)
 
 **Final Result**: The repository is now English-only with all non-English code, assets, and documentation removed while maintaining full deployment functionality.
+
+## Version Information
+
+### Current Version
+- **Version**: v1.0.0
+- **Created**: 2025-01-15
+- **Last Updated**: 2025-10-15
+- **Migration Date**: 2025-10-15
+
+### Version History
+- **v1.0.0**: Initial version (migrated from date-based naming)
+

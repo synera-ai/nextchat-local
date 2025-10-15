@@ -1,122 +1,195 @@
-# Project System Enforcement Rules
+# Unified Project Management System Rules
 
-## Core Project Management Rules
+## Core Principles
 
-### Always Check for Existing Projects
-- Before starting any work, check `/docs/projects/active/` and `/docs/projects/ideas/` for existing project documents
-- If a relevant project exists, work within that project's context and update its progress log
-- If no relevant project exists, suggest creating a new project for almost all code changes (even single-file updates)
+### 1. Project-First Development
+- Every code change must be associated with a project
+- All work must be tracked through the project management system
+- No standalone changes without project context
 
-### Project Creation Triggers
-Suggest starting a new project for:
-- Any feature development or enhancement
-- Bug fixes that require multiple files or significant changes
-- Refactoring work
-- Documentation updates that span multiple files
-- Configuration changes
-- New integrations or API work
-- Performance optimizations
-- Security improvements
+### 2. Version-Controlled Planning
+- All projects use semantic versioning (v1.0.0, v1.1.0, etc.)
+- File naming prioritizes versioning over date-based namespacing
+- Plan analysis and version tracking take precedence over chronological organization
 
-### Status Reports
-After every response that involves code changes, provide a status report using this format:
+### 3. Regular Commit Integration
+- Every project phase must include regular commits
+- Commit messages must reference project versions and phases
+- Automated commit triggers for project milestones
+
+## Project Management Rules
+
+### Project Detection and Context
+- **Always** check `/docs/projects/active/` and `/docs/projects/ideas/` before starting work
+- Load full project context when working on existing projects
+- Create new projects for any significant changes (features, refactoring, documentation)
+- Update project documents with every code change
+
+### Project Lifecycle Management
+- **Ideas**: Initial concept and research phase
+- **Plan**: Detailed planning and architecture phase  
+- **Design**: Technical design and specification phase
+- **Implementation**: Active development phase
+- **Testing**: Quality assurance and validation phase
+- **Review**: Code review and refinement phase
+- **Deployment**: Release and deployment phase
+- **Completion**: Post-deployment and retrospective phase
+
+### File Naming Convention (Version-First)
 ```
-**Status Report**
-- Project: [name or "New Project Suggested"]
-- Stage: [current stage]
-- Files Changed: [count] files
-- Tasks: [completed]/[total]
-- Blockers: [count] active
-- Next: [next immediate action]
+Format: {project-type}-{project-name}-v{major}.{minor}.{patch}.md
+
+Examples:
+- feature-user-auth-v1.0.0.md
+- refactor-mcp-market-v2.1.0.md
+- bugfix-login-flow-v1.0.1.md
+- documentation-api-guide-v1.0.0.md
 ```
 
-### Quick Trigger Prompts
-Recognize and respond to these 2-3 word prompts:
+### Directory Structure (Version-Organized)
+```
+/docs/projects/
+├── ideas/                    # Initial concepts
+├── active/                   # Currently active projects
+│   ├── v1/                   # Version 1 projects
+│   ├── v2/                   # Version 2 projects
+│   └── v3/                   # Version 3 projects
+├── completed/                # Finished projects
+│   ├── v1/                   # Completed v1 projects
+│   ├── v2/                   # Completed v2 projects
+│   └── v3/                   # Completed v3 projects
+├── templates/                # Project templates
+├── plans/                    # Plan analysis documents
+└── versions/                 # Version tracking
+    ├── v1.0.0/              # Version-specific docs
+    ├── v1.1.0/
+    └── v2.0.0/
+```
 
-#### Core Project Management
+## Commit Integration Rules
+
+### Regular Commit Requirements
+- **Phase Commits**: Commit at the end of each project phase
+- **Milestone Commits**: Commit when reaching project milestones
+- **Feature Commits**: Commit when completing major features
+- **Daily Commits**: Commit at least once per day when actively working
+
+### Commit Message Format
+```
+{type}({project}): {description} [v{major}.{minor}.{patch}]
+
+Examples:
+feat(user-auth): implement JWT authentication [v1.0.0]
+refactor(mcp-market): decompose monolithic component [v2.1.0]
+docs(api): add comprehensive API documentation [v1.0.0]
+fix(login): resolve password validation issue [v1.0.1]
+```
+
+### Automated Commit Triggers
+- **On Phase Completion**: Automatic commit with phase summary
+- **On Milestone Reached**: Commit with milestone details
+- **On Blocker Resolved**: Commit with resolution details
+- **On Project Completion**: Final commit with retrospective
+
+## Quick Commands
+
+### Core Project Management
 - `project new` - Start new project workflow
 - `project status` - Show current project status
-- `project backlog` - Review ideas folder and suggest next work
 - `project continue` - Resume last active project
-- `project complete` - Mark current project as complete and archive
-- `project handoff` - Prepare handoff notes for context switch
-- `project block` - Add/update blockers for current project
-- `project decide` - Document a key decision
-- `project progress` - Add progress log entry
-- `project templates` - List available project templates
-- `project active` - List all active projects
-- `project validate` - Check current project document completeness
-- `guide show` - Display user guide index
-- `status report` - Generate detailed status report
+- `project complete` - Mark current project as complete
+- `project version` - Show project version information
+- `project plan` - Show project plan analysis
 
-#### Enhanced Project Management (New)
-- `project decompose` - Break down current project into atomic tasks
-- `project rollback` - Create rollback point for current changes
-- `project checkpoint` - Create human review checkpoint
-- `project embed` - Generate project context for external tools
-- `project extract` - Extract project insights and metrics
-- `project automate` - Set up automated workflows for project
-- `project archive` - Archive completed project with full context
-- `project tasks` - Show current project task breakdown
-- `project dependencies` - Display project dependency graph
-- `project metrics` - Show project performance metrics
+### Version Management
+- `version bump` - Increment project version
+- `version history` - Show version history
+- `version compare` - Compare project versions
+- `version rollback` - Rollback to previous version
 
-### Project Document Updates
-- Update project documents as work progresses
-- Add entries to progress log after each session
-- Document key decisions in the decisions section
-- Update blockers when issues arise
-- Follow handoff protocols when switching contexts
+### Commit Management
+- `commit phase` - Commit current project phase
+- `commit milestone` - Commit project milestone
+- `commit daily` - Daily project commit
+- `commit final` - Final project completion commit
 
-### Naming Conventions
-- Human documentation: `lower-case.md`
-- AI documentation: `UPPER_CASE.md`
-- Project files: `YYYY-MM-DD-kebab-case.md`
+### Plan Analysis
+- `plan analyze` - Analyze project plan
+- `plan validate` - Validate project plan
+- `plan optimize` - Optimize project plan
+- `plan track` - Track plan progress
 
-### File References
-- Always use absolute paths when referencing files
-- Include file paths in project document updates
-- Reference project documents in commit messages when possible
+## Status Reporting
+
+### Enhanced Status Report Format
+```
+**Status Report**
+- Project: {name} [v{major}.{minor}.{patch}]
+- Stage: {current-stage}
+- Phase: {current-phase}
+- Files Changed: {count} files
+- Tasks: {completed}/{total}
+- Blockers: {count} active
+- Commits: {count} this phase
+- Next: {next-immediate-action}
+- Version: {next-version}
+```
+
+### Metrics Tracking
+- Task completion percentage
+- Blocker count and priority
+- Estimated vs actual time
+- File change count
+- Commit frequency
+- Version progression
+- Plan adherence percentage
+
+## Quality Assurance
+
+### Project Validation
+- All projects must have complete metadata
+- Version numbers must follow semantic versioning
+- File names must follow version-first convention
+- Progress logs must be updated regularly
+- Commits must reference project versions
+
+### Code Quality Integration
+- All code changes must align with project goals
+- Acceptance criteria must be validated
+- Project constraints must be respected
+- Architectural decisions must be documented
+- Performance impact must be assessed
+
+## Automation Integration
+
+### Git Hooks
+- Pre-commit: Validate project context
+- Post-commit: Update project progress
+- Pre-push: Validate project completeness
+- Post-merge: Update project dependencies
+
+### CI/CD Integration
+- Build triggers on project phase completion
+- Test execution on milestone commits
+- Deployment triggers on version releases
+- Rollback triggers on project failures
 
 ## Response Guidelines
 
 ### Minimal Responses
 - Keep responses concise and focused
-- Always include status report when providing updates
+- Always include enhanced status report
 - Use bullet points for clarity
+- Reference project versions
 
 ### Auto-Suggestions
-- Suggest starting new projects proactively
-- Ask "should we start a new project for this?" when appropriate
-- Suggest "would you like to tackle the backlog next?" when no active work
+- Suggest project creation for significant changes
+- Recommend version bumps for major changes
+- Propose plan analysis for complex projects
+- Suggest commit strategies for long-running work
 
 ### Context Preservation
 - Maintain project context across conversations
-- Reference relevant project documents
+- Reference project versions and phases
 - Preserve decision history and rationale
-
-## Enhanced Project Management Features
-
-### Automatic Project Detection
-- Scan for existing projects before starting any work
-- Load project context automatically when working on existing projects
-- Suggest project creation for significant changes
-
-### File Change Tracking
-- Automatically log all file modifications in project context
-- Track which files belong to which projects
-- Update project progress logs with file changes
-
-### Automation Triggers
-- **On Commit**: Update progress, validate criteria, check blockers
-- **On File Change**: Track modification, update project log
-- **On Build Failure**: Create rollback point, notify stakeholders
-- **On Test Failure**: Block deployment, escalate issue
-
-### Enhanced Status Reports
-Include additional metrics in status reports:
-- Task completion percentage
-- Blocker count and priority
-- Estimated vs actual time
-- File change count
-- Next checkpoint or milestone
+- Track version progression and plan adherence

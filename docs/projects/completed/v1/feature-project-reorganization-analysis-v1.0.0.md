@@ -406,3 +406,15 @@ mv docs/projects/active/2025-01-15-english-only-repository-project.md docs/proje
 **Project Manager:** AI Assistant  
 **Stakeholders:** Project managers, AI agents, development team  
 **Estimated Completion:** 2025-01-20
+
+## Version Information
+
+### Current Version
+- **Version**: v1.0.0
+- **Created**: 2025-01-15
+- **Last Updated**: 2025-10-15
+- **Migration Date**: 2025-10-15
+
+### Version History
+- **v1.0.0**: Initial version (migrated from date-based naming)
+
