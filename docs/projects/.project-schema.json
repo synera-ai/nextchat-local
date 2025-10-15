@@ -66,6 +66,39 @@
             "type": "string"
           },
           "description": "Project tags for categorization"
+        },
+        "nickname": {
+          "type": "string",
+          "pattern": "^[a-zA-Z]+(-[a-zA-Z]+)*$",
+          "minLength": 3,
+          "maxLength": 20,
+          "description": "Fun, unique nickname for the project"
+        },
+        "nicknameHistory": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["nickname", "date", "reason"],
+            "properties": {
+              "nickname": {
+                "type": "string"
+              },
+              "date": {
+                "type": "string",
+                "format": "date"
+              },
+              "reason": {
+                "type": "string",
+                "enum": ["auto-generated", "user-requested", "conflict-resolution"]
+              }
+            }
+          },
+          "description": "History of nickname changes"
+        },
+        "nicknameGenerated": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the nickname was generated"
         }
       }
     },
@@ -583,6 +616,86 @@
         }
       },
       "description": "Automated workflows and rules for the project"
+    },
+    "decomposition": {
+      "type": "object",
+      "properties": {
+        "isDecomposed": {
+          "type": "boolean",
+          "description": "Whether this project has been decomposed into sub-projects"
+        },
+        "parentProjectId": {
+          "type": "string",
+          "description": "ID of parent project if this is a sub-project"
+        },
+        "decompositionType": {
+          "type": "string",
+          "enum": ["domain-separation", "feature-infrastructure", "implementation-testing", "core-integration"],
+          "description": "Type of decomposition applied"
+        },
+        "subProjects": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["projectId", "title", "nickname"],
+            "properties": {
+              "projectId": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "nickname": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["pending", "in-progress", "completed", "blocked"]
+              },
+              "assignedAgent": {
+                "type": "string"
+              }
+            }
+          },
+          "description": "List of sub-projects if this is a parent project"
+        },
+        "dependencyType": {
+          "type": "string",
+          "enum": ["independent", "depends-on", "blocks", "sequential"],
+          "description": "Type of dependency relationship for sub-projects"
+        },
+        "dependsOn": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of project IDs this sub-project depends on"
+        },
+        "blocks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of project IDs this sub-project blocks"
+        },
+        "integrationPoints": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Points where this sub-project integrates with others"
+        },
+        "decompositionDate": {
+          "type": "string",
+          "format": "date",
+          "description": "When the project was decomposed"
+        },
+        "decompositionReason": {
+          "type": "string",
+          "description": "Reason for decomposing the project"
+        }
+      },
+      "description": "Project decomposition information for parallel work"
     }
   }
 }
