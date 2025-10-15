@@ -1,350 +1,453 @@
-// Event bus system for NextChat
+import { EventEmitter } from "events";
 
-import { AppEvent, PluginEvent, AgentEvent } from '../types';
-
-export interface EventBus {
-  emit: (event: AppEvent) => void;
-  on: (eventType: string, handler: EventHandler) => () => void;
-  off: (eventType: string, handler: EventHandler) => void;
-  once: (eventType: string, handler: EventHandler) => void;
-  removeAllListeners: (eventType?: string) => void;
-  getListeners: (eventType: string) => EventHandler[];
-}
-
-export type EventHandler = (event: AppEvent) => void;
-
-export interface EventSubscription {
-  eventType: string;
-  handler: EventHandler;
+export interface EventHandler {
   id: string;
+  handler: Function;
+  once?: boolean;
+  priority?: number;
 }
 
-class NextChatEventBus implements EventBus {
-  private listeners: Map<string, Set<EventHandler>> = new Map();
-  private subscriptions: Map<string, EventSubscription> = new Map();
-  private eventHistory: AppEvent[] = [];
-  private maxHistorySize = 1000;
+export interface EventMetadata {
+  timestamp: Date;
+  source: string;
+  correlationId?: string;
+  tags?: string[];
+  version?: string;
+}
 
-  emit(event: AppEvent): void {
-    // Add to history
-    this.eventHistory.push(event);
-    if (this.eventHistory.length > this.maxHistorySize) {
-      this.eventHistory.shift();
-    }
+export interface EventOptions {
+  priority?: number;
+  timeout?: number;
+  retries?: number;
+  persistent?: boolean;
+  metadata?: Partial<EventMetadata>;
+}
 
-    // Get listeners for this event type
-    const handlers = this.listeners.get(event.type);
-    if (!handlers) return;
+export interface EventBusConfig {
+  maxListeners: number;
+  enableLogging: boolean;
+  enableMetrics: boolean;
+  enablePersistence: boolean;
+  persistenceKey: string;
+  cleanupInterval: number;
+}
 
-    // Execute all handlers
-    handlers.forEach(handler => {
-      try {
-        handler(event);
-      } catch (error) {
-        console.error(`[EventBus] Error in handler for ${event.type}:`, error);
+export class EventBus extends EventEmitter {
+  private config: EventBusConfig;
+  private handlers: Map<string, EventHandler[]> = new Map();
+  private eventHistory: Array<{
+    event: string;
+    data: any;
+    metadata: EventMetadata;
+  }> = [];
+  private metrics: EventMetrics = {
+    totalEvents: 0,
+    eventsByType: new Map(),
+    averageProcessingTime: 0,
+    errorRate: 0,
+    lastEvent: undefined,
+  };
+  private isRunning = false;
+  private cleanupTimer?: NodeJS.Timeout;
+
+  constructor(config?: Partial<EventBusConfig>) {
+    super();
+    this.config = {
+      maxListeners: 1000,
+      enableLogging: true,
+      enableMetrics: true,
+      enablePersistence: false,
+      persistenceKey: "eventBus",
+      cleanupInterval: 60000, // 1 minute
+      ...config,
+    };
+
+    this.setupEventHandlers();
+    this.loadPersistedData();
+  }
+
+  private setupEventHandlers(): void {
+    // Set max listeners
+    this.setMaxListeners(this.config.maxListeners);
+
+    // Handle new listener events
+    this.on("newListener", (event: string) => {
+      if (this.config.enableLogging) {
+        console.log(`EventBus: New listener added for event "${event}"`);
       }
+    });
+
+    // Handle remove listener events
+    this.on("removeListener", (event: string) => {
+      if (this.config.enableLogging) {
+        console.log(`EventBus: Listener removed for event "${event}"`);
+      }
+    });
+
+    // Handle error events
+    this.on("error", (error: Error) => {
+      console.error("EventBus: Error occurred:", error);
+      this.updateMetrics("error");
     });
   }
 
-  on(eventType: string, handler: EventHandler): () => void {
-    if (!this.listeners.has(eventType)) {
-      this.listeners.set(eventType, new Set());
+  private loadPersistedData(): void {
+    if (!this.config.enablePersistence) return;
+
+    try {
+      const persisted = localStorage.getItem(this.config.persistenceKey);
+      if (persisted) {
+        const data = JSON.parse(persisted);
+        this.eventHistory = data.eventHistory || [];
+        this.metrics = data.metrics || this.metrics;
+      }
+    } catch (error) {
+      console.warn("EventBus: Failed to load persisted data:", error);
     }
+  }
 
-    this.listeners.get(eventType)!.add(handler);
+  private savePersistedData(): void {
+    if (!this.config.enablePersistence) return;
 
-    // Create subscription
-    const subscription: EventSubscription = {
-      eventType,
+    try {
+      const data = {
+        eventHistory: this.eventHistory,
+        metrics: this.metrics,
+      };
+      localStorage.setItem(this.config.persistenceKey, JSON.stringify(data));
+    } catch (error) {
+      console.warn("EventBus: Failed to save persisted data:", error);
+    }
+  }
+
+  async emit(
+    event: string,
+    data?: any,
+    options?: EventOptions,
+  ): Promise<boolean> {
+    const startTime = Date.now();
+    const metadata: EventMetadata = {
+      timestamp: new Date(),
+      source: options?.metadata?.source || "unknown",
+      correlationId: options?.metadata?.correlationId,
+      tags: options?.metadata?.tags || [],
+      version: options?.metadata?.version || "1.0.0",
+    };
+
+    try {
+      // Update metrics
+      if (this.config.enableMetrics) {
+        this.updateMetrics("emit", event);
+      }
+
+      // Add to history
+      this.eventHistory.push({ event, data, metadata });
+
+      // Emit the event
+      const result = super.emit(event, data, metadata);
+
+      // Log if enabled
+      if (this.config.enableLogging) {
+        console.log(`EventBus: Emitted event "${event}"`, { data, metadata });
+      }
+
+      // Save persisted data
+      this.savePersistedData();
+
+      return result;
+    } catch (error) {
+      console.error(`EventBus: Error emitting event "${event}":`, error);
+      this.updateMetrics("error");
+      throw error;
+    } finally {
+      // Update processing time
+      if (this.config.enableMetrics) {
+        const processingTime = Date.now() - startTime;
+        this.updateProcessingTime(processingTime);
+      }
+    }
+  }
+
+  on(event: string, handler: Function, options?: EventOptions): this {
+    const handlerId = this.generateHandlerId();
+    const eventHandler: EventHandler = {
+      id: handlerId,
       handler,
-      id: this.generateId(),
+      priority: options?.priority || 0,
     };
-    this.subscriptions.set(subscription.id, subscription);
 
-    // Return unsubscribe function
-    return () => this.off(eventType, handler);
+    // Store handler
+    if (!this.handlers.has(event)) {
+      this.handlers.set(event, []);
+    }
+    this.handlers.get(event)!.push(eventHandler);
+
+    // Sort by priority
+    this.handlers
+      .get(event)!
+      .sort((a, b) => (b.priority || 0) - (a.priority || 0));
+
+    // Add to EventEmitter
+    super.on(event, handler);
+
+    if (this.config.enableLogging) {
+      console.log(`EventBus: Added handler for event "${event}"`, {
+        handlerId,
+        priority: eventHandler.priority,
+      });
+    }
+
+    return this;
   }
 
-  off(eventType: string, handler: EventHandler): void {
-    const handlers = this.listeners.get(eventType);
+  once(event: string, handler: Function, options?: EventOptions): this {
+    const handlerId = this.generateHandlerId();
+    const eventHandler: EventHandler = {
+      id: handlerId,
+      handler,
+      once: true,
+      priority: options?.priority || 0,
+    };
+
+    // Store handler
+    if (!this.handlers.has(event)) {
+      this.handlers.set(event, []);
+    }
+    this.handlers.get(event)!.push(eventHandler);
+
+    // Sort by priority
+    this.handlers
+      .get(event)!
+      .sort((a, b) => (b.priority || 0) - (a.priority || 0));
+
+    // Add to EventEmitter
+    super.once(event, handler);
+
+    if (this.config.enableLogging) {
+      console.log(`EventBus: Added once handler for event "${event}"`, {
+        handlerId,
+        priority: eventHandler.priority,
+      });
+    }
+
+    return this;
+  }
+
+  off(event: string, handler: Function): this {
+    // Remove from handlers map
+    const handlers = this.handlers.get(event);
     if (handlers) {
-      handlers.delete(handler);
-      if (handlers.size === 0) {
-        this.listeners.delete(eventType);
-      }
-    }
-
-    // Remove subscription
-    for (const [id, subscription] of this.subscriptions.entries()) {
-      if (subscription.eventType === eventType && subscription.handler === handler) {
-        this.subscriptions.delete(id);
-        break;
-      }
-    }
-  }
-
-  once(eventType: string, handler: EventHandler): void {
-    const onceHandler = (event: AppEvent) => {
-      handler(event);
-      this.off(eventType, onceHandler);
-    };
-    this.on(eventType, onceHandler);
-  }
-
-  removeAllListeners(eventType?: string): void {
-    if (eventType) {
-      this.listeners.delete(eventType);
-      // Remove subscriptions for this event type
-      for (const [id, subscription] of this.subscriptions.entries()) {
-        if (subscription.eventType === eventType) {
-          this.subscriptions.delete(id);
+      const index = handlers.findIndex((h) => h.handler === handler);
+      if (index !== -1) {
+        handlers.splice(index, 1);
+        if (handlers.length === 0) {
+          this.handlers.delete(event);
         }
       }
+    }
+
+    // Remove from EventEmitter
+    super.off(event, handler);
+
+    if (this.config.enableLogging) {
+      console.log(`EventBus: Removed handler for event "${event}"`);
+    }
+
+    return this;
+  }
+
+  removeAllListeners(event?: string): this {
+    if (event) {
+      this.handlers.delete(event);
     } else {
-      this.listeners.clear();
-      this.subscriptions.clear();
+      this.handlers.clear();
     }
-  }
 
-  getListeners(eventType: string): EventHandler[] {
-    const handlers = this.listeners.get(eventType);
-    return handlers ? Array.from(handlers) : [];
-  }
+    super.removeAllListeners(event);
 
-  // Utility methods
-  getEventHistory(): AppEvent[] {
-    return [...this.eventHistory];
-  }
-
-  getEventHistoryByType(eventType: string): AppEvent[] {
-    return this.eventHistory.filter(event => event.type === eventType);
-  }
-
-  getSubscriptionCount(eventType?: string): number {
-    if (eventType) {
-      return this.listeners.get(eventType)?.size || 0;
+    if (this.config.enableLogging) {
+      console.log(
+        `EventBus: Removed all listeners${
+          event ? ` for event "${event}"` : ""
+        }`,
+      );
     }
-    return this.subscriptions.size;
+
+    return this;
   }
 
-  private generateId(): string {
-    return Math.random().toString(36).substr(2, 9);
-  }
-}
+  async waitFor(event: string, timeout?: number): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const timeoutId = timeout
+        ? setTimeout(() => {
+            reject(new Error(`Timeout waiting for event "${event}"`));
+          }, timeout)
+        : undefined;
 
-// Create global event bus instance
-export const eventBus = new NextChatEventBus();
-
-// Event type constants
-export const EVENT_TYPES = {
-  // App events
-  APP_INIT: 'app:init',
-  APP_READY: 'app:ready',
-  APP_ERROR: 'app:error',
-  APP_SHUTDOWN: 'app:shutdown',
-
-  // User events
-  USER_LOGIN: 'user:login',
-  USER_LOGOUT: 'user:logout',
-  USER_UPDATE: 'user:update',
-
-  // Chat events
-  CHAT_SESSION_CREATE: 'chat:session:create',
-  CHAT_SESSION_UPDATE: 'chat:session:update',
-  CHAT_SESSION_DELETE: 'chat:session:delete',
-  CHAT_MESSAGE_SEND: 'chat:message:send',
-  CHAT_MESSAGE_RECEIVE: 'chat:message:receive',
-
-  // Plugin events
-  PLUGIN_INSTALL: 'plugin:install',
-  PLUGIN_UNINSTALL: 'plugin:uninstall',
-  PLUGIN_ENABLE: 'plugin:enable',
-  PLUGIN_DISABLE: 'plugin:disable',
-  PLUGIN_UPDATE: 'plugin:update',
-  PLUGIN_ERROR: 'plugin:error',
-
-  // Agent events
-  AGENT_CREATE: 'agent:create',
-  AGENT_START: 'agent:start',
-  AGENT_STOP: 'agent:stop',
-  AGENT_UPDATE: 'agent:update',
-  AGENT_ERROR: 'agent:error',
-
-  // UI events
-  UI_SIDEBAR_TOGGLE: 'ui:sidebar:toggle',
-  UI_MODAL_OPEN: 'ui:modal:open',
-  UI_MODAL_CLOSE: 'ui:modal:close',
-  UI_NOTIFICATION_SHOW: 'ui:notification:show',
-  UI_NOTIFICATION_HIDE: 'ui:notification:hide',
-
-  // Performance events
-  PERFORMANCE_METRIC: 'performance:metric',
-  PERFORMANCE_WARNING: 'performance:warning',
-  PERFORMANCE_ERROR: 'performance:error',
-} as const;
-
-// Event creators
-export const eventCreators = {
-  // App events
-  createAppInitEvent: (): AppEvent => ({
-    type: EVENT_TYPES.APP_INIT,
-    payload: { timestamp: Date.now() },
-    timestamp: Date.now(),
-    source: 'app',
-  }),
-
-  createAppReadyEvent: (): AppEvent => ({
-    type: EVENT_TYPES.APP_READY,
-    payload: { timestamp: Date.now() },
-    timestamp: Date.now(),
-    source: 'app',
-  }),
-
-  createAppErrorEvent: (error: Error): AppEvent => ({
-    type: EVENT_TYPES.APP_ERROR,
-    payload: { error: error.message, stack: error.stack },
-    timestamp: Date.now(),
-    source: 'app',
-  }),
-
-  // User events
-  createUserLoginEvent: (userId: string): AppEvent => ({
-    type: EVENT_TYPES.USER_LOGIN,
-    payload: { userId },
-    timestamp: Date.now(),
-    source: 'user',
-  }),
-
-  createUserLogoutEvent: (userId: string): AppEvent => ({
-    type: EVENT_TYPES.USER_LOGOUT,
-    payload: { userId },
-    timestamp: Date.now(),
-    source: 'user',
-  }),
-
-  // Chat events
-  createChatSessionCreateEvent: (sessionId: string): AppEvent => ({
-    type: EVENT_TYPES.CHAT_SESSION_CREATE,
-    payload: { sessionId },
-    timestamp: Date.now(),
-    source: 'chat',
-  }),
-
-  createChatMessageSendEvent: (messageId: string, content: string): AppEvent => ({
-    type: EVENT_TYPES.CHAT_MESSAGE_SEND,
-    payload: { messageId, content },
-    timestamp: Date.now(),
-    source: 'chat',
-  }),
-
-  // Plugin events
-  createPluginInstallEvent: (pluginId: string): PluginEvent => ({
-    type: EVENT_TYPES.PLUGIN_INSTALL,
-    payload: { pluginId },
-    timestamp: Date.now(),
-    source: 'plugin',
-    pluginId,
-  }),
-
-  createPluginErrorEvent: (pluginId: string, error: Error): PluginEvent => ({
-    type: EVENT_TYPES.PLUGIN_ERROR,
-    payload: { error: error.message, stack: error.stack },
-    timestamp: Date.now(),
-    source: 'plugin',
-    pluginId,
-  }),
-
-  // Agent events
-  createAgentStartEvent: (agentId: string): AgentEvent => ({
-    type: EVENT_TYPES.AGENT_START,
-    payload: { agentId },
-    timestamp: Date.now(),
-    source: 'agent',
-    agentId,
-  }),
-
-  createAgentErrorEvent: (agentId: string, error: Error): AgentEvent => ({
-    type: EVENT_TYPES.AGENT_ERROR,
-    payload: { error: error.message, stack: error.stack },
-    timestamp: Date.now(),
-    source: 'agent',
-    agentId,
-  }),
-
-  // UI events
-  createUISidebarToggleEvent: (isOpen: boolean): AppEvent => ({
-    type: EVENT_TYPES.UI_SIDEBAR_TOGGLE,
-    payload: { isOpen },
-    timestamp: Date.now(),
-    source: 'ui',
-  }),
-
-  createUINotificationShowEvent: (notificationId: string, type: string, message: string): AppEvent => ({
-    type: EVENT_TYPES.UI_NOTIFICATION_SHOW,
-    payload: { notificationId, type, message },
-    timestamp: Date.now(),
-    source: 'ui',
-  }),
-
-  // Performance events
-  createPerformanceMetricEvent: (metric: string, value: number): AppEvent => ({
-    type: EVENT_TYPES.PERFORMANCE_METRIC,
-    payload: { metric, value },
-    timestamp: Date.now(),
-    source: 'performance',
-  }),
-};
-
-// Event bus hooks for React
-export function useEventBus() {
-  return eventBus;
-}
-
-export function useEventSubscription(eventType: string, handler: EventHandler) {
-  const bus = useEventBus();
-  
-  React.useEffect(() => {
-    const unsubscribe = bus.on(eventType, handler);
-    return unsubscribe;
-  }, [eventType, handler]);
-}
-
-// Event bus middleware
-export const eventBusMiddleware = {
-  // Log all events
-  enableLogging: () => {
-    eventBus.on('*', (event) => {
-      console.log('[EventBus]', event);
-    });
-  },
-
-  // Performance monitoring
-  enablePerformanceMonitoring: () => {
-    const startTimes = new Map<string, number>();
-    
-    eventBus.on('*', (event) => {
-      if (event.type.endsWith(':start')) {
-        startTimes.set(event.type, Date.now());
-      } else if (event.type.endsWith(':end')) {
-        const startType = event.type.replace(':end', ':start');
-        const startTime = startTimes.get(startType);
-        if (startTime) {
-          const duration = Date.now() - startTime;
-          eventBus.emit(eventCreators.createPerformanceMetricEvent(`event:${event.type}`, duration));
-          startTimes.delete(startType);
+      this.once(event, (data) => {
+        if (timeoutId) {
+          clearTimeout(timeoutId);
         }
-      }
+        resolve(data);
+      });
     });
-  },
+  }
 
-  // Error handling
-  enableErrorHandling: () => {
-    eventBus.on(EVENT_TYPES.APP_ERROR, (event) => {
-      console.error('[EventBus Error]', event.payload);
-      // Could send to error reporting service
+  async emitAndWait(
+    event: string,
+    data?: any,
+    responseEvent?: string,
+    timeout?: number,
+  ): Promise<any> {
+    const correlationId = this.generateCorrelationId();
+    const responseEventName =
+      responseEvent || `${event}:response:${correlationId}`;
+
+    // Emit the event
+    await this.emit(event, data, {
+      metadata: { correlationId },
     });
-  },
-};
 
-// Export default
-export default eventBus;
+    // Wait for response
+    return this.waitFor(responseEventName, timeout);
+  }
+
+  getEventHistory(
+    event?: string,
+    limit?: number,
+  ): Array<{ event: string; data: any; metadata: EventMetadata }> {
+    let history = this.eventHistory;
+
+    if (event) {
+      history = history.filter((h) => h.event === event);
+    }
+
+    if (limit) {
+      history = history.slice(-limit);
+    }
+
+    return history;
+  }
+
+  getMetrics(): EventMetrics {
+    return { ...this.metrics };
+  }
+
+  getHandlerCount(event?: string): number {
+    if (event) {
+      return this.handlers.get(event)?.length || 0;
+    }
+
+    let total = 0;
+    for (const handlers of this.handlers.values()) {
+      total += handlers.length;
+    }
+    return total;
+  }
+
+  getEvents(): string[] {
+    return Array.from(this.handlers.keys());
+  }
+
+  clearHistory(): void {
+    this.eventHistory = [];
+    this.savePersistedData();
+  }
+
+  clearMetrics(): void {
+    this.metrics = {
+      totalEvents: 0,
+      eventsByType: new Map(),
+      averageProcessingTime: 0,
+      errorRate: 0,
+      lastEvent: undefined,
+    };
+    this.savePersistedData();
+  }
+
+  start(): void {
+    if (this.isRunning) return;
+
+    this.isRunning = true;
+    this.cleanupTimer = setInterval(() => {
+      this.cleanup();
+    }, this.config.cleanupInterval);
+
+    this.emit("eventBus:started");
+  }
+
+  stop(): void {
+    if (!this.isRunning) return;
+
+    this.isRunning = false;
+    if (this.cleanupTimer) {
+      clearInterval(this.cleanupTimer);
+      this.cleanupTimer = undefined;
+    }
+
+    this.emit("eventBus:stopped");
+  }
+
+  private cleanup(): void {
+    // Clean up old event history
+    const maxHistory = 1000;
+    if (this.eventHistory.length > maxHistory) {
+      this.eventHistory = this.eventHistory.slice(-maxHistory);
+    }
+
+    // Save persisted data
+    this.savePersistedData();
+  }
+
+  private updateMetrics(action: string, event?: string): void {
+    this.metrics.totalEvents++;
+    this.metrics.lastEvent = new Date();
+
+    if (event) {
+      const count = this.metrics.eventsByType.get(event) || 0;
+      this.metrics.eventsByType.set(event, count + 1);
+    }
+
+    if (action === "error") {
+      this.metrics.errorRate = (this.metrics.errorRate + 1) / 2;
+    }
+  }
+
+  private updateProcessingTime(time: number): void {
+    this.metrics.averageProcessingTime =
+      (this.metrics.averageProcessingTime + time) / 2;
+  }
+
+  private generateHandlerId(): string {
+    return `handler_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  }
+
+  private generateCorrelationId(): string {
+    return `corr_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  }
+
+  // Configuration
+  updateConfig(newConfig: Partial<EventBusConfig>): void {
+    this.config = { ...this.config, ...newConfig };
+    this.setMaxListeners(this.config.maxListeners);
+  }
+
+  getConfig(): EventBusConfig {
+    return { ...this.config };
+  }
+
+  isRunning(): boolean {
+    return this.isRunning;
+  }
+}
+
+export interface EventMetrics {
+  totalEvents: number;
+  eventsByType: Map<string, number>;
+  averageProcessingTime: number;
+  errorRate: number;
+  lastEvent?: Date;
+}
+
+// Create and export a default instance
+export const eventBus = new EventBus();
