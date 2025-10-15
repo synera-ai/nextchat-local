@@ -1,6 +1,7 @@
 // Core architecture exports
 export * from "./types/architecture";
 export * from "./utils";
+export * from "./components";
 
 // Re-export main components
 export { EventBus } from "./utils/event-bus";
@@ -15,6 +16,11 @@ export {
   securityFramework,
 } from "./utils/security-framework";
 export { TestingFramework, testingFramework } from "./utils/testing-framework";
+export {
+  ComponentRegistry,
+  componentRegistry,
+} from "./components/component-registry";
+export { LazyLoader, lazyLoader } from "./components/lazy-loader";
 
 // Core architecture initialization
 export class CoreArchitecture {
