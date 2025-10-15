@@ -1,0 +1,69 @@
+# Code Directory Project Integration Rules
+
+## Code-Project Synchronization
+
+### Project Document Updates
+- Always update relevant project documents when modifying app code
+- Reference project file paths in commit messages when possible
+- Validate changes against project acceptance criteria
+
+### File Change Tracking
+- Document all file changes in project progress logs
+- Include file paths and brief description of changes
+- Maintain chronological record of modifications
+
+### Acceptance Criteria Validation
+- Verify changes meet project acceptance criteria
+- Test against project requirements before marking tasks complete
+- Document validation results in progress log
+
+### Code Quality Alignment
+- Follow project implementation guidelines
+- Maintain consistency with project architectural decisions
+- Apply project-specific coding standards
+
+## Project Context Integration
+
+### Before Making Changes
+- Read full project context from relevant project document
+- Understand current stage and assigned tasks
+- Check for blockers or dependencies
+
+### During Development
+- Work within project scope and constraints
+- Follow project technical requirements
+- Document decisions that affect project direction
+
+### After Changes
+- Update project progress log with changes made
+- Mark completed tasks in project document
+- Identify any new blockers or dependencies
+
+## Handoff Preparation
+
+### Context Documentation
+- Document current state of code changes
+- Include file locations and modification details
+- Note any important considerations or warnings
+
+### Next Steps Clarity
+- Clearly define next immediate actions
+- Identify dependencies for next tasks
+- Provide context for receiving agent
+
+## Integration with Project System
+
+### Status Reporting
+- Include code-specific metrics in status reports
+- Track files changed, tests added, and functionality implemented
+- Report on acceptance criteria progress
+
+### Blocker Identification
+- Identify code-related blockers promptly
+- Document technical dependencies and constraints
+- Escalate architectural decisions to project level
+
+### Quality Assurance
+- Ensure code changes align with project goals
+- Validate against project success criteria
+- Maintain project timeline and milestone tracking

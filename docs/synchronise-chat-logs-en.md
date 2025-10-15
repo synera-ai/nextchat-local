@@ -1,12 +1,13 @@
-# Synchronize Chat Logs with UpStash
+# Synchronize Chat Logs
+
 ## Prerequisites
 - GitHub account
-- Your own ChatGPT-Next-Web server set up
+- Your own ChatGPT-Next-Web server setup
 - [UpStash](https://upstash.com)
 
 ## Getting Started
-1. Register for an UpStash account.
-2. Create a database.
+1. Register for an UpStash account
+2. Create a database
 
     ![Register and Login](./images/upstash-1.png)
 
@@ -14,18 +15,18 @@
 
     ![Select Server](./images/upstash-3.png)
 
-3. Find the REST API and copy UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN (⚠Important⚠: Do not share your token!)
+3. Find the REST API, copy UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN (⚠Important⚠: Don't leak the Token!)
 
    ![Copy](./images/upstash-4.png)
 
-4. Copy UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN into your synchronization configuration, then click **Check Availability**.
+4. Copy UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN to your sync configuration, click **Check Availability**
 
-    ![Synchronize 1](./images/upstash-5.png)
+    ![Sync 1](./images/upstash-5.png)
 
-    If everything is in order, you've successfully completed this step.
+    If everything is fine, then it's successful
 
-    ![Sync Availability Check Completed](./images/upstash-6.png)
+    ![Sync availability check completed](./images/upstash-6.png)
 
-5. Success!
+5. Success! 
 
    ![Great job~!](./images/upstash-7.png)

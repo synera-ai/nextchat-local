@@ -1,0 +1,80 @@
+# Project-Specific Rules
+
+## Project Document Management
+
+### Document Structure Compliance
+- All project documents must follow the template structure in `/templates/`
+- Metadata section must be complete and current
+- All required sections must be filled out before moving to active status
+
+### Stage Transitions
+- Only move projects from ideas to active when planning is complete
+- Update stage field when advancing through lifecycle stages
+- Document stage transitions in progress log
+
+### Progress Tracking
+- Add progress log entries after each work session
+- Include files changed, stage updates, and key accomplishments
+- Maintain chronological order in progress logs
+
+### Decision Documentation
+- Document all architectural and technical decisions
+- Include rationale, alternatives considered, and impact assessment
+- Record decision maker and date
+
+### Blocker Management
+- Update blockers section when issues arise
+- Include priority, assignment, and impact information
+- Mark blockers as resolved when addressed
+
+### Handoff Protocol
+- Complete current work before handoffs
+- Document context for receiving agent
+- Include completed work summary and next steps
+- Add important warnings or considerations
+
+## Validation Requirements
+
+### Before Moving to Active
+- All metadata fields completed
+- Human context section filled out
+- AI agent context section completed
+- Initial tasks defined
+- Dependencies identified
+
+### During Development
+- Progress log updated regularly
+- Decisions documented as made
+- Blockers tracked and updated
+- File references maintained
+
+### Before Completion
+- All acceptance criteria met
+- Lessons learned documented
+- Cross-references updated
+- Archive preparation complete
+
+## File Organization
+
+### Directory Structure
+- `/ideas/` - Initial project concepts
+- `/active/` - Currently active projects
+- `/completed/` - Finished projects (archive)
+- `/templates/` - Project templates
+
+### Naming Convention
+- Format: `YYYY-MM-DD-descriptive-project-name.md`
+- Use kebab-case for project names
+- Include date for chronological ordering
+
+## Integration Points
+
+### Codebase References
+- Use absolute file paths in project documents
+- Reference existing documentation and code
+- Maintain alignment with codebase structure
+
+### Cross-Project Dependencies
+- Document dependencies between projects
+- Update related projects when completing work
+- Maintain dependency tracking

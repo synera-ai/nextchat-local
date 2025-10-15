@@ -13,5 +13,65 @@
     "id": "duckduckgolite",
     "name": "DuckDuckGoLiteSearch",
     "schema": "https://ghp.ci/https://raw.githubusercontent.com/ChatGPTNextWeb/NextChat-Awesome-Plugins/main/plugins/duckduckgolite/openapi.json"
+  },
+  {
+    "id": "searxng",
+    "name": "SearXNG Search",
+    "schema": "https://ghp.ci/https://raw.githubusercontent.com/ChatGPTNextWeb/NextChat-Awesome-Plugins/main/plugins/searxng/openapi.json"
+  },
+  {
+    "id": "flux",
+    "name": "FluxPro",
+    "schema": "https://ghp.ci/https://raw.githubusercontent.com/ChatGPTNextWeb/NextChat-Awesome-Plugins/main/plugins/flux/openapi.json"
+  },
+  {
+    "id": "wolframalpha",
+    "name": "WolframAlpha",
+    "schema": "https://ghp.ci/https://raw.githubusercontent.com/ChatGPTNextWeb/NextChat-Awesome-Plugins/main/plugins/wolframalpha/openapi.json"
+  },
+  {
+    "id": "gapier",
+    "name": "Gapier",
+    "schema": "https://ghp.ci/https://raw.githubusercontent.com/ChatGPTNextWeb/NextChat-Awesome-Plugins/main/plugins/gapier/openapi.json"
+  },
+  {
+    "id": "webpilot",
+    "name": "Webpilot",
+    "schema": "https://ghp.ci/https://raw.githubusercontent.com/ChatGPTNextWeb/NextChat-Awesome-Plugins/main/plugins/webpilot/openapi.json"
+  },
+  {
+    "id": "fastgpt",
+    "name": "FastGPT",
+    "schema": "https://ghp.ci/https://raw.githubusercontent.com/ChatGPTNextWeb/NextChat-Awesome-Plugins/main/plugins/fastgpt/openapi.json"
+  },
+  {
+    "id": "npmsearch",
+    "name": "NPM Registry Search",
+    "schema": "https://ghp.ci/https://raw.githubusercontent.com/ChatGPTNextWeb/NextChat-Awesome-Plugins/main/plugins/npmsearch/openapi.json"
+  },
+  {
+    "id": "codeinterpreterapi",
+    "name": "Code Interpreter",
+    "schema": "https://ghp.ci/https://raw.githubusercontent.com/ChatGPTNextWeb/NextChat-Awesome-Plugins/main/plugins/codeinterpreterapi/openapi.json"
+  },
+  {
+    "id": "chatpdf",
+    "name": "Chat PDF",
+    "schema": "https://ghp.ci/https://raw.githubusercontent.com/ChatGPTNextWeb/NextChat-Awesome-Plugins/main/plugins/chatpdf/openapi.json"
+  },
+  {
+    "id": "jina-r",
+    "name": "Jina URL Reader",
+    "schema": "https://ghp.ci/https://raw.githubusercontent.com/ChatGPTNextWeb/NextChat-Awesome-Plugins/main/plugins/jina-r/openapi.json"
+  },
+  {
+    "id": "KolorsSiliconFlow",
+    "name": "Kolors SiliconFlow Draw",
+    "schema": "https://ghp.ci/https://raw.githubusercontent.com/ChatGPTNextWeb/NextChat-Awesome-Plugins/main/plugins/KolorsSiliconFlow/openapi.json"
+  },
+  {
+    "id": "tavilysearch",
+    "name": "Tavily Search",
+    "schema": "https://ghp.ci/https://raw.githubusercontent.com/ChatGPTNextWeb/NextChat-Awesome-Plugins/main/plugins/tavilysearch/openapi.json"
   }
 ]

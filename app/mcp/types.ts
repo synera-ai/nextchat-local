@@ -171,6 +171,8 @@ export interface PresetServer {
         description?: string;
         required?: boolean;
         minItems?: number;
+        itemLabel?: string;
+        addButtonText?: string;
       }
     >;
   };
@@ -178,3 +180,18 @@ export interface PresetServer {
   // MCP Server 的参数映射
   argsMapping?: Record<string, ArgsMapping>;
 }
+
+// Custom server definition that extends PresetServer
+export interface CustomServerDefinition extends PresetServer {
+  // Flag to distinguish custom servers from preset servers
+  custom: true;
+
+  // Timestamp when the server was created
+  createdAt: string;
+
+  // Timestamp when the server was last modified
+  updatedAt: string;
+}
+
+// Union type for all server definitions
+export type ServerDefinition = PresetServer | CustomServerDefinition;

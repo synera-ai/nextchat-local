@@ -1,0 +1,633 @@
+# Codebase Modularization Project
+
+## Metadata
+
+```yaml
+projectId: codebase-modularization-project
+title: "Codebase Modularization Project"
+stage: implementation
+createdDate: 2025-01-15
+lastUpdated: 2025-01-15
+assignedAgents: [analysis-agent, refactoring-agent, implementation-agent]
+estimatedCompletion: 2025-02-15
+priority: high
+tags: [refactoring, architecture, modularization, react, typescript]
+```  
+
+## Human Context
+
+### Problem Statement
+The NextChat codebase has grown organically and now contains significant technical debt including spaghetti code patterns, tight coupling, large monolithic components, and poor separation of concerns. This makes the codebase difficult to maintain, test, and extend with new features.
+
+### Business Value
+- **Improved Maintainability**: Easier to fix bugs and add features
+- **Faster Development**: Reduced complexity enables faster feature development
+- **Better Code Quality**: Cleaner architecture improves code reliability
+- **Team Productivity**: Modular code is easier for developers to understand and work with
+- **Reduced Technical Debt**: Foundation for sustainable long-term development
+
+### Success Criteria
+- [ ] Reduced component complexity (fewer lines per component)
+- [ ] Improved separation of concerns
+- [ ] Better code reusability
+- [ ] Cleaner file organization
+- [ ] Reduced code duplication
+- [ ] Improved maintainability metrics
+- [ ] Better developer experience
+- [ ] Maintained functionality and performance
+
+### Constraints
+- Must maintain backward compatibility
+- Cannot break existing functionality
+- Must preserve all current features
+- Should improve performance, not degrade it
+- Must follow existing coding standards
+
+### Stakeholders
+- **Development Team**: Need maintainable, understandable code
+- **Product Team**: Need faster feature development capability
+- **Users**: Need stable, reliable application
+- **Maintainers**: Need easier bug fixing and updates
+
+## AI Agent Context
+
+### Technical Requirements
+- [ ] Analyze component architecture patterns
+- [ ] Identify spaghetti code hotspots
+- [ ] Map component dependencies and coupling
+- [ ] Analyze state management patterns
+- [ ] Review utility function organization
+- [ ] Assess API integration patterns
+- [ ] Evaluate configuration management
+- [ ] Review file structure and organization
+- [ ] Create modular architecture patterns
+- [ ] Implement component modularization
+- [ ] Create reusable utility functions
+- [ ] Implement API abstraction layer
+- [ ] Refactor configuration management
+- [ ] Reorganize file structure
+
+### Dependencies
+- **NextChat Codebase** (type: codebase)
+  - Status: available
+  - Description: Current codebase to analyze and refactor
+- **Build System** (type: infrastructure)
+  - Status: available
+  - Description: Build tools for testing refactored code
+- **Testing Framework** (type: library)
+  - Status: available
+  - Description: Testing tools for validation
+
+### Acceptance Criteria
+- [ ] All refactored components pass existing tests
+- [ ] No functionality is broken or changed
+- [ ] Build process completes successfully
+- [ ] Code complexity metrics show improvement
+- [ ] File organization follows logical structure
+- [ ] Import paths are clean and consistent
+- [ ] No circular dependencies exist
+
+### Implementation Guidelines
+- Follow React best practices for component design
+- Use TypeScript for type safety
+- Maintain existing API contracts
+- Preserve all existing functionality
+- Add comprehensive tests for refactored code
+- Document architectural decisions
+- Use incremental refactoring approach
+
+### File References
+- **File Path**: `/Users/jhm/nextchat-clean/app/components/mcp-market.tsx` - 1029-line component needing decomposition
+- **File Path**: `/Users/jhm/nextchat-clean/app/components/chat.tsx` - Complex chat interface
+- **File Path**: `/Users/jhm/nextchat-clean/app/components/settings.tsx` - Large settings component
+- **File Path**: `/Users/jhm/nextchat-clean/app/components/home.tsx` - Main layout component
+- **File Path**: `/Users/jhm/nextchat-clean/app/utils.ts` - Monolithic utility file (28 functions)
+- **File Path**: `/Users/jhm/nextchat-clean/app/store/` - 8 separate store files
+- **File Path**: `/Users/jhm/nextchat-clean/app/api/` - 15+ platform-specific API files
+
+## Current Stage
+
+### Stage: implementation
+Currently implementing React-specific modularization focusing on component decomposition and custom hooks extraction.
+
+### Description
+The project has completed comprehensive analysis and is now in the implementation phase, focusing on breaking down the 1029-line MCP Market component and implementing React best practices for component architecture.
+
+### Tasks
+- **MOD-001**: Decompose MCP Market Component (1029 lines)
+  - Status: completed
+  - Assigned Agent: react-component-specialist-agent
+  - Estimated Hours: 16
+  - Dependencies: []
+- **MOD-002**: Extract Custom Hooks from Large Components
+  - Status: pending
+  - Assigned Agent: react-component-specialist-agent
+  - Estimated Hours: 12
+  - Dependencies: [MOD-001]
+- **MOD-003**: Implement Component Composition Patterns
+  - Status: pending
+  - Assigned Agent: react-component-specialist-agent
+  - Estimated Hours: 8
+  - Dependencies: [MOD-001, MOD-002]
+- **MOD-004**: Create Utility Function Modules
+  - Status: completed
+  - Assigned Agent: refactoring-agent
+  - Estimated Hours: 6
+  - Dependencies: []
+
+### Deliverables
+- [x] Decomposed MCP Market component into focused sub-components
+- [x] Custom hooks for state management
+- [x] Modular utility function structure
+- [ ] Component composition patterns
+- [ ] Updated file organization
+
+## Progress Log
+
+- **2025-01-15** - **analysis-agent**: Project created and comprehensive analysis initiated
+  - Stage: idea
+  - Files Changed: []
+- **2025-01-15** - **analysis-agent**: Comprehensive codebase analysis completed
+  - Stage: plan
+  - Files Changed: []
+- **2025-01-15** - **refactoring-agent**: Utility function consolidation completed
+  - Stage: implementation
+  - Files Changed: [`/Users/jhm/nextchat-clean/app/utils/dom/`, `/Users/jhm/nextchat-clean/app/utils/clipboard/`, `/Users/jhm/nextchat-clean/app/utils/device/`, `/Users/jhm/nextchat-clean/app/utils/format/`]
+- **2025-01-15** - **implementation-agent**: React-specific modularization refocus initiated
+  - Stage: implementation
+  - Files Changed: []
+
+## Decisions
+
+- **2025-01-15** - **Decision**: Use comprehensive codebase analysis with multiple perspectives
+  - **Rationale**: Need to understand current state before making changes
+  - **Impact**: Provides foundation for all subsequent refactoring decisions
+  - **Alternatives**: Incremental analysis, targeted analysis
+  - **Made By**: analysis-agent
+
+- **2025-01-15** - **Decision**: Focus on high-impact, low-risk modularization opportunities
+  - **Rationale**: Balance improvement with stability
+  - **Impact**: Prioritizes utility consolidation and component decomposition
+  - **Alternatives**: Full rewrite, minimal changes
+  - **Made By**: refactoring-agent
+
+- **2025-01-15** - **Decision**: Refocus on React best practices for component modularization
+  - **Rationale**: React-specific patterns provide better maintainability
+  - **Impact**: Shifts focus to component decomposition and custom hooks
+  - **Alternatives**: Generic modularization, framework-agnostic approach
+  - **Made By**: implementation-agent
+
+## Blockers
+
+- **BLOCKER-001**: MCP Market Component Complexity
+  - Status: open
+  - Priority: high
+  - Assigned To: implementation-agent
+  - Created: 2025-01-15
+  - Impact: 1029-line component blocks progress on other modularization tasks
+
+## Handoff Notes
+
+- **2025-01-15** - **From**: analysis-agent **To**: refactoring-agent
+  - **Context**: Comprehensive analysis complete, ready for implementation planning
+  - **Completed Work**: [Full codebase analysis, spaghetti code identification, opportunity matrix]
+  - **Next Steps**: [Begin utility function consolidation, plan component decomposition]
+  - **Important Notes**: [Focus on high-impact, low-risk opportunities first]
+
+- **2025-01-15** - **From**: refactoring-agent **To**: implementation-agent
+  - **Context**: Utility consolidation complete, ready for React-specific modularization
+  - **Completed Work**: [Utility function modules created, file structure improved]
+  - **Next Steps**: [Decompose MCP Market component, extract custom hooks]
+  - **Important Notes**: [1029-line component is highest priority, use React best practices]
+
+- **2025-01-15** - **From**: implementation-agent **To**: react-component-specialist-agent
+  - **Context**: Project blocked on MCP Market component decomposition, needs specialized React expertise
+  - **Completed Work**: [Project analysis, utility consolidation, React refocus planning]
+  - **Next Steps**: [Decompose 1029-line MCP Market component into focused sub-components]
+  - **Important Notes**: [Component is complex with multiple responsibilities, needs careful decomposition strategy]
+
+- **2025-01-15** - **react-component-specialist-agent**: MCP Market component decomposition completed
+  - Stage: implementation
+  - Files Changed: [`/Users/jhm/nextchat-clean/app/hooks/useMcpMarket.ts`, `/Users/jhm/nextchat-clean/app/components/mcp-market/`]
+  - **Completed Work**: 
+    - Created `useMcpMarket` custom hook for state management
+    - Decomposed 1029-line component into 5 focused sub-components:
+      - `McpMarketHeader` - Header with actions and title
+      - `McpMarketSearch` - Search functionality
+      - `McpMarketGrid` - Server listing and display
+      - `McpMarketModals` - Import/export and tools modals
+      - `McpMarketPage` - Main component orchestrating all parts
+    - Created proper component composition patterns
+    - Maintained all existing functionality while improving maintainability
+  - **Next Steps**: [Extract custom hooks from other large components, implement component composition patterns]
+  - **Important Notes**: [Component is now highly maintainable with clear separation of concerns]
+
+## Scope
+
+### Analysis Areas
+
+#### 1. Component Architecture
+- Large, monolithic components
+- Components with multiple responsibilities
+- Tightly coupled component relationships
+- Missing component abstractions
+
+#### 2. State Management
+- Scattered state logic
+- Complex state dependencies
+- Missing state abstractions
+- Zustand store organization
+
+#### 3. Utility Functions
+- Duplicated logic across files
+- Missing utility abstractions
+- Complex utility functions
+- Poor separation of concerns
+
+#### 4. API Integration
+- Scattered API calls
+- Missing API abstractions
+- Complex data transformation
+- Poor error handling patterns
+
+#### 5. Configuration Management
+- Scattered configuration logic
+- Missing configuration abstractions
+- Complex environment handling
+- Poor configuration validation
+
+#### 6. File Organization
+- Poor file structure
+- Missing logical groupings
+- Inconsistent naming conventions
+- Missing index files for clean imports
+
+## Project Phases
+
+### Phase 1: Analysis and Discovery
+- [ ] Analyze component architecture patterns
+- [ ] Identify spaghetti code hotspots
+- [ ] Map component dependencies and coupling
+- [ ] Analyze state management patterns
+- [ ] Review utility function organization
+- [ ] Assess API integration patterns
+- [ ] Evaluate configuration management
+- [ ] Review file structure and organization
+
+### Phase 2: Opportunity Identification
+- [ ] Create modularization opportunity matrix
+- [ ] Prioritize refactoring opportunities
+- [ ] Identify reusable component candidates
+- [ ] Find utility function consolidation opportunities
+- [ ] Identify API abstraction needs
+- [ ] Find configuration consolidation opportunities
+- [ ] Identify file structure improvements
+
+### Phase 3: Planning and Design
+- [ ] Design modular architecture patterns
+- [ ] Create refactoring roadmap
+- [ ] Design component abstraction patterns
+- [ ] Plan utility function organization
+- [ ] Design API abstraction layer
+- [ ] Plan configuration management system
+- [ ] Design improved file structure
+
+### Phase 4: Implementation
+- [ ] Implement component modularization
+- [ ] Create reusable utility functions
+- [ ] Implement API abstraction layer
+- [ ] Refactor configuration management
+- [ ] Reorganize file structure
+- [ ] Update imports and dependencies
+- [ ] Create proper index files
+
+### Phase 5: Validation
+- [ ] Test refactored components
+- [ ] Validate modularization improvements
+- [ ] Check for broken dependencies
+- [ ] Verify build process
+- [ ] Test deployment functionality
+- [ ] Measure maintainability improvements
+
+## Key Decisions
+
+### Decision 1: Analysis Approach
+**Decision:** Use comprehensive codebase analysis with multiple perspectives
+**Rationale:** Need to understand current state before making changes
+**Date:** 2025-01-15
+
+### Decision 2: Modularization Strategy
+**Decision:** Focus on high-impact, low-risk modularization opportunities
+**Rationale:** Balance improvement with stability
+**Date:** TBD
+
+### Decision 3: Implementation Approach
+**Decision:** Incremental refactoring with validation at each step
+**Rationale:** Minimize risk while maximizing improvement
+**Date:** TBD
+
+## Risk Assessment
+
+### High Risk
+- **Breaking Changes**: Refactoring may break existing functionality
+- **Import Dependencies**: Changing file structure may break imports
+- **State Management**: Modifying state logic may cause runtime errors
+
+### Medium Risk
+- **Build Process**: File reorganization may affect build configuration
+- **Testing**: Refactored code may need new test coverage
+- **Documentation**: Changes may require documentation updates
+
+### Low Risk
+- **Utility Functions**: Consolidating utilities is generally safe
+- **Configuration**: Centralizing configuration is low risk
+
+## Mitigation Strategies
+
+1. **Incremental Changes**: Make small, focused changes with testing
+2. **Backup Strategy**: Create backups before major refactoring
+3. **Dependency Mapping**: Map all dependencies before moving files
+4. **Build Validation**: Test build process after each change
+5. **Import Validation**: Verify all imports work after reorganization
+
+## Success Criteria
+
+- [ ] Reduced component complexity (fewer lines per component)
+- [ ] Improved separation of concerns
+- [ ] Better code reusability
+- [ ] Cleaner file organization
+- [ ] Reduced code duplication
+- [ ] Improved maintainability metrics
+- [ ] Better developer experience
+- [ ] Maintained functionality and performance
+
+## Progress Log
+
+### 2025-01-15 - Project Initiation
+- Project created and documented
+- Initial scope and phases defined
+- Analysis approach established
+- Risk assessment completed
+
+### 2025-01-15 - Comprehensive Analysis Complete
+
+### 2025-01-15 - React Best Practices Refocus
+- ✅ **Utility Function Consolidation**: Created modular utility structure
+  - `app/utils/dom/` - DOM manipulation utilities
+  - `app/utils/clipboard/` - File and clipboard operations
+  - `app/utils/device/` - Device detection utilities
+  - `app/utils/format/` - Text formatting utilities
+
+- 🔄 **React-Specific Modularization**: Refocusing on React best practices
+  - **Component Decomposition**: Break down 1029-line `McpMarketPage` component
+  - **Custom Hooks**: Extract state logic from large components
+  - **Component Composition**: Create smaller, focused components
+  - **Separation of Concerns**: Separate business logic from presentation
+- ✅ **Component Architecture Analysis**: Identified large, complex components
+  - `mcp-market.tsx` (1029 lines) - Massive component with multiple responsibilities
+  - `chat.tsx` (127+ lines) - Complex chat interface with many imports
+  - `settings.tsx` (83+ lines) - Large settings component with scattered logic
+  - `home.tsx` (272 lines) - Main layout component with routing logic
+
+- ✅ **State Management Analysis**: Found scattered state patterns
+  - 8 separate store files with overlapping concerns
+  - Complex state dependencies between stores
+  - Missing state abstractions and utilities
+  - Zustand store organization could be improved
+
+- ✅ **Utility Function Analysis**: Identified scattered utilities
+  - 28 utility functions in `app/utils.ts` (monolithic file)
+  - 15+ separate utility files with overlapping functionality
+  - Missing utility abstractions and consolidation opportunities
+  - Complex utility functions with multiple responsibilities
+
+- ✅ **API Integration Analysis**: Found repetitive API patterns
+  - 15+ platform-specific API files with similar structure
+  - Repetitive provider switching logic in `ClientApi` class
+  - Missing API abstraction layer
+  - Complex provider routing in API handlers
+
+- ✅ **File Organization Analysis**: Identified structural issues
+  - 404 exports across 120 files (high complexity)
+  - Deep import paths (`../../`) indicating poor organization
+  - Missing index files for clean imports
+  - Inconsistent file naming and organization
+
+## Key Findings
+
+### 🔴 High Priority Spaghetti Code Areas
+
+1. **MCP Market Component** (1029 lines)
+   - Multiple responsibilities: UI, state management, API calls, form handling
+   - Complex state management with 10+ useState hooks
+   - Scattered business logic mixed with presentation
+
+2. **API Provider Pattern** (15+ files)
+   - Repetitive provider switching logic
+   - Similar structure across all platform files
+   - Missing abstraction layer
+
+3. **Utility Function Scatter** (28 functions in utils.ts)
+   - Monolithic utility file
+   - Mixed concerns and responsibilities
+   - Missing logical grouping
+
+4. **State Management Complexity** (8 stores)
+   - Overlapping concerns between stores
+   - Complex interdependencies
+   - Missing state abstractions
+
+### 🟡 Medium Priority Areas
+
+1. **Component Import Complexity**
+   - Deep import paths indicating poor organization
+   - Missing barrel exports (index files)
+   - Inconsistent import patterns
+
+2. **Configuration Management**
+   - Scattered configuration logic
+   - Missing configuration abstractions
+   - Complex environment handling
+
+3. **File Structure Issues**
+   - Inconsistent naming conventions
+   - Missing logical groupings
+   - Poor separation of concerns
+
+## Blockers
+
+None currently identified.
+
+## Resources
+
+- Current codebase structure
+- Component analysis tools
+- Dependency mapping tools
+- Code complexity metrics
+- Build and test infrastructure
+
+## Modularization Opportunities Matrix
+
+### 🎯 **High Impact, Low Risk** (Start Here)
+
+#### 1. **Utility Function Consolidation**
+**Current State**: 28 functions scattered in `app/utils.ts`
+**Opportunity**: Create logical utility modules
+- `app/utils/dom/` - DOM manipulation utilities
+- `app/utils/format/` - Formatting and display utilities  
+- `app/utils/validation/` - Input validation utilities
+- `app/utils/storage/` - Storage and persistence utilities
+- `app/utils/network/` - Network and API utilities
+
+**Impact**: High - Reduces complexity, improves maintainability
+**Risk**: Low - Pure functions, easy to test and refactor
+
+#### 2. **API Provider Abstraction**
+**Current State**: 15+ repetitive platform files
+**Opportunity**: Create unified API provider system
+- `app/client/providers/` - Abstract provider interface
+- `app/client/factory/` - Provider factory pattern
+- `app/client/adapters/` - Platform-specific adapters
+- `app/client/types/` - Shared API types
+
+**Impact**: High - Eliminates code duplication, easier to add new providers
+**Risk**: Low - Well-defined interfaces, existing tests can be adapted
+
+#### 3. **Component State Extraction**
+**Current State**: Complex state in large components
+**Opportunity**: Extract custom hooks and state management
+- `app/hooks/` - Custom React hooks
+- `app/contexts/` - React contexts for shared state
+- `app/services/` - Business logic services
+
+**Impact**: High - Improves component readability, reusability
+**Risk**: Medium - Requires careful state management
+
+### 🎯 **High Impact, Medium Risk**
+
+#### 4. **MCP Market Component Decomposition**
+**Current State**: 1029-line monolithic component
+**Opportunity**: Break into focused sub-components
+- `MCPMarketHeader` - Search and navigation
+- `MCPMarketGrid` - Server listing and display
+- `MCPMarketForm` - Custom server form
+- `MCPMarketModal` - Import/export modals
+- `hooks/useMcpMarket` - State management hook
+
+**Impact**: Very High - Dramatically improves maintainability
+**Risk**: Medium - Complex state dependencies need careful handling
+
+#### 5. **Store Architecture Refactoring**
+**Current State**: 8 stores with overlapping concerns
+**Opportunity**: Create domain-specific store modules
+- `app/store/chat/` - Chat-related state
+- `app/store/config/` - Configuration state
+- `app/store/plugins/` - Plugin and MCP state
+- `app/store/shared/` - Shared utilities and types
+
+**Impact**: High - Better separation of concerns
+**Risk**: Medium - State dependencies need careful migration
+
+### 🎯 **Medium Impact, Low Risk**
+
+#### 6. **File Structure Reorganization**
+**Current State**: Deep imports, missing index files
+**Opportunity**: Create barrel exports and logical grouping
+- Add `index.ts` files for clean imports
+- Group related files in subdirectories
+- Standardize naming conventions
+
+**Impact**: Medium - Improves developer experience
+**Risk**: Low - Mostly organizational changes
+
+#### 7. **Configuration Management**
+**Current State**: Scattered configuration logic
+**Opportunity**: Centralized configuration system
+- `app/config/` - Centralized configuration
+- `app/config/validators/` - Configuration validation
+- `app/config/defaults/` - Default configurations
+
+**Impact**: Medium - Easier configuration management
+**Risk**: Low - Well-defined configuration interfaces
+
+## Detailed Refactoring Plan
+
+### Phase 1: Foundation (Week 1)
+1. **Utility Function Consolidation**
+   - Create utility subdirectories
+   - Move functions to appropriate modules
+   - Add barrel exports
+   - Update imports across codebase
+
+2. **API Provider Abstraction**
+   - Create provider interface
+   - Implement factory pattern
+   - Migrate existing providers
+   - Add comprehensive tests
+
+### Phase 2: Component Decomposition (Week 2)
+3. **MCP Market Component**
+   - Extract custom hooks
+   - Create sub-components
+   - Implement proper state management
+   - Add component tests
+
+4. **Component State Extraction**
+   - Identify reusable state logic
+   - Create custom hooks
+   - Extract business logic to services
+   - Update components to use hooks
+
+### Phase 3: Architecture Improvement (Week 3)
+5. **Store Architecture Refactoring**
+   - Analyze store dependencies
+   - Create domain-specific stores
+   - Implement store composition
+   - Migrate existing stores
+
+6. **File Structure Reorganization**
+   - Add index files
+   - Reorganize file structure
+   - Update import paths
+   - Standardize naming
+
+### Phase 4: Polish and Validation (Week 4)
+7. **Configuration Management**
+   - Centralize configuration
+   - Add validation
+   - Create configuration utilities
+   - Update configuration usage
+
+8. **Testing and Documentation**
+   - Add comprehensive tests
+   - Update documentation
+   - Performance validation
+   - Code quality metrics
+
+## Success Metrics
+
+### Quantitative Metrics
+- **Lines of Code**: Reduce by 15-20% through deduplication
+- **Cyclomatic Complexity**: Reduce average complexity by 30%
+- **Import Depth**: Reduce deep imports by 80%
+- **File Size**: No single file over 300 lines
+
+### Qualitative Metrics
+- **Maintainability**: Easier to understand and modify
+- **Testability**: Better test coverage and isolation
+- **Reusability**: More reusable components and utilities
+- **Developer Experience**: Faster development and debugging
+
+## Next Actions
+
+1. ✅ Complete comprehensive codebase analysis
+2. ✅ Identify modularization opportunities
+3. 🔄 Create detailed refactoring plan
+4. ⏳ Begin Phase 1: Utility function consolidation
+5. ⏳ Implement API provider abstraction
+
+---
+
+**Project Manager:** AI Assistant  
+**Stakeholders:** Development team, maintainers, contributors  
+**Estimated Completion:** TBD based on analysis results

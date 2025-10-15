@@ -1,0 +1,122 @@
+# Project System Enforcement Rules
+
+## Core Project Management Rules
+
+### Always Check for Existing Projects
+- Before starting any work, check `/docs/projects/active/` and `/docs/projects/ideas/` for existing project documents
+- If a relevant project exists, work within that project's context and update its progress log
+- If no relevant project exists, suggest creating a new project for almost all code changes (even single-file updates)
+
+### Project Creation Triggers
+Suggest starting a new project for:
+- Any feature development or enhancement
+- Bug fixes that require multiple files or significant changes
+- Refactoring work
+- Documentation updates that span multiple files
+- Configuration changes
+- New integrations or API work
+- Performance optimizations
+- Security improvements
+
+### Status Reports
+After every response that involves code changes, provide a status report using this format:
+```
+**Status Report**
+- Project: [name or "New Project Suggested"]
+- Stage: [current stage]
+- Files Changed: [count] files
+- Tasks: [completed]/[total]
+- Blockers: [count] active
+- Next: [next immediate action]
+```
+
+### Quick Trigger Prompts
+Recognize and respond to these 2-3 word prompts:
+
+#### Core Project Management
+- `project new` - Start new project workflow
+- `project status` - Show current project status
+- `project backlog` - Review ideas folder and suggest next work
+- `project continue` - Resume last active project
+- `project complete` - Mark current project as complete and archive
+- `project handoff` - Prepare handoff notes for context switch
+- `project block` - Add/update blockers for current project
+- `project decide` - Document a key decision
+- `project progress` - Add progress log entry
+- `project templates` - List available project templates
+- `project active` - List all active projects
+- `project validate` - Check current project document completeness
+- `guide show` - Display user guide index
+- `status report` - Generate detailed status report
+
+#### Enhanced Project Management (New)
+- `project decompose` - Break down current project into atomic tasks
+- `project rollback` - Create rollback point for current changes
+- `project checkpoint` - Create human review checkpoint
+- `project embed` - Generate project context for external tools
+- `project extract` - Extract project insights and metrics
+- `project automate` - Set up automated workflows for project
+- `project archive` - Archive completed project with full context
+- `project tasks` - Show current project task breakdown
+- `project dependencies` - Display project dependency graph
+- `project metrics` - Show project performance metrics
+
+### Project Document Updates
+- Update project documents as work progresses
+- Add entries to progress log after each session
+- Document key decisions in the decisions section
+- Update blockers when issues arise
+- Follow handoff protocols when switching contexts
+
+### Naming Conventions
+- Human documentation: `lower-case.md`
+- AI documentation: `UPPER_CASE.md`
+- Project files: `YYYY-MM-DD-kebab-case.md`
+
+### File References
+- Always use absolute paths when referencing files
+- Include file paths in project document updates
+- Reference project documents in commit messages when possible
+
+## Response Guidelines
+
+### Minimal Responses
+- Keep responses concise and focused
+- Always include status report when providing updates
+- Use bullet points for clarity
+
+### Auto-Suggestions
+- Suggest starting new projects proactively
+- Ask "should we start a new project for this?" when appropriate
+- Suggest "would you like to tackle the backlog next?" when no active work
+
+### Context Preservation
+- Maintain project context across conversations
+- Reference relevant project documents
+- Preserve decision history and rationale
+
+## Enhanced Project Management Features
+
+### Automatic Project Detection
+- Scan for existing projects before starting any work
+- Load project context automatically when working on existing projects
+- Suggest project creation for significant changes
+
+### File Change Tracking
+- Automatically log all file modifications in project context
+- Track which files belong to which projects
+- Update project progress logs with file changes
+
+### Automation Triggers
+- **On Commit**: Update progress, validate criteria, check blockers
+- **On File Change**: Track modification, update project log
+- **On Build Failure**: Create rollback point, notify stakeholders
+- **On Test Failure**: Block deployment, escalate issue
+
+### Enhanced Status Reports
+Include additional metrics in status reports:
+- Task completion percentage
+- Blocker count and priority
+- Estimated vs actual time
+- File change count
+- Next checkpoint or milestone

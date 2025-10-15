@@ -1,23 +1,23 @@
 # Cloudflare Pages Deployment Guide
 
-## How to create a new project
+## How to Create a New Project
 
-Fork this project on GitHub, then log in to dash.cloudflare.com and go to Pages.
+Fork this project on Github, then log in to dash.cloudflare.com and go to Pages.
 
 1. Click "Create a project".
-2. Choose "Connect to Git".
+2. Select "Connect to Git".
 3. Connect Cloudflare Pages to your GitHub account.
-4. Select the forked project.
+4. Select the project you forked.
 5. Click "Begin setup".
-6. For "Project name" and "Production branch", use the default values or change them as needed.
-7. In "Build Settings", choose the "Framework presets" option and select "Next.js".
-8. Do not use the default "Build command" due to a node:buffer bug. Instead, use the following command:
+6. For "Project name" and "Production branch", you can use the default values or change them as needed.
+7. In "Build Settings", select the "Framework presets" option and select "Next.js".
+8. Due to the node:buffer bug, don't use the default "Build command" for now. Please use the following command:
    ```
    npx @cloudflare/next-on-pages --experimental-minify
    ```
-9. For "Build output directory", use the default value and do not modify it.
-10. Do not modify "Root Directory".
-11. For "Environment variables", click ">" and then "Add variable". Fill in the following information:
+9. For "Build output directory", use the default value and don't modify it.
+10. Don't modify "Root Directory".
+11. For "Environment variables", click ">" then click "Add variable". Fill in the following information:
 
     - `NODE_VERSION=20.1`
     - `NEXT_TELEMETRY_DISABLE=1`
@@ -25,19 +25,18 @@ Fork this project on GitHub, then log in to dash.cloudflare.com and go to Pages.
     - `YARN_VERSION=1.22.19`
     - `PHP_VERSION=7.4`
 
-    Optionally fill in the following based on your needs:
+    Depending on your actual needs, you can optionally fill in the following options:
 
-    - `CODE= Optional, access passwords, multiple passwords can be separated by commas`
+    - `CODE= Optional, access password, you can use commas to separate multiple passwords`
     - `OPENAI_ORG_ID= Optional, specify the organization ID in OpenAI`
-    - `HIDE_USER_API_KEY=1 Optional, do not allow users to enter their own API key`
-    - `DISABLE_GPT4=1 Optional, do not allow users to use GPT-4`
-    - `ENABLE_BALANCE_QUERY=1 Optional, allow users to query balance`
-    - `DISABLE_FAST_LINK=1 Optional, disable parse settings from url`
-    - `OPENAI_SB=1 Optional，use the third-party OpenAI-SB API`
+    - `HIDE_USER_API_KEY=1 Optional, don't let users enter their own API Key`
+    - `DISABLE_GPT4=1 Optional, don't let users use GPT-4`
+    - `ENABLE_BALANCE_QUERY=1 Optional, enable balance query function`
+    - `DISABLE_FAST_LINK=1 Optional, disable parsing preset settings from links`
 
 12. Click "Save and Deploy".
 13. Click "Cancel deployment" because you need to fill in Compatibility flags.
-14. Go to "Build settings", "Functions", and find "Compatibility flags".
-15. Fill in "nodejs_compat" for both "Configure Production compatibility flag" and "Configure Preview compatibility flag".
-16. Go to "Deployments" and click "Retry deployment".
+14. Go to "Build settings", "Functions", find "Compatibility flags".
+15. Fill in "nodejs_compat" in "Configure Production compatibility flag" and "Configure Preview compatibility flag".
+16. Go to "Deployments", click "Retry deployment".
 17. Enjoy.

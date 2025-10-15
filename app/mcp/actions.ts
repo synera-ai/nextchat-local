@@ -7,6 +7,7 @@ import {
 } from "./client";
 import { MCPClientLogger } from "./logger";
 import {
+  CustomServerDefinition,
   DEFAULT_MCP_CONFIG,
   McpClientData,
   McpConfigData,
@@ -20,6 +21,10 @@ import { getServerSideConfig } from "../config/server";
 
 const logger = new MCPClientLogger("MCP Actions");
 const CONFIG_PATH = path.join(process.cwd(), "app/mcp/mcp_config.json");
+const CUSTOM_SERVERS_PATH = path.join(
+  process.cwd(),
+  "app/mcp/custom_servers.json",
+);
 
 const clientsMap = new Map<string, McpClientData>();
 
@@ -381,5 +386,160 @@ export async function isMcpEnabled() {
   } catch (error) {
     logger.error(`Failed to check MCP status: ${error}`);
     return false;
+  }
+}
+
+// Custom Server Management Functions
+
+// 获取自定义服务器列表
+export async function getCustomServers(): Promise<CustomServerDefinition[]> {
+  try {
+    const customServersStr = await fs.readFile(CUSTOM_SERVERS_PATH, "utf-8");
+    const data = JSON.parse(customServersStr);
+    return data.servers || [];
+  } catch (error) {
+    logger.error(`Failed to load custom servers, using empty list: ${error}`);
+    return [];
+  }
+}
+
+// 保存自定义服务器
+export async function saveCustomServer(
+  server: CustomServerDefinition,
+): Promise<void> {
+  try {
+    const existingServers = await getCustomServers();
+    const serverIndex = existingServers.findIndex((s) => s.id === server.id);
+
+    const updatedServer = {
+      ...server,
+      updatedAt: new Date().toISOString(),
+    };
+
+    if (serverIndex >= 0) {
+      // Update existing server
+      existingServers[serverIndex] = updatedServer;
+    } else {
+      // Add new server
+      existingServers.push(updatedServer);
+    }
+
+    const data = { servers: existingServers };
+    await fs.mkdir(path.dirname(CUSTOM_SERVERS_PATH), { recursive: true });
+    await fs.writeFile(CUSTOM_SERVERS_PATH, JSON.stringify(data, null, 2));
+
+    logger.info(`Custom server [${server.id}] saved successfully`);
+  } catch (error) {
+    logger.error(`Failed to save custom server [${server.id}]: ${error}`);
+    throw error;
+  }
+}
+
+// 删除自定义服务器
+export async function deleteCustomServer(serverId: string): Promise<void> {
+  try {
+    const existingServers = await getCustomServers();
+    const filteredServers = existingServers.filter((s) => s.id !== serverId);
+
+    const data = { servers: filteredServers };
+    await fs.writeFile(CUSTOM_SERVERS_PATH, JSON.stringify(data, null, 2));
+
+    logger.info(`Custom server [${serverId}] deleted successfully`);
+  } catch (error) {
+    logger.error(`Failed to delete custom server [${serverId}]: ${error}`);
+    throw error;
+  }
+}
+
+// 检查服务器ID是否唯一
+export async function isServerIdUnique(
+  serverId: string,
+  excludeId?: string,
+): Promise<boolean> {
+  try {
+    const customServers = await getCustomServers();
+    const existingServer = customServers.find(
+      (s) => s.id === serverId && s.id !== excludeId,
+    );
+    return !existingServer;
+  } catch (error) {
+    logger.error(`Failed to check server ID uniqueness: ${error}`);
+    return false;
+  }
+}
+
+// 导出自定义服务器配置
+export async function exportCustomServers(): Promise<string> {
+  try {
+    const customServers = await getCustomServers();
+    const exportData = {
+      version: "1.0",
+      exportedAt: new Date().toISOString(),
+      servers: customServers,
+    };
+    return JSON.stringify(exportData, null, 2);
+  } catch (error) {
+    logger.error(`Failed to export custom servers: ${error}`);
+    throw error;
+  }
+}
+
+// 导入自定义服务器配置
+export async function importCustomServers(
+  jsonData: string,
+): Promise<{ imported: number; errors: string[] }> {
+  try {
+    const data = JSON.parse(jsonData);
+
+    if (!data.servers || !Array.isArray(data.servers)) {
+      throw new Error("Invalid import format: servers array not found");
+    }
+
+    const existingServers = await getCustomServers();
+    const existingIds = new Set(existingServers.map((s) => s.id));
+
+    let imported = 0;
+    const errors: string[] = [];
+
+    for (const serverData of data.servers) {
+      try {
+        // Validate server data
+        if (!serverData.id || !serverData.name || !serverData.command) {
+          errors.push(`Invalid server data: missing required fields`);
+          continue;
+        }
+
+        // Check for ID conflicts
+        if (existingIds.has(serverData.id)) {
+          errors.push(`Server ID '${serverData.id}' already exists`);
+          continue;
+        }
+
+        // Create custom server definition
+        const customServer: CustomServerDefinition = {
+          ...serverData,
+          custom: true,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
+
+        // Save server
+        await saveCustomServer(customServer);
+        existingIds.add(serverData.id);
+        imported++;
+      } catch (error) {
+        errors.push(
+          `Failed to import server '${serverData.id || "unknown"}': ${
+            error instanceof Error ? error.message : String(error)
+          }`,
+        );
+      }
+    }
+
+    logger.info(`Imported ${imported} custom servers, ${errors.length} errors`);
+    return { imported, errors };
+  } catch (error) {
+    logger.error(`Failed to import custom servers: ${error}`);
+    throw error;
   }
 }

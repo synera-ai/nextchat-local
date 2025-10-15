@@ -1,40 +1,41 @@
 # Frequently Asked Questions
 
-## How to get help quickly?
+## How to Get Help Quickly?
 
 1. Ask ChatGPT / Bing / Baidu / Google, etc.
-2. Ask online friends. Please provide background information and a detailed description of the problem. High-quality questions are more likely to get useful answers.
+2. Ask online users. Please provide background information about the problem and a detailed description of the problem encountered. High-quality questions make it easier to get useful answers.
 
 # Deployment Related Questions
 
-## Why does the Docker deployment version always prompt for updates
+For detailed tutorials on various deployment methods, please refer to: https://rptzik3toh.feishu.cn/docx/XtrdduHwXoSCGIxeFLlcEPsdn8b
 
-The Docker version is equivalent to the stable version, and the latest Docker is always consistent with the latest release version. Currently, our release frequency is once every one to two days, so the Docker version will always be one to two days behind the latest commit, which is expected.
+## Why does the Docker deployment version keep prompting for updates?
+
+The Docker version is equivalent to the stable version. The latest Docker is always consistent with the latest release version. Currently, our release frequency is once every one to two days, so the Docker version will always lag behind the latest commit by one to two days, which is expected.
 
 ## How to deploy on Vercel
 
-1. Register a Github account and fork this project.
-2. Register Vercel (mobile phone verification required, Chinese number can be used), and connect your Github account.
-3. Create a new project on Vercel, select the project you forked on Github, fill in the required environment variables, and start deploying. After deployment, you can access your project through the domain provided by Vercel. (Requires proxy in mainland China)
-
-- If you need to access it directly in China: At your DNS provider, add a CNAME record for the domain name, pointing to cname.vercel-dns.com. Then set up your domain access on Vercel.
+1. Register a Github account and fork this project
+2. Register Vercel (mobile phone verification required, you can use a Chinese number) and connect your Github account
+3. Create a new project on Vercel, select the project you forked on Github, fill in environment variables as needed, and start deployment. After deployment, you can access your project through the domain provided by Vercel under the condition of having a ladder.
+4. If you need to access without walls in China: Add a CNAME record for your domain name on your domain management website, pointing to cname.vercel-dns.com. Then set up your domain access on Vercel.
 
 ## How to modify Vercel environment variables
 
-- Enter the Vercel console page;
-- Select your chatgpt-next-web project;
-- Click on the Settings option at the top of the page;
+- Go to the Vercel console page;
+- Select your NextChat project;
+- Click the Settings option at the top of the page;
 - Find the Environment Variables option in the sidebar;
 - Modify the corresponding values as needed.
 
-## What is the environment variable CODE? Is it necessary to set it?
+## What is the environment variable CODE? Must it be set?
 
-This is your custom access password, you can choose:
+This is your custom access password. You can choose:
 
-1. Do not set it, delete the environment variable. Be cautious: anyone can access your project at this time.
-2. When deploying the project, set the environment variable CODE (supports multiple passwords, separated by commas). After setting the access password, users need to enter the access password in the settings page to use it. See [related instructions](https://github.com/Yidadaa/ChatGPT-Next-Web#access-password)
+1. Don't set it, delete the environment variable. Caution: At this time, anyone can access your project.
+2. When deploying the project, set the environment variable CODE (supports multiple passwords separated by commas). After setting the access password, users need to enter the access password in the settings interface before they can use it. See [related instructions](https://github.com/Yidadaa/ChatGPT-Next-Web/blob/main/README_CN.md#%E9%85%8D%E7%BD%AE%E9%A1%B5%E9%9D%A2%E8%AE%BF%E9%97%AE%E5%AF%86%E7%A0%81)
 
-## Why doesn't the version I deployed have streaming response
+## Why doesn't my deployed version have streaming responses?
 
 > Related discussion: [#386](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/386)
 
@@ -44,148 +45,186 @@ If you use nginx reverse proxy, you need to add the following code to the config
 # No caching, support streaming output
 proxy_cache off;  # Turn off caching
 proxy_buffering off;  # Turn off proxy buffering
-chunked_transfer_encoding on;  # Turn on chunked transfer encoding
-tcp_nopush on;  # Turn on TCP NOPUSH option, disable Nagle algorithm
-tcp_nodelay on;  # Turn on TCP NODELAY option, disable delay ACK algorithm
+chunked_transfer_encoding on;  # Enable chunked transfer encoding
+tcp_nopush on;  # Enable TCP NOPUSH option, disable Nagle algorithm
+tcp_nodelay on;  # Enable TCP NODELAY option, disable delayed ACK algorithm
 keepalive_timeout 300;  # Set keep-alive timeout to 65 seconds
 ```
 
-If you are deploying on netlify, this issue is still waiting to be resolved, please be patient.
+If you are deploying on Netlify, this issue is still waiting to be resolved, please be patient.
 
-## I've deployed, but it's not accessible
+## I deployed it, but I can't access it
 
-Please check and troubleshoot the following issues:
+Please check and exclude the following issues:
 
 - Is the service started?
-- Is the port correctly mapped?
+- Is the port mapped correctly?
 - Is the firewall port open?
-- Is the route to the server okay?
+- Is the route to the server passable?
 - Is the domain name resolved correctly?
 
-## You may encounter an "Error: Loading CSS chunk xxx failed..."
+## What is a proxy and how to use it?
 
-To reduce the initial white screen time, Next.js enables chunking by default. You can find the technical details here:
+Due to OpenAI's IP restrictions, China and some other countries/regions cannot directly connect to the OpenAI API and need to go through a proxy. You can use a proxy server (forward proxy) or a pre-configured OpenAI API reverse proxy.
+
+- Forward proxy example: Scientific internet ladder. In the case of docker deployment, set the environment variable HTTP_PROXY to your proxy address (for example: 10.10.10.10:8002).
+- Reverse proxy example: You can use someone else's proxy address or set it up for free through Cloudflare. Set the project environment variable BASE_URL to your proxy address.
+
+## Can domestic servers be deployed?
+
+Yes, but there are problems to be solved:
+
+- Need a proxy to connect to github and openAI and other websites;
+- Domestic servers need to be filed for domain name resolution;
+- Domestic policies restrict proxy access to external networks/ChatGPT related applications and may be blocked.
+
+## Why do network errors occur after docker deployment?
+
+For details, see discussion: https://github.com/Yidadaa/ChatGPT-Next-Web/issues/1569
+
+# Usage Related Questions
+
+## Why does it keep prompting "An error occurred, please try again later"
+
+There may be many reasons, please check in order:
+
+- Please first check if your code version is the latest version, update to the latest version and try again;
+- Please check if the api key is set correctly, the environment variable name must be all uppercase with underscores;
+- Please check if the api key is available;
+- If you still cannot determine the problem after the above steps, please submit a new issue in the issue area and attach the vercel runtime log or docker runtime log.
+
+## Why does ChatGPT's reply become garbled?
+
+In the settings interface - model settings, there is an item called `temperature`. If this value is greater than 1, it may cause garbled replies. Adjust it back to within 1.
+
+## When using, it prompts "Now in an unauthorized state, please enter the access password in the settings page"?
+
+The project has set an access password through the environment variable CODE. When using it for the first time, you need to go to the settings and enter the access code before you can use it.
+
+## When using, it prompts "You exceeded your current quota, ..."
+
+There's a problem with the API KEY. Insufficient balance.
+
+## When using, I encounter "Error: Loading CSS chunk xxx failed..."
+
+To reduce the first screen white screen time, chunked compilation is enabled by default. The technical principle is as follows:
 
 - https://nextjs.org/docs/app/building-your-application/optimizing/lazy-loading
 - https://stackoverflow.com/questions/55993890/how-can-i-disable-chunkcode-splitting-with-webpack4
 - https://github.com/vercel/next.js/issues/38507
 - https://stackoverflow.com/questions/55993890/how-can-i-disable-chunkcode-splitting-with-webpack4
 
-However, Next.js has limited compatibility with older browsers, which can result in this error.
+However, NextJS has poor compatibility and may cause this error on older browsers. You can disable chunked compilation during compilation.
 
-You can disable chunking during building.
+For the Vercel platform, add `DISABLE_CHUNK=1` to the environment variables and redeploy;
+For self-compiled deployment projects, use `DISABLE_CHUNK=1 yarn build` during build;
+For Docker users, since Docker has already been built when packaging, disabling this feature is not currently supported.
 
-For Vercel platform, you can add `DISABLE_CHUNK=1` to the environment variables and redeploy.
-For self-deployed projects, you can use `DISABLE_CHUNK=1 yarn build` during the build process.
-For Docker users, as the build is already completed during packaging, disabling this feature is currently not supported.
+Note that after disabling this feature, users will load all resources when visiting the website for the first time. If the user's network condition is poor, it may cause a long white screen, thus affecting the user experience, so consider this yourself.
 
-Note that when you disable this feature, all resources will be loaded on the user's first visit. This may result in a longer white screen time if the user has a poor network connection, affecting the user experience. Please consider this when making a decision.
-
-# Usage Related Questions
-
-## Why does it always prompt "An error occurred, please try again later"
-
-There could be many reasons, please check the following in order:
-
-- First, check if your code version is the latest version, update to the latest version and try again;
-- Check if the api key is set correctly, the environment variable name must be uppercase with underscores;
-- Check if the api key is available;
-- If you still cannot determine the problem after going through the above steps, please submit a new issue in the issue area and attach the runtime log of vercel or the log of docker runtime.
-
-## Why does ChatGPT's reply get garbled
-
-In the settings page - model settings, there is an item called `temperature`. If this value is greater than 1, it may cause garbled replies. Adjust it back to within 1.
-
-## It prompts "Now it's unauthorized, please enter the access password on the settings page" when using?
-
-The project has set an access password through the environment variable CODE. When using it for the first time, you need to go to settings and enter the access code to use.
-
-## It prompts "You exceeded your current quota, ..." when using?
-
-The API KEY is problematic. Insufficient balance.
-
-## What is a proxy and how to use it?
-
-Due to IP restrictions of OpenAI, China and some other countries/regions cannot directly connect to OpenAI API and need to go through a proxy. You can use a proxy server (forward proxy) or a pre-configured OpenAI API reverse proxy.
-
-- Forward proxy example: VPN ladder. In the case of docker deployment, set the environment variable HTTP_PROXY to your proxy address (http://address:port).
-- Reverse proxy example: You can use someone else's proxy address or set it up for free through Cloudflare. Set the project environment variable BASE_URL to your proxy address.
-
-## Can I deploy it on a server in China?
-
-It is possible but there are issues to be addressed:
-
-- Proxy is required to connect to websites such as Github and OpenAI;
-- Domain name resolution requires filing for servers in China;
-- Chinese policy restricts proxy access to foreign websites/ChatGPT-related applications, which may be blocked.
+## When using, I encounter "NotFoundError: Failed to execute 'removeChild' on 'Node': The node...."
+Please turn off the browser's own automatic translation function and turn off all automatic translation plugins.
 
 # Network Service Related Questions
 
 ## What is Cloudflare?
 
-Cloudflare (CF) is a network service provider offering CDN, domain management, static page hosting, edge computing function deployment, and more. Common use cases: purchase and/or host your domain (resolution, dynamic domain, etc.), apply CDN to your server (can hide IP to avoid being blocked), deploy websites (CF Pages). CF offers most services for free.
+Cloudflare (CF) is a network service provider that provides CDN, domain management, static page hosting, edge computing function deployment, etc. Common uses: purchase and/or host your domain name (resolution, dynamic domain name, etc.), put a CDN on your server (can hide IP from being blocked), deploy websites (CF Pages). CF provides most services for free.
 
 ## What is Vercel?
 
-Vercel is a global cloud platform designed to help developers build and deploy modern web applications more quickly. This project and many web applications can be deployed on Vercel with a single click for free. No need to understand code, Linux, have a server, pay, or set up an OpenAI API proxy. The downside is that you need to bind a domain name to access it without restrictions in China.
+Vercel is a global cloud platform designed to help developers build and deploy modern web applications faster. This project and many web applications can be deployed on Vercel for free with one click. No need to understand code, no need to understand linux, no need for servers, no need to pay, no need to set up OpenAI API proxy. The disadvantage is that you need to bind a domain name to access it without walls in China.
 
-## How to obtain a domain name?
+## How to get a domain name?
 
-1. Register with a domain provider, such as Namesilo (supports Alipay) or Cloudflare for international providers, and Wanwang for domestic providers in China.
-2. Free domain name providers: eu.org (second-level domain), etc.
-3. Ask friends for a free second-level domain.
+1. Register yourself at a domain name supplier. Foreign ones include Namesilo (supports Alipay), Cloudflare, etc., domestic ones include Wanwang, etc.;
+2. Free domain name suppliers: eu.org (second-level domain name), etc.;
+3. Ask a friend for a free second-level domain name.
 
-## How to obtain a server
+## How to get a server
 
-- Examples of international server providers: Amazon Web Services, Google Cloud, Vultr, Bandwagon, Hostdare, etc.
-  International server considerations: Server lines affect access speed in China; CN2 GIA and CN2 lines are recommended. If the server has difficulty accessing in China (serious packet loss, etc.), you can try using a CDN (from providers like Cloudflare).
-- Domestic server providers: Alibaba Cloud, Tencent, etc.
-  Domestic server considerations: Domain name resolution requires filing; domestic server bandwidth is relatively expensive; accessing foreign websites (Github, OpenAI, etc.) requires a proxy.
+- Foreign server suppliers: Amazon Cloud, Google Cloud, Vultr, Bandwagon, Hostdare, etc.;
+  Foreign server matters: Server lines affect domestic access speed, CN2 GIA and CN2 line servers are recommended. If the server is difficult to access in China (severe packet loss, etc.), you can try putting a CDN (Cloudflare and other suppliers).
+- Domestic server suppliers: Alibaba Cloud, Tencent, etc.;
+  Domestic server matters: Domain name resolution requires filing; domestic server bandwidth is more expensive; accessing foreign websites (Github, openAI, etc.) requires a proxy.
 
-# OpenAI-related Questions
+## Under what circumstances does a server need to be filed?
+
+Websites operating in mainland China need to be filed according to regulatory requirements. In practice, if the server is located in China and has domain name resolution, the server supplier will implement regulatory filing requirements, otherwise the service will be shut down. The usual rules are as follows:
+
+| Server Location | Domain Name Supplier | Whether Filing is Required |
+|---|---|---|
+| Domestic | Domestic | Yes |
+| Domestic | Foreign | Yes |
+| Foreign | Foreign | No |
+| Foreign | Domestic | Usually No |
+
+After changing server suppliers, you need to transfer the filing.
+
+# OpenAI Related Questions
 
 ## How to register an OpenAI account?
 
-Go to chat.openai.com to register. You will need:
+Go to chat.openai.com to register. You need:
 
-- A good VPN (OpenAI only allows native IP addresses of supported regions)
-- A supported email (e.g., Gmail or a company/school email, not Outlook or QQ email)
-- A way to receive SMS verification (e.g., SMS-activate website)
+- A good ladder (OpenAI supports regional native IP addresses)
+- A supported email (such as Gmail or company/school email, not Outlook or qq email)
+- A way to receive SMS authentication (such as SMS-activate website)
 
-## How to activate OpenAI API? How to check API balance?
+## How to enable OpenAI API? How to query API balance?
 
-Official website (requires VPN): https://platform.openai.com/account/usage
-Some users have set up a proxy to check the balance without a VPN; ask online friends for access. Please verify the source is reliable to avoid API Key leakage.
+Official website address (ladder required): https://platform.openai.com/account/usage
+Some netizens have built balance query proxies without ladders, please ask netizens to get them. Please identify whether the source is reliable to avoid API Key leakage.
 
-## Why doesn't my new OpenAI account have an API balance?
+## Why doesn't my newly registered OpenAI account have API balance?
 
-(Updated April 6th) Newly registered accounts usually display API balance within 24 hours. New accounts are currently given a $5 balance.
+(Updated April 6) Newly registered accounts usually display API balance after 24 hours. Currently, newly registered accounts are given $5 balance.
 
 ## How to recharge OpenAI API?
 
-OpenAI only accepts credit cards from designated regions (Chinese credit cards cannot be used). If the credit cards from your region is not supported, some options include:
+OpenAI only accepts credit cards from specified regions (Chinese credit cards cannot be used). Some ways include:
 
 1. Depay virtual credit card
 2. Apply for a foreign credit card
-3. Find someone online to top up
+3. Find someone online to recharge for you
 
-## How to access the GPT-4 API?
+## How to use GPT-4 API access?
 
-(Updated April 6th) Access to the GPT-4 API requires a separate application. Go to the following address and enter your information to join the waitlist (prepare your OpenAI organization ID): https://openai.com/waitlist/gpt-4-api
-Wait for email updates afterwards.
+- GPT-4 API access requires a separate application. Go to the following address to fill in your information to enter the application queue waitlist (prepare your OpenAI organization ID): https://openai.com/waitlist/gpt-4-api
+  Then wait for email messages.
+- Enabling ChatGPT Plus does not mean having GPT-4 permissions, the two are completely unrelated.
 
-## How to use the Azure OpenAI interface
+## How to use Azure OpenAI interface
 
 Please refer to: [#371](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/371)
 
-## Why is my Token consumed so fast?
+## Why is my Token being consumed so quickly?
 
 > Related discussion: [#518](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/518)
 
-- If you have GPT-4 access and use GPT-4 API regularly, your bill will increase rapidly since GPT-4 pricing is about 15 times higher than GPT-3.5;
-- If you are using GPT-3.5 and not using it frequently, but still find your bill increasing fast, please troubleshoot immediately using these steps:
-  - Check your API key consumption record on the OpenAI website; if your token is consumed every hour and each time consumes tens of thousands of tokens, your key must have been leaked. Please delete it and regenerate it immediately. **Do not check your balance on random websites.**
-  - If your password is short, such as 5 characters or fewer, the cost of brute-forcing is very low. It is recommended to search docker logs to confirm whether someone has tried a large number of password combinations. Keyword: got access code
-- By following these two methods, you can locate the reason for your token's rapid consumption:
-  - If the OpenAI consumption record is abnormal but the Docker log has no issues, it means your API key has been leaked;
-  - If the Docker log shows a large number of got access code brute-force attempts, your password has been cracked.
+- If you have GPT 4 permissions and are using GPT 4 api daily, then because GPT 4 price is about 15 times that of GPT 3.5, your bill amount will rapidly expand;
+- If you are using GPT 3.5 and the usage frequency is not high, but you still find your bill amount increasing rapidly, then please immediately troubleshoot according to the following steps:
+  - Go to the openai official website to check your api key consumption records. If your token is consumed every hour and consumes tens of thousands of tokens each time, then your key must be leaked. Please delete and regenerate immediately. **Don't check balance on messy websites.**
+  - If your password is set very short, such as letters within 5 digits, then the blasting cost is very low. It is recommended that you search the docker log records to confirm whether someone has tried a large number of password combinations. Keyword: got access code
+- Through the above two methods, you can locate the reason why your token is being consumed quickly:
+  - If the openai consumption record is abnormal but the docker log has no problems, then it means the api key is leaked;
+  - If the docker log finds a large number of got access code blasting records, then the password has been blasted.
+
+## How is the API billed?
+
+OpenAI website billing instructions: https://openai.com/pricing#language-models  
+OpenAI charges based on the number of tokens. 1000 tokens usually represent 750 English words or 500 Chinese characters. Input (Prompt) and output (Completion) are billed separately.  
+
+| Model | User Input (Prompt) Billing | Model Output (Completion) Billing | Maximum Tokens per Interaction |
+|----|----|----|----|
+| gpt-3.5-turbo | $0.0015 / 1 thousand tokens | $0.002 / 1 thousand tokens | 4096 |
+| gpt-3.5-turbo-16K | $0.003 / 1 thousand tokens | $0.004 / 1 thousand tokens | 16384 |
+| gpt-4 | $0.03 / 1 thousand tokens | $0.06 / 1 thousand tokens | 8192 |
+| gpt-4-32K | $0.06 / 1 thousand tokens | $0.12 / 1 thousand tokens | 32768 |
+
+## What's the difference between gpt-3.5-turbo and gpt3.5-turbo-0301 (or gpt3.5-turbo-mmdd) models?
+
+Official documentation: https://platform.openai.com/docs/models/gpt-3-5
+
+- gpt-3.5-turbo is the latest model and will be continuously updated.
+- gpt-3.5-turbo-0301 is a model snapshot frozen on March 1st, will not change, and is expected to be replaced by a new snapshot in 3 months.

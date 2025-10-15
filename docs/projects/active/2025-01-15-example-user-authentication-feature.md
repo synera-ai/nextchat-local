@@ -1,0 +1,251 @@
+# Example: User Authentication Feature
+
+## Metadata
+
+```yaml
+projectId: user-authentication-feature
+title: "Implement User Authentication System"
+stage: idea
+createdDate: 2025-01-15
+lastUpdated: 2025-01-15
+assignedAgents: [research-agent]
+estimatedCompletion: 2025-02-15
+priority: medium
+tags: [feature, authentication, security, frontend, backend]
+```
+
+## Human Context
+
+### Problem Statement
+The application currently lacks user authentication, which limits its functionality and prevents user-specific features. Users cannot save their preferences, access personalized content, or maintain session state across browser sessions.
+
+### Business Value
+- **User Engagement**: Users can create accounts and maintain persistent sessions
+- **Personalization**: Enable user-specific features and preferences
+- **Data Security**: Protect user data with proper authentication
+- **Scalability**: Foundation for future user-centric features
+
+### Success Criteria
+- [ ] Users can register new accounts with email/password
+- [ ] Users can log in and log out securely
+- [ ] Session persistence across browser sessions
+- [ ] Password reset functionality
+- [ ] Secure password storage with hashing
+- [ ] No security vulnerabilities in authentication flow
+
+### Constraints
+- Must integrate with existing NextChat architecture
+- Should use existing UI components and styling
+- Must maintain backward compatibility
+- Security requirements must meet industry standards
+
+### Stakeholders
+- **End Users**: Need simple, secure authentication
+- **Development Team**: Need maintainable, well-tested code
+- **Security Team**: Need secure implementation
+- **Product Team**: Need foundation for user features
+
+## AI Agent Context
+
+### Technical Requirements
+- [ ] Implement JWT-based authentication
+- [ ] Create user registration and login APIs
+- [ ] Add password hashing with bcrypt
+- [ ] Implement session management
+- [ ] Create authentication middleware
+- [ ] Add password reset functionality
+- [ ] Implement proper error handling
+- [ ] Add input validation and sanitization
+
+### Dependencies
+- **NextChat API Layer** (type: codebase)
+  - Status: available
+  - Description: Existing API structure to extend
+- **Database** (type: infrastructure)
+  - Status: available
+  - Description: Database for user storage
+- **UI Components** (type: codebase)
+  - Status: available
+  - Description: Existing UI components to use
+
+### Acceptance Criteria
+- [ ] All authentication endpoints return proper HTTP status codes
+- [ ] Passwords are hashed before storage
+- [ ] JWT tokens are properly signed and validated
+- [ ] Authentication middleware protects routes correctly
+- [ ] All inputs are validated and sanitized
+- [ ] Error messages don't leak sensitive information
+- [ ] Tests cover all authentication flows
+
+### Implementation Guidelines
+- Follow existing NextChat code patterns
+- Use TypeScript for type safety
+- Implement proper error handling
+- Add comprehensive logging
+- Follow security best practices
+- Write unit and integration tests
+
+### File References
+- **File Path**: `/Users/jhm/nextchat-clean/app/api/auth.ts` - Authentication API endpoints
+- **File Path**: `/Users/jhm/nextchat-clean/app/components/auth.tsx` - Authentication UI components
+- **File Path**: `/Users/jhm/nextchat-clean/app/store/access.ts` - Access control store
+- **File Path**: `/Users/jhm/nextchat-clean/app/utils/` - Utility functions
+
+## Current Stage
+
+### Stage: plan
+Research and planning phase completed, ready for implementation
+
+### Description
+Currently in the idea stage, defining requirements and planning the authentication system architecture.
+
+### Tasks
+- **AUTH-001**: Research authentication patterns and security best practices
+  - Status: completed
+  - Assigned Agent: research-agent
+  - Estimated Hours: 4
+  - Dependencies: []
+- **AUTH-002**: Design database schema for users table
+  - Status: completed
+  - Assigned Agent: database-agent
+  - Estimated Hours: 2
+  - Dependencies: [AUTH-001]
+- **AUTH-003**: Plan API endpoint structure
+  - Status: completed
+  - Assigned Agent: api-agent
+  - Estimated Hours: 3
+  - Dependencies: [AUTH-001]
+
+### Deliverables
+- [x] Authentication system design document
+- [x] Database schema design
+- [x] API endpoint specification
+- [x] Security requirements document
+
+## Progress Log
+
+- **2025-01-15** - **Human Developer**: Created initial project document and defined requirements
+  - Stage: idea
+  - Files Changed: []
+- **2025-01-15** - **research-agent**: Authentication research and planning completed
+  - Stage: plan
+  - Files Changed: [`/Users/jhm/nextchat-clean/docs/projects-guide/user-authentication-research.md`]
+  - **Completed Work**: 
+    - Comprehensive research on authentication patterns (JWT, Session-based, OAuth)
+    - Security best practices analysis and recommendations
+    - Database schema design with users and refresh_tokens tables
+    - API endpoint specification with 8 authentication endpoints
+    - Implementation strategy with technology stack recommendations
+    - Security considerations and testing strategy
+  - **Next Steps**: [Ready for implementation phase]
+  - **Important Notes**: [JWT with refresh tokens recommended as optimal approach]
+
+## Decisions
+
+- **2025-01-15** - **Decision**: Use JWT for authentication tokens
+  - **Rationale**: JWT provides stateless authentication suitable for distributed systems
+  - **Impact**: Affects API design and client-side token handling
+  - **Alternatives**: Session-based authentication, OAuth
+  - **Made By**: Human Developer
+
+## Blockers
+
+- **BLOCKER-001**: Need to decide on password hashing library
+  - Status: open
+  - Priority: medium
+  - Assigned To: security-agent
+  - Created: 2025-01-15
+  - Impact: Blocks implementation of user registration
+
+## Handoff Notes
+
+<!-- No handoffs yet -->
+
+---
+
+## Feature-Specific Sections
+
+### User Stories
+- As a new user, I want to create an account so that I can access personalized features
+- As an existing user, I want to log in so that I can access my saved data
+- As a user, I want to reset my password so that I can regain access if I forget it
+- As a user, I want to log out so that I can secure my session on shared devices
+
+### UI/UX Considerations
+- Clean, simple login/registration forms
+- Clear error messages for validation failures
+- Loading states during authentication
+- Responsive design for mobile devices
+- Accessibility compliance (WCAG 2.1)
+
+### API Design
+- **Endpoint**: `/api/auth/register`
+  - Method: POST
+  - Description: Register a new user account
+  - Request: `{ email: string, password: string, name: string }`
+  - Response: `{ success: boolean, message: string, user?: User }`
+
+- **Endpoint**: `/api/auth/login`
+  - Method: POST
+  - Description: Authenticate user and return JWT token
+  - Request: `{ email: string, password: string }`
+  - Response: `{ success: boolean, token?: string, user?: User }`
+
+- **Endpoint**: `/api/auth/logout`
+  - Method: POST
+  - Description: Invalidate user session
+  - Request: `{ token: string }`
+  - Response: `{ success: boolean, message: string }`
+
+### Database Changes
+- Table: `users`
+  - Changes: Create new table with fields: id, email, password_hash, name, created_at, updated_at
+  - Migration: Add user table migration script
+
+### Testing Strategy
+- Unit tests: Test authentication functions and utilities
+- Integration tests: Test API endpoints with database
+- E2E tests: Test complete authentication flows
+- Security tests: Test for common vulnerabilities (SQL injection, XSS)
+
+### Performance Considerations
+- Password hashing should not block request processing
+- JWT validation should be fast
+- Database queries should be optimized
+- Consider rate limiting for authentication endpoints
+
+### Security Considerations
+- Passwords must be hashed with bcrypt (minimum 12 rounds)
+- JWT tokens must be signed with secure secret
+- Implement rate limiting on authentication endpoints
+- Validate and sanitize all inputs
+- Use HTTPS for all authentication requests
+- Implement proper session timeout
+
+### Deployment Notes
+- Environment variables needed: JWT_SECRET, DATABASE_URL
+- Database migration required for users table
+- No feature flags needed (core functionality)
+- Consider gradual rollout for user registration
+
+### Rollback Plan
+- Remove authentication endpoints
+- Disable authentication middleware
+- Remove user registration UI
+- Database rollback script for users table
+- Communication plan for existing users
+
+---
+
+## Next Steps
+
+1. **Research Phase**: Complete security research and pattern analysis
+2. **Design Phase**: Finalize database schema and API design
+3. **Implementation Phase**: Begin with backend authentication logic
+4. **Testing Phase**: Implement comprehensive test suite
+5. **Integration Phase**: Connect frontend with authentication APIs
+6. **Deployment Phase**: Deploy with proper monitoring and rollback plan
+
+## Notes
+
+This is an example project demonstrating the proper structure and content for a feature development project. It includes all required sections and provides a realistic example of how to document a complex feature from idea to implementation.
