@@ -1,751 +1,529 @@
-# AI Coder Best Practices
+# AI Coding Best Practices
 
-## 🎯 Overview
+## Introduction
 
-This guide provides comprehensive best practices for AI coders working with document-driven architecture and project management systems. These practices are specifically designed to optimize AI development workflows and ensure high-quality, maintainable code.
+This guide provides comprehensive best practices for AI agents working with code in a document-driven architecture environment. These practices ensure high-quality, maintainable, and well-documented code that follows established patterns and standards.
 
-## 🏗️ Architecture Best Practices
+## Core Principles
 
-### 1. Document-First Development
-```typescript
-// ✅ GOOD: Start with documentation
-/**
- * @projectId user-authentication
- * @title User Authentication Service
- * @description Handles user login, registration, and session management
- * @version 1.0.0
- * @stage implementation
- */
-interface UserAuthService {
-  login(credentials: LoginCredentials): Promise<AuthResult>;
-  register(userData: UserData): Promise<RegistrationResult>;
-  logout(sessionId: string): Promise<void>;
-}
+### 1. Documentation-First Development
+- **Write Documentation First**: Document your approach before writing code
+- **Keep Documentation Current**: Update documentation with every code change
+- **Use Clear Examples**: Provide practical examples for all concepts
+- **Document Assumptions**: Clearly state any assumptions or constraints
 
-// ❌ BAD: Code without documentation
-class AuthService {
-  login(creds) { /* implementation */ }
-  register(data) { /* implementation */ }
-  logout(id) { /* implementation */ }
-}
+### 2. Project-Driven Development
+- **Always Work Within Projects**: Never make standalone changes
+- **Follow Project Plans**: Stick to defined phases and tasks
+- **Update Project Status**: Regular progress updates and status reports
+- **Validate Against Goals**: Ensure all changes align with project objectives
+
+### 3. Quality-First Approach
+- **Write Tests**: Comprehensive test coverage for all code
+- **Follow Standards**: Consistent coding practices and conventions
+- **Code Reviews**: Regular reviews and feedback
+- **Continuous Improvement**: Learn from each implementation
+
+## Code Organization
+
+### File Structure
+```
+/app/
+├── core/                     # Core system components
+│   ├── types/                # Type definitions
+│   │   ├── index.ts          # Main type exports
+│   │   └── project.ts        # Project-specific types
+│   ├── utils/                # Utility functions
+│   │   ├── project-detector.ts
+│   │   ├── project-manager.ts
+│   │   └── project-validator.ts
+│   └── providers/            # React providers
+│       └── project-provider.tsx
+├── components/               # UI components
+│   ├── project-status.tsx
+│   ├── project-status.module.scss
+│   └── projects-page.tsx
+└── modules/                  # Feature modules
+    └── project-management/
 ```
 
-### 2. Version-Controlled Documentation
-```yaml
-# ✅ GOOD: Proper version control
-project:
-  metadata:
-    id: user-authentication
-    title: "User Authentication Service"
-    version: "1.2.0"
-    stage: "implementation"
-    lastUpdated: "2025-01-15"
-    changes:
-      - "Added OAuth2 support"
-      - "Enhanced security validation"
-      - "Improved error handling"
+### Naming Conventions
+- **Files**: Use kebab-case for file names (`project-manager.ts`)
+- **Components**: Use PascalCase for React components (`ProjectStatus`)
+- **Functions**: Use camelCase for function names (`getProjectStatus`)
+- **Types**: Use PascalCase for type names (`ProjectMetadata`)
+- **Constants**: Use UPPER_SNAKE_CASE for constants (`DEFAULT_CONFIG`)
 
-# ❌ BAD: No version control
-project:
-  title: "User Authentication"
-  description: "Handles user auth"
+### Import Organization
+```typescript
+// 1. External libraries
+import React from 'react';
+import { promises as fs } from 'fs';
+
+// 2. Internal utilities
+import { ProjectManager } from '../utils/project-manager';
+import { ProjectValidator } from '../utils/project-validator';
+
+// 3. Types
+import { ProjectMetadata, ProjectContext } from '../types/project';
+
+// 4. Local imports
+import styles from './component.module.scss';
 ```
 
-### 3. Consistent Naming Conventions
+## TypeScript Best Practices
+
+### Type Definitions
 ```typescript
-// ✅ GOOD: Consistent naming
-interface ProjectManagementSystem {
-  // Project operations
-  createProject(spec: ProjectSpec): Promise<Project>;
-  updateProject(id: ProjectId, updates: ProjectUpdates): Promise<Project>;
-  deleteProject(id: ProjectId): Promise<void>;
-  
-  // Status operations
-  getProjectStatus(id: ProjectId): Promise<ProjectStatus>;
-  updateProjectStatus(id: ProjectId, status: ProjectStatus): Promise<void>;
-  
-  // Progress operations
-  trackProgress(id: ProjectId, progress: ProgressUpdate): Promise<void>;
-  getProgress(id: ProjectId): Promise<ProgressReport>;
+// Use interfaces for object shapes
+interface ProjectMetadata {
+  projectId: string;
+  title: string;
+  stage: ProjectStage;
+  createdDate: string;
+  lastUpdated: string;
+  priority: ProjectPriority;
+  tags: string[];
+  version: string;
 }
 
-// ❌ BAD: Inconsistent naming
-interface ProjectSystem {
-  create(spec: ProjectSpec): Promise<Project>;
-  updateProject(id: ProjectId, updates: ProjectUpdates): Promise<Project>;
-  remove(id: ProjectId): Promise<void>;
-  getStatus(id: ProjectId): Promise<ProjectStatus>;
-  setStatus(id: ProjectId, status: ProjectStatus): Promise<void>;
-  track(id: ProjectId, progress: ProgressUpdate): Promise<void>;
-  getProgress(id: ProjectId): Promise<ProgressReport>;
-}
-```
-
-## 🔧 Implementation Best Practices
-
-### 1. Type Safety and Validation
-```typescript
-// ✅ GOOD: Strong typing with validation
-interface ProjectSpec {
-  readonly id: ProjectId;
-  readonly title: string;
-  readonly description: string;
-  readonly priority: ProjectPriority;
-  readonly tags: readonly string[];
-  readonly metadata: ProjectMetadata;
-}
-
-type ProjectId = string & { readonly __brand: 'ProjectId' };
+// Use type unions for specific values
+type ProjectStage = 'idea' | 'plan' | 'design' | 'implementation' | 'testing' | 'review' | 'deployment' | 'completion';
 type ProjectPriority = 'low' | 'medium' | 'high' | 'critical';
 
-const createProjectId = (id: string): ProjectId => {
-  if (!isValidProjectId(id)) {
-    throw new Error(`Invalid project ID: ${id}`);
-  }
-  return id as ProjectId;
-};
-
-// ❌ BAD: Weak typing
-interface ProjectSpec {
-  id: string;
-  title: string;
-  description: string;
-  priority: string;
-  tags: string[];
-  metadata: any;
+// Use generics for reusable types
+interface ProjectOperation<T = any> {
+  type: string;
+  projectId: string;
+  data?: T;
+  timestamp: string;
+  agent: string;
 }
 ```
 
-### 2. Error Handling
+### Function Signatures
 ```typescript
-// ✅ GOOD: Comprehensive error handling
-class ProjectManagementError extends Error {
-  constructor(
-    message: string,
-    public readonly code: string,
-    public readonly context?: Record<string, unknown>
-  ) {
-    super(message);
-    this.name = 'ProjectManagementError';
-  }
+// Use explicit return types
+async function getProject(projectId: string): Promise<ProjectContextResult | null> {
+  // Implementation
 }
 
-class ProjectNotFoundError extends ProjectManagementError {
-  constructor(projectId: ProjectId) {
-    super(
-      `Project not found: ${projectId}`,
-      'PROJECT_NOT_FOUND',
-      { projectId }
-    );
-  }
+// Use optional parameters appropriately
+function updateProject(
+  projectId: string, 
+  updates: Partial<ProjectMetadata>,
+  agent: string = 'system'
+): Promise<ProjectOperationResult> {
+  // Implementation
 }
 
-// Usage with proper error handling
-async function getProject(id: ProjectId): Promise<Project> {
+// Use proper error handling
+async function validateProject(projectId: string): Promise<ProjectValidation> {
   try {
-    const project = await projectRepository.findById(id);
-    if (!project) {
-      throw new ProjectNotFoundError(id);
-    }
-    return project;
+    // Implementation
+    return validation;
+  } catch (error) {
+    console.error(`Error validating project ${projectId}:`, error);
+    throw new Error(`Failed to validate project: ${error.message}`);
+  }
+}
+```
+
+### Error Handling
+```typescript
+// Use specific error types
+class ProjectNotFoundError extends Error {
+  constructor(projectId: string) {
+    super(`Project not found: ${projectId}`);
+    this.name = 'ProjectNotFoundError';
+  }
+}
+
+// Handle errors gracefully
+async function loadProject(projectId: string): Promise<ProjectContextResult | null> {
+  try {
+    return await projectManager.getProject(projectId);
   } catch (error) {
     if (error instanceof ProjectNotFoundError) {
-      throw error; // Re-throw known errors
+      console.warn(`Project ${projectId} not found`);
+      return null;
     }
-    throw new ProjectManagementError(
-      'Failed to retrieve project',
-      'PROJECT_RETRIEVAL_FAILED',
-      { projectId: id, originalError: error }
-    );
-  }
-}
-
-// ❌ BAD: Poor error handling
-async function getProject(id: string): Promise<Project> {
-  const project = await projectRepository.findById(id);
-  return project; // No error handling
-}
-```
-
-### 3. Async/Await Patterns
-```typescript
-// ✅ GOOD: Proper async/await usage
-class ProjectService {
-  async createProject(spec: ProjectSpec): Promise<Project> {
-    // Validate input
-    await this.validateProjectSpec(spec);
-    
-    // Create project
-    const project = await this.projectRepository.create(spec);
-    
-    // Initialize project components
-    await Promise.all([
-      this.initializeProjectDocumentation(project.id),
-      this.setupProjectTracking(project.id),
-      this.configureProjectNotifications(project.id)
-    ]);
-    
-    // Log creation
-    await this.logProjectCreation(project);
-    
-    return project;
-  }
-  
-  private async validateProjectSpec(spec: ProjectSpec): Promise<void> {
-    const validationErrors = await this.validator.validate(spec);
-    if (validationErrors.length > 0) {
-      throw new ValidationError('Invalid project specification', validationErrors);
-    }
-  }
-}
-
-// ❌ BAD: Poor async patterns
-class ProjectService {
-  createProject(spec: ProjectSpec): Promise<Project> {
-    return this.projectRepository.create(spec)
-      .then(project => {
-        this.initializeProjectDocumentation(project.id);
-        this.setupProjectTracking(project.id);
-        this.configureProjectNotifications(project.id);
-        return project;
-      });
+    console.error(`Unexpected error loading project ${projectId}:`, error);
+    throw error;
   }
 }
 ```
 
-## 🧪 Testing Best Practices
+## React Best Practices
 
-### 1. Test Structure and Organization
+### Component Structure
 ```typescript
-// ✅ GOOD: Well-structured tests
-describe('ProjectManagementService', () => {
-  let service: ProjectManagementService;
-  let mockRepository: jest.Mocked<ProjectRepository>;
-  let mockValidator: jest.Mocked<ProjectValidator>;
+// Use functional components with hooks
+export function ProjectStatus({ className = '', showDetails = false }: ProjectStatusProps) {
+  const { isInitialized, isLoading, error, systemHealth } = useProjectSystem();
   
+  // Early returns for loading and error states
+  if (!isInitialized) {
+    return <LoadingState />;
+  }
+  
+  if (error) {
+    return <ErrorState error={error} />;
+  }
+  
+  return (
+    <div className={`project-status ${className}`}>
+      {/* Component content */}
+    </div>
+  );
+}
+```
+
+### Custom Hooks
+```typescript
+// Create reusable custom hooks
+export function useProject(projectId: string) {
+  const { getProject, getProjectStatus, getProjectHealth, validateProject } = useProjectSystem();
+  const [project, setProject] = useState<ProjectContextResult | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadProject = async () => {
+      if (!projectId) return;
+      
+      try {
+        setIsLoading(true);
+        setError(null);
+        
+        const projectData = await getProject(projectId);
+        setProject(projectData);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load project');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadProject();
+  }, [projectId, getProject]);
+
+  return { project, isLoading, error, refetch: loadProject };
+}
+```
+
+### Props and State Management
+```typescript
+// Use proper prop types
+interface ProjectCardProps {
+  project: ProjectContextResult;
+  className?: string;
+  onUpdate?: (projectId: string, updates: any) => void;
+  onDelete?: (projectId: string) => void;
+}
+
+// Use proper state management
+const [projects, setProjects] = useState<ProjectContextResult[]>([]);
+const [isLoading, setIsLoading] = useState(false);
+const [error, setError] = useState<string | null>(null);
+
+// Use useCallback for event handlers
+const handleUpdate = useCallback((projectId: string, updates: any) => {
+  setProjects(prev => prev.map(p => 
+    p.project.projectId === projectId 
+      ? { ...p, project: { ...p.project, ...updates } }
+      : p
+  ));
+}, []);
+```
+
+## Testing Best Practices
+
+### Unit Tests
+```typescript
+// Test individual functions
+describe('ProjectValidator', () => {
+  let validator: ProjectValidator;
+
   beforeEach(() => {
-    mockRepository = createMockRepository();
-    mockValidator = createMockValidator();
-    service = new ProjectManagementService(mockRepository, mockValidator);
+    validator = new ProjectValidator();
   });
-  
-  describe('createProject', () => {
-    it('should create a project with valid specification', async () => {
-      // Arrange
-      const spec: ProjectSpec = createValidProjectSpec();
-      const expectedProject = createExpectedProject();
-      mockValidator.validate.mockResolvedValue([]);
-      mockRepository.create.mockResolvedValue(expectedProject);
-      
-      // Act
-      const result = await service.createProject(spec);
-      
-      // Assert
-      expect(result).toEqual(expectedProject);
-      expect(mockValidator.validate).toHaveBeenCalledWith(spec);
-      expect(mockRepository.create).toHaveBeenCalledWith(spec);
-    });
-    
-    it('should throw ValidationError for invalid specification', async () => {
-      // Arrange
-      const spec: ProjectSpec = createInvalidProjectSpec();
-      const validationErrors = ['Invalid title', 'Missing description'];
-      mockValidator.validate.mockResolvedValue(validationErrors);
-      
-      // Act & Assert
-      await expect(service.createProject(spec))
-        .rejects
-        .toThrow(ValidationError);
-    });
-  });
-});
 
-// ❌ BAD: Poor test structure
-describe('ProjectService', () => {
-  it('should work', async () => {
-    const service = new ProjectService();
-    const result = await service.createProject({});
-    expect(result).toBeDefined();
-  });
-});
-```
-
-### 2. Mock and Stub Best Practices
-```typescript
-// ✅ GOOD: Proper mocking
-const createMockRepository = (): jest.Mocked<ProjectRepository> => ({
-  create: jest.fn(),
-  findById: jest.fn(),
-  update: jest.fn(),
-  delete: jest.fn(),
-  findAll: jest.fn(),
-});
-
-const createMockValidator = (): jest.Mocked<ProjectValidator> => ({
-  validate: jest.fn(),
-  validateId: jest.fn(),
-  validateTitle: jest.fn(),
-  validateDescription: jest.fn(),
-});
-
-// Test with specific mock behaviors
-it('should handle repository errors gracefully', async () => {
-  const mockRepository = createMockRepository();
-  mockRepository.create.mockRejectedValue(new Error('Database connection failed'));
-  
-  const service = new ProjectManagementService(mockRepository, createMockValidator());
-  
-  await expect(service.createProject(createValidProjectSpec()))
-    .rejects
-    .toThrow('Failed to create project');
-});
-
-// ❌ BAD: Poor mocking
-it('should create project', async () => {
-  const service = new ProjectService();
-  // No mocking, relies on real dependencies
-  const result = await service.createProject({});
-  expect(result).toBeDefined();
-});
-```
-
-## 📊 Performance Best Practices
-
-### 1. Efficient Data Processing
-```typescript
-// ✅ GOOD: Efficient batch processing
-class ProjectBatchProcessor {
-  async processProjects(projectIds: ProjectId[]): Promise<ProcessResult[]> {
-    // Process in batches to avoid overwhelming the system
-    const batchSize = 10;
-    const results: ProcessResult[] = [];
-    
-    for (let i = 0; i < projectIds.length; i += batchSize) {
-      const batch = projectIds.slice(i, i + batchSize);
-      const batchResults = await Promise.all(
-        batch.map(id => this.processProject(id))
-      );
-      results.push(...batchResults);
-      
-      // Add delay between batches to prevent rate limiting
-      if (i + batchSize < projectIds.length) {
-        await this.delay(100);
-      }
-    }
-    
-    return results;
-  }
-  
-  private async processProject(id: ProjectId): Promise<ProcessResult> {
-    // Efficient processing logic
-    const project = await this.projectRepository.findById(id);
-    if (!project) {
-      return { id, status: 'not_found' };
-    }
-    
-    return {
-      id,
-      status: 'processed',
-      result: await this.performProcessing(project)
+  it('should validate project metadata correctly', () => {
+    const metadata: ProjectMetadata = {
+      projectId: 'test-project',
+      title: 'Test Project',
+      stage: 'plan',
+      createdDate: '2025-01-15',
+      lastUpdated: '2025-01-15',
+      priority: 'medium',
+      tags: ['test'],
+      version: 'v1.0.0'
     };
-  }
-}
 
-// ❌ BAD: Inefficient processing
-class ProjectProcessor {
-  async processProjects(projectIds: ProjectId[]): Promise<ProcessResult[]> {
-    // Process all at once - can overwhelm the system
-    return Promise.all(
-      projectIds.map(id => this.processProject(id))
+    const result = validator.validateProjectMetadata(metadata);
+    
+    expect(result.isValid).toBe(true);
+    expect(result.errors).toHaveLength(0);
+  });
+
+  it('should reject invalid project metadata', () => {
+    const metadata = {
+      projectId: '', // Invalid: empty project ID
+      title: 'Test Project',
+      // Missing required fields
+    } as ProjectMetadata;
+
+    const result = validator.validateProjectMetadata(metadata);
+    
+    expect(result.isValid).toBe(false);
+    expect(result.errors.length).toBeGreaterThan(0);
+  });
+});
+```
+
+### Integration Tests
+```typescript
+// Test component integration
+describe('ProjectStatus Component', () => {
+  it('should render project status correctly', () => {
+    const mockProject = createMockProject();
+    
+    render(
+      <ProjectSystemProvider>
+        <ProjectStatus showDetails={true} />
+      </ProjectSystemProvider>
     );
-  }
-}
-```
 
-### 2. Caching Strategies
-```typescript
-// ✅ GOOD: Intelligent caching
-class CachedProjectService {
-  private cache = new Map<ProjectId, CachedProject>();
-  private readonly CACHE_TTL = 5 * 60 * 1000; // 5 minutes
-  
-  async getProject(id: ProjectId): Promise<Project> {
-    const cached = this.cache.get(id);
-    
-    if (cached && !this.isExpired(cached)) {
-      return cached.project;
-    }
-    
-    const project = await this.projectRepository.findById(id);
-    if (project) {
-      this.cache.set(id, {
-        project,
-        timestamp: Date.now()
-      });
-    }
-    
-    return project;
-  }
-  
-  private isExpired(cached: CachedProject): boolean {
-    return Date.now() - cached.timestamp > this.CACHE_TTL;
-  }
-  
-  invalidateCache(id: ProjectId): void {
-    this.cache.delete(id);
-  }
-}
+    expect(screen.getByText('Project System:')).toBeInTheDocument();
+    expect(screen.getByText('Active')).toBeInTheDocument();
+  });
 
-// ❌ BAD: No caching
-class ProjectService {
-  async getProject(id: ProjectId): Promise<Project> {
-    // Always hits the database
-    return this.projectRepository.findById(id);
-  }
-}
-```
-
-## 🔒 Security Best Practices
-
-### 1. Input Validation and Sanitization
-```typescript
-// ✅ GOOD: Comprehensive input validation
-class ProjectInputValidator {
-  validateProjectSpec(spec: unknown): ProjectSpec {
-    if (!this.isValidProjectSpec(spec)) {
-      throw new ValidationError('Invalid project specification');
-    }
-    
-    return {
-      id: this.sanitizeProjectId(spec.id),
-      title: this.sanitizeTitle(spec.title),
-      description: this.sanitizeDescription(spec.description),
-      priority: this.validatePriority(spec.priority),
-      tags: this.sanitizeTags(spec.tags),
-      metadata: this.sanitizeMetadata(spec.metadata)
-    };
-  }
-  
-  private sanitizeTitle(title: string): string {
-    // Remove potentially dangerous characters
-    return title
-      .replace(/[<>\"'&]/g, '')
-      .trim()
-      .substring(0, 200); // Limit length
-  }
-  
-  private sanitizeDescription(description: string): string {
-    // Sanitize HTML and limit length
-    return this.stripHtml(description)
-      .trim()
-      .substring(0, 2000);
-  }
-  
-  private stripHtml(html: string): string {
-    return html.replace(/<[^>]*>/g, '');
-  }
-}
-
-// ❌ BAD: No input validation
-class ProjectService {
-  createProject(spec: any): Promise<Project> {
-    // Direct use without validation
-    return this.projectRepository.create(spec);
-  }
-}
-```
-
-### 2. Authentication and Authorization
-```typescript
-// ✅ GOOD: Proper authentication and authorization
-class SecureProjectService {
-  async createProject(
-    spec: ProjectSpec,
-    user: AuthenticatedUser
-  ): Promise<Project> {
-    // Verify user authentication
-    if (!user.isAuthenticated) {
-      throw new AuthenticationError('User not authenticated');
-    }
-    
-    // Check authorization
-    if (!await this.hasPermission(user, 'project:create')) {
-      throw new AuthorizationError('Insufficient permissions');
-    }
-    
-    // Validate ownership or access
-    if (spec.ownerId && spec.ownerId !== user.id) {
-      if (!await this.hasPermission(user, 'project:create:any')) {
-        throw new AuthorizationError('Cannot create project for other users');
-      }
-    }
-    
-    // Create project with proper ownership
-    const projectSpec = {
-      ...spec,
-      ownerId: spec.ownerId || user.id,
-      createdBy: user.id,
-      createdAt: new Date()
-    };
-    
-    return this.projectRepository.create(projectSpec);
-  }
-  
-  private async hasPermission(
-    user: AuthenticatedUser,
-    permission: string
-  ): Promise<boolean> {
-    return this.permissionService.hasPermission(user.id, permission);
-  }
-}
-
-// ❌ BAD: No security checks
-class ProjectService {
-  createProject(spec: ProjectSpec): Promise<Project> {
-    // No authentication or authorization checks
-    return this.projectRepository.create(spec);
-  }
-}
-```
-
-## 📝 Documentation Best Practices
-
-### 1. Code Documentation
-```typescript
-// ✅ GOOD: Comprehensive code documentation
-/**
- * Manages project lifecycle operations including creation, updates, and tracking.
- * 
- * @projectId project-management-service
- * @version 1.2.0
- * @stage implementation
- * 
- * @example
- * ```typescript
- * const service = new ProjectManagementService(repository, validator);
- * const project = await service.createProject({
- *   id: 'my-project',
- *   title: 'My Project',
- *   description: 'A sample project',
- *   priority: 'high'
- * });
- * ```
- */
-class ProjectManagementService {
-  /**
-   * Creates a new project with the specified configuration.
-   * 
-   * @param spec - Project specification containing all required project data
-   * @param options - Optional configuration for project creation
-   * @returns Promise resolving to the created project
-   * 
-   * @throws {ValidationError} When project specification is invalid
-   * @throws {ProjectManagementError} When project creation fails
-   * 
-   * @example
-   * ```typescript
-   * const project = await service.createProject({
-   *   id: 'user-auth',
-   *   title: 'User Authentication',
-   *   description: 'Handles user login and registration',
-   *   priority: 'critical'
-   * });
-   * ```
-   */
-  async createProject(
-    spec: ProjectSpec,
-    options?: ProjectCreationOptions
-  ): Promise<Project> {
-    // Implementation details...
-  }
-}
-
-// ❌ BAD: No documentation
-class ProjectService {
-  createProject(spec: ProjectSpec): Promise<Project> {
-    // No documentation
-    return this.repository.create(spec);
-  }
-}
-```
-
-### 2. API Documentation
-```typescript
-// ✅ GOOD: Comprehensive API documentation
-/**
- * @api {post} /api/projects Create Project
- * @apiName CreateProject
- * @apiGroup Projects
- * @apiVersion 1.0.0
- * 
- * @apiDescription Creates a new project with the specified configuration.
- * The project will be initialized with default settings and can be
- * customized after creation.
- * 
- * @apiParam {String} id Project unique identifier
- * @apiParam {String} title Project title (max 200 characters)
- * @apiParam {String} description Project description (max 2000 characters)
- * @apiParam {String="low","medium","high","critical"} priority Project priority
- * @apiParam {String[]} [tags] Optional project tags
- * @apiParam {Object} [metadata] Optional project metadata
- * 
- * @apiParamExample {json} Request Body:
- * {
- *   "id": "user-authentication",
- *   "title": "User Authentication Service",
- *   "description": "Handles user login, registration, and session management",
- *   "priority": "critical",
- *   "tags": ["authentication", "security", "user-management"],
- *   "metadata": {
- *     "category": "backend",
- *     "team": "platform"
- *   }
- * }
- * 
- * @apiSuccess {String} id Project identifier
- * @apiSuccess {String} title Project title
- * @apiSuccess {String} description Project description
- * @apiSuccess {String} priority Project priority
- * @apiSuccess {String[]} tags Project tags
- * @apiSuccess {Object} metadata Project metadata
- * @apiSuccess {String} status Project status
- * @apiSuccess {Date} createdAt Creation timestamp
- * @apiSuccess {Date} updatedAt Last update timestamp
- * 
- * @apiSuccessExample {json} Success Response:
- * {
- *   "id": "user-authentication",
- *   "title": "User Authentication Service",
- *   "description": "Handles user login, registration, and session management",
- *   "priority": "critical",
- *   "tags": ["authentication", "security", "user-management"],
- *   "metadata": {
- *     "category": "backend",
- *     "team": "platform"
- *   },
- *   "status": "active",
- *   "createdAt": "2025-01-15T10:30:00Z",
- *   "updatedAt": "2025-01-15T10:30:00Z"
- * }
- * 
- * @apiError {Object} ValidationError Invalid project specification
- * @apiError {Object} ProjectManagementError Project creation failed
- * 
- * @apiErrorExample {json} Validation Error:
- * {
- *   "error": "ValidationError",
- *   "message": "Invalid project specification",
- *   "details": [
- *     "Title is required",
- *     "Description must be less than 2000 characters"
- *   ]
- * }
- */
-```
-
-## 🎯 AI-Specific Best Practices
-
-### 1. AI-Optimized Code Structure
-```typescript
-// ✅ GOOD: AI-optimized structure
-/**
- * @ai-context This service manages project lifecycle operations
- * @ai-patterns Uses repository pattern for data access
- * @ai-dependencies Requires ProjectRepository and ProjectValidator
- * @ai-exceptions Throws ValidationError and ProjectManagementError
- */
-class ProjectManagementService {
-  // Clear interface definitions for AI understanding
-  private readonly repository: ProjectRepository;
-  private readonly validator: ProjectValidator;
-  private readonly logger: Logger;
-  
-  constructor(
-    repository: ProjectRepository,
-    validator: ProjectValidator,
-    logger: Logger
-  ) {
-    this.repository = repository;
-    this.validator = validator;
-    this.logger = logger;
-  }
-  
-  // Clear method signatures with comprehensive types
-  async createProject(spec: ProjectSpec): Promise<Project> {
-    // Step-by-step implementation with clear logic flow
-    await this.validateSpecification(spec);
-    const project = await this.repository.create(spec);
-    await this.initializeProject(project);
-    await this.logProjectCreation(project);
-    return project;
-  }
-}
-
-// ❌ BAD: AI-unfriendly structure
-class ProjectService {
-  constructor(private repo: any, private val: any, private log: any) {}
-  
-  async create(spec: any): Promise<any> {
-    // Unclear implementation
-    return this.repo.create(spec);
-  }
-}
-```
-
-### 2. Consistent Error Handling
-```typescript
-// ✅ GOOD: Consistent error handling for AI
-class ProjectErrorHandler {
-  static handleError(error: unknown, context: string): never {
-    if (error instanceof ValidationError) {
-      throw new ProjectManagementError(
-        `Validation failed in ${context}: ${error.message}`,
-        'VALIDATION_ERROR',
-        { context, originalError: error }
-      );
-    }
-    
-    if (error instanceof DatabaseError) {
-      throw new ProjectManagementError(
-        `Database error in ${context}: ${error.message}`,
-        'DATABASE_ERROR',
-        { context, originalError: error }
-      );
-    }
-    
-    throw new ProjectManagementError(
-      `Unexpected error in ${context}: ${String(error)}`,
-      'UNKNOWN_ERROR',
-      { context, originalError: error }
+  it('should handle loading state', () => {
+    render(
+      <ProjectSystemProvider>
+        <ProjectStatus />
+      </ProjectSystemProvider>
     );
+
+    expect(screen.getByText('Initializing...')).toBeInTheDocument();
+  });
+});
+```
+
+## Performance Best Practices
+
+### Code Splitting
+```typescript
+// Use dynamic imports for large components
+const ProjectsPage = dynamic(
+  async () => (await import('./projects-page')).ProjectsPage,
+  {
+    loading: () => <Loading noLogo />,
   }
+);
+
+// Lazy load heavy utilities
+const loadProjectManager = async () => {
+  const { ProjectManager } = await import('../utils/project-manager');
+  return new ProjectManager(config);
+};
+```
+
+### Memoization
+```typescript
+// Use React.memo for expensive components
+export const ProjectCard = React.memo<ProjectCardProps>(({ project, className }) => {
+  // Component implementation
+});
+
+// Use useMemo for expensive calculations
+const expensiveCalculation = useMemo(() => {
+  return projects.reduce((acc, project) => {
+    // Expensive calculation
+    return acc + project.health.score;
+  }, 0);
+}, [projects]);
+
+// Use useCallback for event handlers
+const handleProjectUpdate = useCallback((projectId: string, updates: any) => {
+  // Handler implementation
+}, []);
+```
+
+### Bundle Optimization
+```typescript
+// Use tree shaking friendly imports
+import { ProjectManager } from '../utils/project-manager';
+// Instead of
+import * as ProjectUtils from '../utils/project-manager';
+
+// Use proper exports
+export { ProjectManager } from './project-manager';
+export { ProjectValidator } from './project-validator';
+export type { ProjectMetadata, ProjectContext } from '../types/project';
+```
+
+## Security Best Practices
+
+### Input Validation
+```typescript
+// Validate all inputs
+function validateProjectId(projectId: string): boolean {
+  if (!projectId || typeof projectId !== 'string') {
+    return false;
+  }
+  
+  // Check for valid format
+  if (!/^[a-z0-9-]+$/.test(projectId)) {
+    return false;
+  }
+  
+  return true;
 }
 
-// Usage in service methods
-async createProject(spec: ProjectSpec): Promise<Project> {
-  try {
-    return await this.performProjectCreation(spec);
-  } catch (error) {
-    ProjectErrorHandler.handleError(error, 'createProject');
+// Sanitize user inputs
+function sanitizeProjectTitle(title: string): string {
+  return title
+    .trim()
+    .replace(/[<>]/g, '') // Remove potential HTML tags
+    .substring(0, 100); // Limit length
+}
+```
+
+### Error Handling
+```typescript
+// Don't expose sensitive information in errors
+try {
+  await loadProject(projectId);
+} catch (error) {
+  // Log detailed error for debugging
+  console.error('Project loading failed:', error);
+  
+  // Return generic error to user
+  throw new Error('Failed to load project');
+}
+```
+
+## Documentation Best Practices
+
+### Code Comments
+```typescript
+/**
+ * Loads project context including metadata, progress, and validation
+ * @param projectId - Unique project identifier
+ * @returns Promise resolving to project context or null if not found
+ * @throws {ProjectNotFoundError} When project doesn't exist
+ * @throws {ValidationError} When project validation fails
+ */
+async function loadProjectContext(projectId: string): Promise<ProjectContextResult | null> {
+  // Implementation
+}
+```
+
+### README Files
+```markdown
+# Project Manager
+
+A comprehensive project management system for document-driven development.
+
+## Features
+
+- Project detection and context loading
+- Validation and compliance checking
+- User interface for project management
+- Integration with development workflow
+
+## Usage
+
+```typescript
+import { ProjectManager } from './project-manager';
+
+const manager = new ProjectManager(config);
+await manager.initialize();
+
+const project = await manager.getProject('my-project');
+```
+
+## API Reference
+
+See [API Documentation](./api.md) for detailed API reference.
+```
+
+## Common Patterns
+
+### Provider Pattern
+```typescript
+// Create context provider
+const ProjectSystemContext = createContext<ProjectSystemContextType | null>(null);
+
+export function ProjectSystemProvider({ children, config }: ProjectSystemProviderProps) {
+  const [state, setState] = useState(initialState);
+  
+  const value = useMemo(() => ({
+    ...state,
+    // Actions
+  }), [state]);
+  
+  return (
+    <ProjectSystemContext.Provider value={value}>
+      {children}
+    </ProjectSystemContext.Provider>
+  );
+}
+```
+
+### Hook Pattern
+```typescript
+// Create custom hook
+export function useProjectSystem(): ProjectSystemContextType {
+  const context = useContext(ProjectSystemContext);
+  
+  if (!context) {
+    throw new Error('useProjectSystem must be used within a ProjectSystemProvider');
+  }
+  
+  return context;
+}
+```
+
+### Utility Pattern
+```typescript
+// Create utility class
+export class ProjectValidator {
+  private schema: any;
+  
+  constructor() {
+    this.schema = this.loadSchema();
+  }
+  
+  validateProject(metadata: ProjectMetadata, context: ProjectContext): ProjectValidation {
+    // Implementation
+  }
+  
+  private loadSchema(): any {
+    // Implementation
   }
 }
 ```
 
-## 📚 Related Documentation
+## Getting Started
 
-- [Project Management Best Practices](./project-management/README.md)
-- [Code Quality Guidelines](./code-quality/README.md)
-- [Testing Strategies](./testing/README.md)
-- [Deployment Practices](./deployment/README.md)
-- [Maintenance Guidelines](./maintenance/README.md)
+1. **Read This Guide**: Understand the coding best practices
+2. **Set Up Your Environment**: Configure your development environment
+3. **Start with Examples**: Look at existing code examples
+4. **Follow Patterns**: Use established patterns and practices
+5. **Write Tests**: Ensure comprehensive test coverage
+6. **Document Everything**: Keep documentation current and comprehensive
 
-## 🔗 External Resources
+## Next Steps
 
-- [TypeScript Best Practices](https://typescript-eslint.io/rules/)
-- [Node.js Best Practices](https://github.com/goldbergyoni/nodebestpractices)
-- [React Best Practices](https://react.dev/learn)
-- [Testing Best Practices](https://testingjavascript.com/)
+- [AI Project Management Practices](project-management/README.md)
+- [AI Code Quality Practices](code-quality/README.md)
+- [AI Testing Practices](testing/README.md)
+- [AI Deployment Practices](deployment/README.md)
+- [AI Maintenance Practices](maintenance/README.md)
 
 ---
 
-*This documentation is part of the NextChat AI Coder Documentation system and follows document-driven architecture principles.*
+*This guide is part of the AI Coder Documentation system and follows document-driven architecture principles.*

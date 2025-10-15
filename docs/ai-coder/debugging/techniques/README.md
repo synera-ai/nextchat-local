@@ -1,1188 +1,756 @@
-# AI Coder Debugging Techniques
+# AI Debugging Techniques
 
-## 🎯 Overview
+## Introduction
 
-This guide provides comprehensive debugging techniques specifically designed for AI coders working with document-driven architecture and project management systems. These techniques are optimized for AI understanding and implementation.
+This guide provides comprehensive debugging techniques specifically designed for AI agents working with document-driven architecture and project management systems. These techniques help identify, diagnose, and resolve issues efficiently while maintaining system integrity.
 
-## 🔍 Debugging Methodology
+## Core Debugging Principles
 
-### 1. Systematic Debugging Approach
+### 1. Systematic Approach
+- **Start with Documentation**: Always check project documentation first
+- **Follow the Data Flow**: Trace data through the system
+- **Isolate the Problem**: Narrow down the scope of the issue
+- **Document Everything**: Record all findings and solutions
 
+### 2. Project-Aware Debugging
+- **Check Project Context**: Ensure you understand the project scope
+- **Validate Against Goals**: Verify the issue doesn't conflict with project objectives
+- **Update Project Status**: Document debugging progress in project files
+- **Follow Project Constraints**: Respect any project-specific limitations
+
+### 3. Version-Controlled Debugging
+- **Track Changes**: Use version control to understand what changed
+- **Create Debug Branches**: Use separate branches for debugging work
+- **Commit Debugging Progress**: Regular commits with clear messages
+- **Document Solutions**: Update documentation with debugging insights
+
+## Common Debugging Scenarios
+
+### Project System Issues
+
+#### Issue: Project Not Loading
 ```typescript
-/**
- * @debugging-method systematic-approach
- * @description Step-by-step debugging methodology for AI coders
- * @version 1.0.0
- */
-class SystematicDebugger {
-  /**
-   * Step 1: Reproduce the Issue
-   */
-  async reproduceIssue(issue: BugReport): Promise<ReproductionResult> {
-    const steps = [
-      '1. Identify the exact conditions that trigger the bug',
-      '2. Create a minimal test case that reproduces the issue',
-      '3. Document the expected vs actual behavior',
-      '4. Capture all relevant context (logs, state, environment)'
-    ];
+// Debug: Project not loading
+async function debugProjectLoading(projectId: string) {
+  console.log(`Debugging project loading for: ${projectId}`);
+  
+  try {
+    // Step 1: Check if project file exists
+    const projectManager = new ProjectManager(config);
+    const projectFilePath = await projectManager.getProjectFilePath(projectId);
     
-    return {
-      reproducible: true,
-      testCase: await this.createMinimalTestCase(issue),
-      context: await this.captureContext(issue)
-    };
-  }
-
-  /**
-   * Step 2: Isolate the Problem
-   */
-  async isolateProblem(issue: BugReport): Promise<IsolationResult> {
-    const isolationSteps = [
-      '1. Use binary search to narrow down the problematic code',
-      '2. Comment out sections of code to identify the root cause',
-      '3. Use logging to trace execution flow',
-      '4. Check for race conditions and timing issues'
-    ];
+    if (!projectFilePath) {
+      console.error(`Project file not found for: ${projectId}`);
+      return { error: 'Project file not found', step: 'file-existence' };
+    }
     
-    return {
-      isolated: true,
-      rootCause: await this.identifyRootCause(issue),
-      affectedComponents: await this.identifyAffectedComponents(issue)
-    };
-  }
-
-  /**
-   * Step 3: Analyze the Root Cause
-   */
-  async analyzeRootCause(issue: BugReport): Promise<AnalysisResult> {
-    const analysisSteps = [
-      '1. Examine the code logic and data flow',
-      '2. Check for type mismatches and validation errors',
-      '3. Verify external dependencies and API responses',
-      '4. Analyze performance bottlenecks and memory issues'
-    ];
+    console.log(`Project file found at: ${projectFilePath}`);
     
-    return {
-      rootCause: await this.determineRootCause(issue),
-      contributingFactors: await this.identifyContributingFactors(issue),
-      impact: await this.assessImpact(issue)
-    };
-  }
-
-  /**
-   * Step 4: Implement Fix
-   */
-  async implementFix(issue: BugReport, analysis: AnalysisResult): Promise<FixResult> {
-    const fixSteps = [
-      '1. Design a minimal fix that addresses the root cause',
-      '2. Implement the fix with proper error handling',
-      '3. Add comprehensive tests to prevent regression',
-      '4. Update documentation to reflect the changes'
-    ];
+    // Step 2: Check file permissions
+    try {
+      await fs.access(projectFilePath, fs.constants.R_OK);
+      console.log('File is readable');
+    } catch (error) {
+      console.error('File permission error:', error);
+      return { error: 'File not readable', step: 'permissions' };
+    }
     
-    return {
-      fix: await this.createFix(issue, analysis),
-      tests: await this.createTests(issue, analysis),
-      documentation: await this.updateDocumentation(issue, analysis)
-    };
-  }
-
-  /**
-   * Step 5: Verify and Validate
-   */
-  async verifyFix(issue: BugReport, fix: FixResult): Promise<VerificationResult> {
-    const verificationSteps = [
-      '1. Run the original test case to confirm the fix',
-      '2. Execute the full test suite to ensure no regressions',
-      '3. Perform integration testing with related components',
-      '4. Monitor performance and behavior in production'
-    ];
+    // Step 3: Check file content
+    const content = await fs.readFile(projectFilePath, 'utf-8');
+    console.log(`File size: ${content.length} characters`);
     
-    return {
-      verified: true,
-      testResults: await this.runTests(fix),
-      performanceImpact: await this.assessPerformanceImpact(fix)
-    };
+    // Step 4: Validate YAML frontmatter
+    const yamlMatch = content.match(/^---\n([\s\S]*?)\n---/);
+    if (!yamlMatch) {
+      console.error('No YAML frontmatter found');
+      return { error: 'Invalid YAML frontmatter', step: 'yaml-parsing' };
+    }
+    
+    // Step 5: Parse YAML
+    try {
+      const metadata = yaml.load(yamlMatch[1]);
+      console.log('YAML parsed successfully:', metadata);
+    } catch (error) {
+      console.error('YAML parsing error:', error);
+      return { error: 'YAML parsing failed', step: 'yaml-parsing' };
+    }
+    
+    // Step 6: Try to load project
+    const project = await projectManager.getProject(projectId);
+    if (project) {
+      console.log('Project loaded successfully');
+      return { success: true, project };
+    } else {
+      console.error('Project loading returned null');
+      return { error: 'Project loading failed', step: 'project-loading' };
+    }
+    
+  } catch (error) {
+    console.error('Unexpected error during debugging:', error);
+    return { error: error.message, step: 'unexpected' };
   }
 }
 ```
 
-### 2. AI-Optimized Debugging Tools
-
+#### Issue: Project Validation Failing
 ```typescript
-/**
- * @debugging-tool ai-debugger
- * @description AI-optimized debugging tools and utilities
- * @version 1.0.0
- */
-class AIDebugger {
-  private readonly logger: AILogger;
-  private readonly tracer: ExecutionTracer;
-  private readonly analyzer: CodeAnalyzer;
+// Debug: Project validation issues
+async function debugProjectValidation(projectId: string) {
+  console.log(`Debugging project validation for: ${projectId}`);
+  
+  try {
+    const projectManager = new ProjectManager(config);
+    const project = await projectManager.getProject(projectId);
+    
+    if (!project) {
+      return { error: 'Project not found' };
+    }
+    
+    const validator = new ProjectValidator();
+    
+    // Step 1: Validate metadata
+    console.log('Validating project metadata...');
+    const metadataValidation = validator.validateProjectMetadata(project.project);
+    console.log('Metadata validation result:', metadataValidation);
+    
+    if (!metadataValidation.isValid) {
+      console.log('Metadata validation errors:', metadataValidation.errors);
+      console.log('Metadata validation warnings:', metadataValidation.warnings);
+    }
+    
+    // Step 2: Validate context
+    console.log('Validating project context...');
+    const contextValidation = validator.validateProjectContext(project.context);
+    console.log('Context validation result:', contextValidation);
+    
+    if (!contextValidation.isValid) {
+      console.log('Context validation errors:', contextValidation.errors);
+      console.log('Context validation warnings:', contextValidation.warnings);
+    }
+    
+    // Step 3: Validate file content
+    console.log('Validating project file content...');
+    const projectFilePath = await projectManager.getProjectFilePath(projectId);
+    const content = await fs.readFile(projectFilePath, 'utf-8');
+    const fileValidation = validator.validateProjectFile(content);
+    console.log('File validation result:', fileValidation);
+    
+    // Step 4: Generate comprehensive report
+    const report = {
+      projectId,
+      metadataValidation,
+      contextValidation,
+      fileValidation,
+      overallValid: metadataValidation.isValid && contextValidation.isValid && fileValidation.isValid,
+      totalErrors: metadataValidation.errors.length + contextValidation.errors.length + fileValidation.errors.length,
+      totalWarnings: metadataValidation.warnings.length + contextValidation.warnings.length + fileValidation.warnings.length
+    };
+    
+    console.log('Validation report:', report);
+    return report;
+    
+  } catch (error) {
+    console.error('Validation debugging failed:', error);
+    return { error: error.message };
+  }
+}
+```
 
-  constructor(
-    logger: AILogger,
-    tracer: ExecutionTracer,
-    analyzer: CodeAnalyzer
-  ) {
-    this.logger = logger;
-    this.tracer = tracer;
-    this.analyzer = analyzer;
+### Component Issues
+
+#### Issue: React Component Not Rendering
+```typescript
+// Debug: React component rendering issues
+function debugComponentRendering(Component: React.ComponentType, props: any) {
+  console.log('Debugging component rendering...');
+  console.log('Component:', Component.name);
+  console.log('Props:', props);
+  
+  // Step 1: Check if component is defined
+  if (!Component) {
+    console.error('Component is undefined');
+    return { error: 'Component undefined' };
+  }
+  
+  // Step 2: Check props
+  if (!props) {
+    console.warn('Props are undefined');
+  }
+  
+  // Step 3: Try to render component
+  try {
+    const element = React.createElement(Component, props);
+    console.log('Component element created successfully');
+    
+    // Step 4: Check for common issues
+    if (props.className && typeof props.className !== 'string') {
+      console.warn('className prop is not a string:', props.className);
+    }
+    
+    if (props.children && !Array.isArray(props.children) && typeof props.children !== 'string') {
+      console.warn('children prop has unexpected type:', typeof props.children);
+    }
+    
+    return { success: true, element };
+    
+  } catch (error) {
+    console.error('Component rendering error:', error);
+    return { error: error.message };
+  }
+}
+
+// Usage in component
+export function ProjectStatus({ className = '', showDetails = false }: ProjectStatusProps) {
+  // Debug component rendering
+  const debugResult = debugComponentRendering(ProjectStatus, { className, showDetails });
+  if (debugResult.error) {
+    console.error('Component rendering debug failed:', debugResult.error);
+  }
+  
+  // Rest of component implementation...
+}
+```
+
+#### Issue: Hook Not Working
+```typescript
+// Debug: Custom hook issues
+function debugCustomHook(hookName: string, hookFunction: Function, ...args: any[]) {
+  console.log(`Debugging hook: ${hookName}`);
+  console.log('Hook function:', hookFunction.name);
+  console.log('Arguments:', args);
+  
+  try {
+    // Step 1: Check if hook is a function
+    if (typeof hookFunction !== 'function') {
+      console.error('Hook is not a function');
+      return { error: 'Hook not a function' };
+    }
+    
+    // Step 2: Check if we're in a React component
+    if (typeof window !== 'undefined' && !document.querySelector('[data-reactroot]')) {
+      console.warn('Not in a React environment');
+    }
+    
+    // Step 3: Try to call the hook
+    const result = hookFunction(...args);
+    console.log('Hook result:', result);
+    
+    // Step 4: Validate result
+    if (result === undefined) {
+      console.warn('Hook returned undefined');
+    }
+    
+    if (result && typeof result === 'object') {
+      console.log('Hook returned object with keys:', Object.keys(result));
+    }
+    
+    return { success: true, result };
+    
+  } catch (error) {
+    console.error('Hook debugging error:', error);
+    return { error: error.message };
+  }
+}
+
+// Usage in hook
+export function useProject(projectId: string) {
+  // Debug hook usage
+  const debugResult = debugCustomHook('useProject', useProject, projectId);
+  if (debugResult.error) {
+    console.error('Hook debug failed:', debugResult.error);
+  }
+  
+  // Rest of hook implementation...
+}
+```
+
+### Performance Issues
+
+#### Issue: Slow Project Loading
+```typescript
+// Debug: Performance issues
+async function debugPerformance(operation: string, operationFunction: Function, ...args: any[]) {
+  console.log(`Debugging performance for: ${operation}`);
+  
+  const startTime = performance.now();
+  const startMemory = process.memoryUsage();
+  
+  try {
+    // Step 1: Run the operation
+    const result = await operationFunction(...args);
+    
+    const endTime = performance.now();
+    const endMemory = process.memoryUsage();
+    
+    // Step 2: Calculate metrics
+    const duration = endTime - startTime;
+    const memoryDelta = {
+      rss: endMemory.rss - startMemory.rss,
+      heapUsed: endMemory.heapUsed - startMemory.heapUsed,
+      heapTotal: endMemory.heapTotal - startMemory.heapTotal,
+      external: endMemory.external - startMemory.external
+    };
+    
+    // Step 3: Analyze performance
+    const performanceReport = {
+      operation,
+      duration: `${duration.toFixed(2)}ms`,
+      memoryDelta,
+      isSlow: duration > 1000, // Consider slow if > 1 second
+      memoryLeak: memoryDelta.heapUsed > 10 * 1024 * 1024 // Consider leak if > 10MB
+    };
+    
+    console.log('Performance report:', performanceReport);
+    
+    if (performanceReport.isSlow) {
+      console.warn(`Operation ${operation} is slow: ${duration.toFixed(2)}ms`);
+    }
+    
+    if (performanceReport.memoryLeak) {
+      console.warn(`Potential memory leak in ${operation}: ${(memoryDelta.heapUsed / 1024 / 1024).toFixed(2)}MB`);
+    }
+    
+    return { success: true, result, performance: performanceReport };
+    
+  } catch (error) {
+    const endTime = performance.now();
+    const duration = endTime - startTime;
+    
+    console.error(`Performance debugging failed for ${operation}:`, error);
+    console.log(`Failed after: ${duration.toFixed(2)}ms`);
+    
+    return { error: error.message, duration: `${duration.toFixed(2)}ms` };
+  }
+}
+
+// Usage
+async function loadProjectsWithDebug() {
+  return debugPerformance(
+    'loadProjects',
+    async () => {
+      const manager = new ProjectManager(config);
+      return await manager.getActiveProjects();
+    }
+  );
+}
+```
+
+### System Integration Issues
+
+#### Issue: Provider Not Working
+```typescript
+// Debug: React provider issues
+function debugProvider(Provider: React.ComponentType, context: React.Context<any>) {
+  console.log('Debugging provider...');
+  console.log('Provider:', Provider.name);
+  console.log('Context:', context);
+  
+  // Step 1: Check if provider is defined
+  if (!Provider) {
+    console.error('Provider is undefined');
+    return { error: 'Provider undefined' };
+  }
+  
+  // Step 2: Check if context is defined
+  if (!context) {
+    console.error('Context is undefined');
+    return { error: 'Context undefined' };
+  }
+  
+  // Step 3: Check context default value
+  console.log('Context default value:', context._currentValue);
+  
+  // Step 4: Check if provider is being used
+  const providerElement = document.querySelector('[data-provider]');
+  if (!providerElement) {
+    console.warn('Provider element not found in DOM');
+  }
+  
+  return { success: true };
+}
+
+// Usage in provider
+export function ProjectSystemProvider({ children, config }: ProjectSystemProviderProps) {
+  // Debug provider
+  const debugResult = debugProvider(ProjectSystemProvider, ProjectSystemContext);
+  if (debugResult.error) {
+    console.error('Provider debug failed:', debugResult.error);
+  }
+  
+  // Rest of provider implementation...
+}
+```
+
+## Debugging Tools and Utilities
+
+### Debug Logger
+```typescript
+// Debug logging utility
+export class DebugLogger {
+  private static instance: DebugLogger;
+  private logs: Array<{ timestamp: string; level: string; message: string; data?: any }> = [];
+  private isEnabled: boolean = process.env.NODE_ENV === 'development';
+
+  static getInstance(): DebugLogger {
+    if (!DebugLogger.instance) {
+      DebugLogger.instance = new DebugLogger();
+    }
+    return DebugLogger.instance;
   }
 
-  /**
-   * Intelligent logging for AI debugging
-   */
-  async logWithContext(
-    level: LogLevel,
-    message: string,
-    context: DebugContext
-  ): Promise<void> {
-    const logEntry: AILogEntry = {
-      timestamp: new Date(),
+  log(level: 'info' | 'warn' | 'error' | 'debug', message: string, data?: any): void {
+    if (!this.isEnabled) return;
+
+    const logEntry = {
+      timestamp: new Date().toISOString(),
       level,
       message,
-      context: {
-        ...context,
-        executionId: this.tracer.getCurrentExecutionId(),
-        stackTrace: this.tracer.getStackTrace(),
-        variables: this.tracer.getCurrentVariables(),
-        performance: this.tracer.getPerformanceMetrics()
+      data
+    };
+
+    this.logs.push(logEntry);
+    console[level](`[${level.toUpperCase()}] ${message}`, data || '');
+  }
+
+  info(message: string, data?: any): void {
+    this.log('info', message, data);
+  }
+
+  warn(message: string, data?: any): void {
+    this.log('warn', message, data);
+  }
+
+  error(message: string, data?: any): void {
+    this.log('error', message, data);
+  }
+
+  debug(message: string, data?: any): void {
+    this.log('debug', message, data);
+  }
+
+  getLogs(): Array<{ timestamp: string; level: string; message: string; data?: any }> {
+    return [...this.logs];
+  }
+
+  clearLogs(): void {
+    this.logs = [];
+  }
+
+  exportLogs(): string {
+    return JSON.stringify(this.logs, null, 2);
+  }
+}
+
+// Usage
+const logger = DebugLogger.getInstance();
+logger.info('Project loading started', { projectId: 'test-project' });
+logger.error('Project loading failed', { error: 'File not found' });
+```
+
+### Error Boundary for Debugging
+```typescript
+// Error boundary with debugging
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error?: Error;
+  errorInfo?: React.ErrorInfo;
+  debugInfo?: any;
+}
+
+export class DebugErrorBoundary extends React.Component<
+  React.PropsWithChildren<{}>,
+  ErrorBoundaryState
+> {
+  constructor(props: React.PropsWithChildren<{}>) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return {
+      hasError: true,
+      error,
+      debugInfo: {
+        timestamp: new Date().toISOString(),
+        userAgent: navigator.userAgent,
+        url: window.location.href,
+        stack: error.stack
       }
     };
-    
-    await this.logger.log(logEntry);
   }
 
-  /**
-   * Execution tracing for complex flows
-   */
-  async traceExecution<T>(
-    operation: string,
-    fn: () => Promise<T>
-  ): Promise<T> {
-    const traceId = this.tracer.startTrace(operation);
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
+    const logger = DebugLogger.getInstance();
     
-    try {
-      const result = await fn();
-      await this.tracer.endTrace(traceId, { success: true, result });
-      return result;
-    } catch (error) {
-      await this.tracer.endTrace(traceId, { success: false, error });
-      throw error;
+    logger.error('Error boundary caught error', {
+      error: error.message,
+      stack: error.stack,
+      componentStack: errorInfo.componentStack,
+      debugInfo: this.state.debugInfo
+    });
+
+    this.setState({
+      error,
+      errorInfo,
+      debugInfo: {
+        ...this.state.debugInfo,
+        componentStack: errorInfo.componentStack
+      }
+    });
+  }
+
+  render(): React.ReactNode {
+    if (this.state.hasError) {
+      return (
+        <div className="error-boundary">
+          <h2>Something went wrong</h2>
+          <details>
+            <summary>Error Details</summary>
+            <pre>{this.state.error?.message}</pre>
+            <pre>{this.state.error?.stack}</pre>
+            <pre>{this.state.errorInfo?.componentStack}</pre>
+            <pre>{JSON.stringify(this.state.debugInfo, null, 2)}</pre>
+          </details>
+        </div>
+      );
     }
+
+    return this.props.children;
+  }
+}
+```
+
+### Performance Monitor
+```typescript
+// Performance monitoring utility
+export class PerformanceMonitor {
+  private static instance: PerformanceMonitor;
+  private metrics: Map<string, Array<{ timestamp: number; duration: number; memory?: any }>> = new Map();
+
+  static getInstance(): PerformanceMonitor {
+    if (!PerformanceMonitor.instance) {
+      PerformanceMonitor.instance = new PerformanceMonitor();
+    }
+    return PerformanceMonitor.instance;
   }
 
-  /**
-   * Code analysis for potential issues
-   */
-  async analyzeCode(code: string): Promise<CodeAnalysisResult> {
-    const analysis = await this.analyzer.analyze(code);
-    
-    return {
-      potentialIssues: analysis.issues,
-      performanceBottlenecks: analysis.bottlenecks,
-      securityVulnerabilities: analysis.vulnerabilities,
-      codeQuality: analysis.quality,
-      recommendations: analysis.recommendations
+  startTimer(operation: string): () => void {
+    const startTime = performance.now();
+    const startMemory = process.memoryUsage();
+
+    return () => {
+      const endTime = performance.now();
+      const endMemory = process.memoryUsage();
+      const duration = endTime - startTime;
+
+      const metric = {
+        timestamp: Date.now(),
+        duration,
+        memory: {
+          rss: endMemory.rss - startMemory.rss,
+          heapUsed: endMemory.heapUsed - startMemory.heapUsed
+        }
+      };
+
+      if (!this.metrics.has(operation)) {
+        this.metrics.set(operation, []);
+      }
+
+      this.metrics.get(operation)!.push(metric);
+
+      // Keep only last 100 measurements
+      const measurements = this.metrics.get(operation)!;
+      if (measurements.length > 100) {
+        measurements.shift();
+      }
     };
   }
+
+  getMetrics(operation?: string): any {
+    if (operation) {
+      const measurements = this.metrics.get(operation) || [];
+      return {
+        operation,
+        count: measurements.length,
+        average: measurements.reduce((sum, m) => sum + m.duration, 0) / measurements.length,
+        latest: measurements[measurements.length - 1]
+      };
+    }
+
+    const allMetrics: any = {};
+    for (const [op, measurements] of this.metrics) {
+      allMetrics[op] = {
+        count: measurements.length,
+        average: measurements.reduce((sum, m) => sum + m.duration, 0) / measurements.length,
+        latest: measurements[measurements.length - 1]
+      };
+    }
+    return allMetrics;
+  }
+
+  clearMetrics(): void {
+    this.metrics.clear();
+  }
 }
 
-interface DebugContext {
-  readonly operation: string;
-  readonly component: string;
-  readonly userId?: string;
-  readonly requestId?: string;
-  readonly metadata?: Record<string, unknown>;
-}
+// Usage
+const monitor = PerformanceMonitor.getInstance();
+const endTimer = monitor.startTimer('project-loading');
+// ... do work ...
+endTimer();
+console.log('Performance metrics:', monitor.getMetrics('project-loading'));
+```
 
-interface AILogEntry {
-  readonly timestamp: Date;
-  readonly level: LogLevel;
-  readonly message: string;
-  readonly context: DebugContext & {
-    readonly executionId: string;
-    readonly stackTrace: string[];
-    readonly variables: Record<string, unknown>;
-    readonly performance: PerformanceMetrics;
+## Debugging Workflow
+
+### 1. Initial Assessment
+```typescript
+// Initial debugging assessment
+async function initialDebugAssessment(issue: string, context: any) {
+  const logger = DebugLogger.getInstance();
+  
+  logger.info('Starting debug assessment', { issue, context });
+  
+  // Step 1: Document the issue
+  const issueReport = {
+    timestamp: new Date().toISOString(),
+    issue,
+    context,
+    environment: {
+      nodeVersion: process.version,
+      platform: process.platform,
+      userAgent: typeof window !== 'undefined' ? navigator.userAgent : 'N/A'
+    }
+  };
+  
+  logger.info('Issue report created', issueReport);
+  
+  // Step 2: Check system health
+  const systemHealth = await checkSystemHealth();
+  logger.info('System health check', systemHealth);
+  
+  // Step 3: Identify potential causes
+  const potentialCauses = identifyPotentialCauses(issue, context);
+  logger.info('Potential causes identified', potentialCauses);
+  
+  return {
+    issueReport,
+    systemHealth,
+    potentialCauses,
+    nextSteps: generateDebuggingPlan(potentialCauses)
   };
 }
 ```
 
-## 🐛 Common Debugging Scenarios
-
-### 1. Project Management System Debugging
-
+### 2. Systematic Investigation
 ```typescript
-/**
- * @debugging-scenario project-management
- * @description Common debugging scenarios in project management systems
- * @version 1.0.0
- */
-class ProjectManagementDebugger {
-  /**
-   * Debug project creation issues
-   */
-  async debugProjectCreation(
-    spec: ProjectSpec,
-    error: Error
-  ): Promise<DebugResult> {
-    const debugSteps = [
-      '1. Validate project specification format',
-      '2. Check for duplicate project IDs',
-      '3. Verify user permissions',
-      '4. Validate external dependencies',
-      '5. Check database connectivity'
-    ];
+// Systematic debugging investigation
+async function systematicInvestigation(issue: string, potentialCauses: string[]) {
+  const logger = DebugLogger.getInstance();
+  const results: any[] = [];
+  
+  for (const cause of potentialCauses) {
+    logger.info(`Investigating cause: ${cause}`);
     
-    const results: DebugResult[] = [];
-    
-    // Step 1: Validate specification
-    const specValidation = await this.validateProjectSpec(spec);
-    results.push(specValidation);
-    
-    // Step 2: Check for duplicates
-    const duplicateCheck = await this.checkForDuplicates(spec.id);
-    results.push(duplicateCheck);
-    
-    // Step 3: Verify permissions
-    const permissionCheck = await this.verifyPermissions(spec);
-    results.push(permissionCheck);
-    
-    // Step 4: Check dependencies
-    const dependencyCheck = await this.checkDependencies();
-    results.push(dependencyCheck);
-    
-    // Step 5: Check database
-    const databaseCheck = await this.checkDatabase();
-    results.push(databaseCheck);
-    
-    return this.consolidateResults(results);
-  }
-
-  /**
-   * Debug progress tracking issues
-   */
-  async debugProgressTracking(
-    projectId: ProjectId,
-    activity: DevelopmentActivity,
-    error: Error
-  ): Promise<DebugResult> {
-    const debugSteps = [
-      '1. Verify project exists and is accessible',
-      '2. Validate activity data format',
-      '3. Check progress calculation logic',
-      '4. Verify milestone detection',
-      '5. Check status update mechanism'
-    ];
-    
-    const results: DebugResult[] = [];
-    
-    // Step 1: Verify project
-    const projectCheck = await this.verifyProject(projectId);
-    results.push(projectCheck);
-    
-    // Step 2: Validate activity
-    const activityValidation = await this.validateActivity(activity);
-    results.push(activityValidation);
-    
-    // Step 3: Check progress logic
-    const progressLogicCheck = await this.checkProgressLogic(projectId, activity);
-    results.push(progressLogicCheck);
-    
-    // Step 4: Check milestones
-    const milestoneCheck = await this.checkMilestoneDetection(projectId, activity);
-    results.push(milestoneCheck);
-    
-    // Step 5: Check status updates
-    const statusUpdateCheck = await this.checkStatusUpdates(projectId);
-    results.push(statusUpdateCheck);
-    
-    return this.consolidateResults(results);
-  }
-
-  /**
-   * Debug document generation issues
-   */
-  async debugDocumentGeneration(
-    projectId: ProjectId,
-    error: Error
-  ): Promise<DebugResult> {
-    const debugSteps = [
-      '1. Verify project documentation exists',
-      '2. Check template engine functionality',
-      '3. Validate file system permissions',
-      '4. Check Git integration',
-      '5. Verify document format validation'
-    ];
-    
-    const results: DebugResult[] = [];
-    
-    // Step 1: Check project docs
-    const projectDocsCheck = await this.checkProjectDocumentation(projectId);
-    results.push(projectDocsCheck);
-    
-    // Step 2: Check template engine
-    const templateEngineCheck = await this.checkTemplateEngine();
-    results.push(templateEngineCheck);
-    
-    // Step 3: Check file system
-    const fileSystemCheck = await this.checkFileSystem();
-    results.push(fileSystemCheck);
-    
-    // Step 4: Check Git integration
-    const gitCheck = await this.checkGitIntegration();
-    results.push(gitCheck);
-    
-    // Step 5: Check document validation
-    const documentValidationCheck = await this.checkDocumentValidation();
-    results.push(documentValidationCheck);
-    
-    return this.consolidateResults(results);
-  }
-
-  private async validateProjectSpec(spec: ProjectSpec): Promise<DebugResult> {
     try {
-      // Implementation for project spec validation
-      return { step: 'spec_validation', success: true, details: 'Spec is valid' };
+      const result = await investigateCause(cause, issue);
+      results.push({ cause, result, status: 'completed' });
+      logger.info(`Investigation completed for: ${cause}`, result);
+      
+      if (result.isRootCause) {
+        logger.info(`Root cause found: ${cause}`, result);
+        break;
+      }
     } catch (error) {
-      return { step: 'spec_validation', success: false, error: String(error) };
+      results.push({ cause, error: error.message, status: 'failed' });
+      logger.error(`Investigation failed for: ${cause}`, error);
     }
   }
-
-  private async checkForDuplicates(projectId: ProjectId): Promise<DebugResult> {
-    try {
-      // Implementation for duplicate checking
-      return { step: 'duplicate_check', success: true, details: 'No duplicates found' };
-    } catch (error) {
-      return { step: 'duplicate_check', success: false, error: String(error) };
-    }
-  }
-
-  private consolidateResults(results: DebugResult[]): DebugResult {
-    const failedSteps = results.filter(r => !r.success);
-    return {
-      step: 'consolidated',
-      success: failedSteps.length === 0,
-      details: failedSteps.length === 0 ? 'All checks passed' : 'Some checks failed',
-      subResults: results
-    };
-  }
-}
-
-interface DebugResult {
-  readonly step: string;
-  readonly success: boolean;
-  readonly details?: string;
-  readonly error?: string;
-  readonly subResults?: DebugResult[];
+  
+  return results;
 }
 ```
 
-### 2. Performance Debugging
-
+### 3. Solution Implementation
 ```typescript
-/**
- * @debugging-scenario performance
- * @description Performance debugging techniques and tools
- * @version 1.0.0
- */
-class PerformanceDebugger {
-  private readonly profiler: PerformanceProfiler;
-  private readonly memoryMonitor: MemoryMonitor;
-  private readonly networkAnalyzer: NetworkAnalyzer;
-
-  constructor(
-    profiler: PerformanceProfiler,
-    memoryMonitor: MemoryMonitor,
-    networkAnalyzer: NetworkAnalyzer
-  ) {
-    this.profiler = profiler;
-    this.memoryMonitor = memoryMonitor;
-    this.networkAnalyzer = networkAnalyzer;
-  }
-
-  /**
-   * Debug slow project operations
-   */
-  async debugSlowOperations(
-    operation: string,
-    threshold: number = 1000
-  ): Promise<PerformanceDebugResult> {
-    const startTime = Date.now();
+// Solution implementation and validation
+async function implementSolution(issue: string, rootCause: any, solution: any) {
+  const logger = DebugLogger.getInstance();
+  
+  logger.info('Implementing solution', { issue, rootCause, solution });
+  
+  try {
+    // Step 1: Implement the solution
+    const implementationResult = await executeSolution(solution);
+    logger.info('Solution implemented', implementationResult);
     
-    try {
-      // Start profiling
-      await this.profiler.startProfiling(operation);
-      
-      // Monitor memory usage
-      const memoryBefore = await this.memoryMonitor.getMemoryUsage();
-      
-      // Execute operation
-      const result = await this.executeOperation(operation);
-      
-      // Check performance
-      const duration = Date.now() - startTime;
-      const memoryAfter = await this.memoryMonitor.getMemoryUsage();
-      
-      // Analyze performance
-      const analysis = await this.analyzePerformance({
-        operation,
-        duration,
-        memoryBefore,
-        memoryAfter,
-        threshold
-      });
-      
-      return {
-        operation,
-        duration,
-        memoryDelta: memoryAfter.used - memoryBefore.used,
-        analysis,
-        recommendations: await this.generateRecommendations(analysis)
-      };
-      
-    } finally {
-      await this.profiler.stopProfiling(operation);
-    }
-  }
-
-  /**
-   * Debug memory leaks
-   */
-  async debugMemoryLeaks(
-    operation: string,
-    iterations: number = 100
-  ): Promise<MemoryLeakDebugResult> {
-    const memorySnapshots: MemorySnapshot[] = [];
+    // Step 2: Validate the solution
+    const validationResult = await validateSolution(issue, solution);
+    logger.info('Solution validated', validationResult);
     
-    for (let i = 0; i < iterations; i++) {
-      // Take memory snapshot before operation
-      const beforeSnapshot = await this.memoryMonitor.takeSnapshot();
-      
-      // Execute operation
-      await this.executeOperation(operation);
-      
-      // Take memory snapshot after operation
-      const afterSnapshot = await this.memoryMonitor.takeSnapshot();
-      
-      // Record memory delta
-      memorySnapshots.push({
-        iteration: i,
-        before: beforeSnapshot,
-        after: afterSnapshot,
-        delta: afterSnapshot.used - beforeSnapshot.used
-      });
-      
-      // Force garbage collection if available
-      if (global.gc) {
-        global.gc();
-      }
-    }
+    // Step 3: Test the solution
+    const testResult = await testSolution(issue, solution);
+    logger.info('Solution tested', testResult);
     
-    // Analyze memory patterns
-    const analysis = await this.analyzeMemoryPatterns(memorySnapshots);
-    
-    return {
-      operation,
-      iterations,
-      snapshots: memorySnapshots,
-      analysis,
-      leakDetected: analysis.trend > 0.1, // 10% growth threshold
-      recommendations: await this.generateMemoryRecommendations(analysis)
-    };
-  }
-
-  /**
-   * Debug network performance
-   */
-  async debugNetworkPerformance(
-    endpoint: string,
-    requests: number = 10
-  ): Promise<NetworkDebugResult> {
-    const networkMetrics: NetworkMetric[] = [];
-    
-    for (let i = 0; i < requests; i++) {
-      const metric = await this.networkAnalyzer.measureRequest(endpoint);
-      networkMetrics.push(metric);
-      
-      // Add delay between requests
-      await this.delay(100);
-    }
-    
-    // Analyze network performance
-    const analysis = await this.analyzeNetworkPerformance(networkMetrics);
-    
-    return {
-      endpoint,
-      requests,
-      metrics: networkMetrics,
-      analysis,
-      recommendations: await this.generateNetworkRecommendations(analysis)
-    };
-  }
-
-  private async analyzePerformance(metrics: PerformanceMetrics): Promise<PerformanceAnalysis> {
-    return {
-      isSlow: metrics.duration > metrics.threshold,
-      bottleneck: await this.identifyBottleneck(metrics),
-      optimization: await this.suggestOptimizations(metrics)
-    };
-  }
-
-  private async analyzeMemoryPatterns(snapshots: MemorySnapshot[]): Promise<MemoryAnalysis> {
-    const deltas = snapshots.map(s => s.delta);
-    const trend = this.calculateTrend(deltas);
-    
-    return {
-      trend,
-      averageDelta: deltas.reduce((a, b) => a + b, 0) / deltas.length,
-      maxDelta: Math.max(...deltas),
-      minDelta: Math.min(...deltas)
-    };
-  }
-
-  private calculateTrend(values: number[]): number {
-    // Simple linear regression to calculate trend
-    const n = values.length;
-    const x = Array.from({ length: n }, (_, i) => i);
-    const y = values;
-    
-    const sumX = x.reduce((a, b) => a + b, 0);
-    const sumY = y.reduce((a, b) => a + b, 0);
-    const sumXY = x.reduce((sum, xi, i) => sum + xi * y[i], 0);
-    const sumXX = x.reduce((sum, xi) => sum + xi * xi, 0);
-    
-    return (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
-  }
-}
-
-interface PerformanceDebugResult {
-  readonly operation: string;
-  readonly duration: number;
-  readonly memoryDelta: number;
-  readonly analysis: PerformanceAnalysis;
-  readonly recommendations: string[];
-}
-
-interface MemoryLeakDebugResult {
-  readonly operation: string;
-  readonly iterations: number;
-  readonly snapshots: MemorySnapshot[];
-  readonly analysis: MemoryAnalysis;
-  readonly leakDetected: boolean;
-  readonly recommendations: string[];
-}
-
-interface NetworkDebugResult {
-  readonly endpoint: string;
-  readonly requests: number;
-  readonly metrics: NetworkMetric[];
-  readonly analysis: NetworkAnalysis;
-  readonly recommendations: string[];
-}
-```
-
-## 🔧 Debugging Tools and Utilities
-
-### 1. AI Debugging Console
-
-```typescript
-/**
- * @debugging-tool ai-console
- * @description AI-optimized debugging console with intelligent features
- * @version 1.0.0
- */
-class AIDebuggingConsole {
-  private readonly context: DebugContext;
-  private readonly history: DebugHistory;
-  private readonly suggestions: DebugSuggestions;
-
-  constructor(
-    context: DebugContext,
-    history: DebugHistory,
-    suggestions: DebugSuggestions
-  ) {
-    this.context = context;
-    this.history = history;
-    this.suggestions = suggestions;
-  }
-
-  /**
-   * Intelligent debugging session
-   */
-  async startDebugSession(issue: BugReport): Promise<DebugSession> {
-    const session: DebugSession = {
-      id: this.generateSessionId(),
-      issue,
-      startTime: new Date(),
-      steps: [],
-      context: this.context
-    };
-    
-    // Analyze issue and suggest debugging approach
-    const approach = await this.suggestions.suggestApproach(issue);
-    session.approach = approach;
-    
-    // Start interactive debugging
-    await this.startInteractiveDebugging(session);
-    
-    return session;
-  }
-
-  /**
-   * Interactive debugging with AI assistance
-   */
-  async debugStep(
-    session: DebugSession,
-    step: DebugStep
-  ): Promise<DebugStepResult> {
-    // Record the step
-    session.steps.push(step);
-    
-    // Execute the debugging step
-    const result = await this.executeDebugStep(step);
-    
-    // Get AI suggestions for next steps
-    const nextSteps = await this.suggestions.suggestNextSteps(session, result);
-    
-    // Update session with result
-    session.currentStep = step;
-    session.lastResult = result;
-    session.suggestedNextSteps = nextSteps;
-    
-    return result;
-  }
-
-  /**
-   * Generate debugging report
-   */
-  async generateDebugReport(session: DebugSession): Promise<DebugReport> {
-    const report: DebugReport = {
-      sessionId: session.id,
-      issue: session.issue,
-      duration: Date.now() - session.startTime.getTime(),
-      steps: session.steps,
-      results: session.steps.map(s => s.result),
-      conclusion: await this.generateConclusion(session),
-      recommendations: await this.generateRecommendations(session)
-    };
-    
-    // Save to history
-    await this.history.saveSession(session);
-    
-    return report;
-  }
-
-  private async executeDebugStep(step: DebugStep): Promise<DebugStepResult> {
-    switch (step.type) {
-      case 'inspect':
-        return await this.inspectVariable(step.target);
-      case 'trace':
-        return await this.traceExecution(step.target);
-      case 'test':
-        return await this.runTest(step.target);
-      case 'analyze':
-        return await this.analyzeCode(step.target);
-      default:
-        throw new Error(`Unknown debug step type: ${step.type}`);
-    }
-  }
-
-  private async inspectVariable(target: string): Promise<DebugStepResult> {
-    // Implementation for variable inspection
-    return {
-      type: 'inspect',
-      target,
-      success: true,
-      data: { value: 'inspected value' }
-    };
-  }
-
-  private async traceExecution(target: string): Promise<DebugStepResult> {
-    // Implementation for execution tracing
-    return {
-      type: 'trace',
-      target,
-      success: true,
-      data: { trace: 'execution trace' }
-    };
-  }
-
-  private async runTest(target: string): Promise<DebugStepResult> {
-    // Implementation for test execution
-    return {
-      type: 'test',
-      target,
-      success: true,
-      data: { testResults: 'test results' }
-    };
-  }
-
-  private async analyzeCode(target: string): Promise<DebugStepResult> {
-    // Implementation for code analysis
-    return {
-      type: 'analyze',
-      target,
-      success: true,
-      data: { analysis: 'code analysis' }
-    };
-  }
-}
-
-interface DebugSession {
-  readonly id: string;
-  readonly issue: BugReport;
-  readonly startTime: Date;
-  readonly steps: DebugStep[];
-  readonly context: DebugContext;
-  readonly approach?: DebugApproach;
-  readonly currentStep?: DebugStep;
-  readonly lastResult?: DebugStepResult;
-  readonly suggestedNextSteps?: DebugStep[];
-}
-
-interface DebugStep {
-  readonly type: 'inspect' | 'trace' | 'test' | 'analyze';
-  readonly target: string;
-  readonly parameters?: Record<string, unknown>;
-  readonly result?: DebugStepResult;
-}
-
-interface DebugStepResult {
-  readonly type: string;
-  readonly target: string;
-  readonly success: boolean;
-  readonly data?: Record<string, unknown>;
-  readonly error?: string;
-}
-```
-
-### 2. Automated Debugging Assistant
-
-```typescript
-/**
- * @debugging-tool automated-assistant
- * @description Automated debugging assistant for common issues
- * @version 1.0.0
- */
-class AutomatedDebuggingAssistant {
-  private readonly patterns: DebugPattern[];
-  private readonly solutions: DebugSolution[];
-  private readonly knowledgeBase: DebugKnowledgeBase;
-
-  constructor(
-    patterns: DebugPattern[],
-    solutions: DebugSolution[],
-    knowledgeBase: DebugKnowledgeBase
-  ) {
-    this.patterns = patterns;
-    this.solutions = solutions;
-    this.knowledgeBase = knowledgeBase;
-  }
-
-  /**
-   * Automatically diagnose common issues
-   */
-  async autoDiagnose(error: Error, context: DebugContext): Promise<DiagnosisResult> {
-    // Analyze error patterns
-    const errorPattern = await this.analyzeErrorPattern(error);
-    
-    // Match against known patterns
-    const matchedPattern = this.patterns.find(p => 
-      this.matchesPattern(errorPattern, p)
-    );
-    
-    if (matchedPattern) {
-      // Find solution for matched pattern
-      const solution = this.solutions.find(s => 
-        s.patternId === matchedPattern.id
-      );
-      
-      if (solution) {
-        return {
-          diagnosis: 'pattern_match',
-          pattern: matchedPattern,
-          solution,
-          confidence: this.calculateConfidence(errorPattern, matchedPattern),
-          steps: solution.steps
-        };
-      }
-    }
-    
-    // Fallback to knowledge base search
-    const knowledgeResult = await this.knowledgeBase.search(error, context);
-    
-    return {
-      diagnosis: 'knowledge_base',
-      pattern: null,
-      solution: null,
-      confidence: knowledgeResult.confidence,
-      steps: knowledgeResult.suggestedSteps
-    };
-  }
-
-  /**
-   * Suggest debugging steps based on error type
-   */
-  async suggestDebugSteps(error: Error, context: DebugContext): Promise<DebugStep[]> {
-    const errorType = this.classifyError(error);
-    const steps: DebugStep[] = [];
-    
-    switch (errorType) {
-      case 'validation_error':
-        steps.push(
-          { type: 'inspect', target: 'input_validation' },
-          { type: 'test', target: 'validation_rules' },
-          { type: 'analyze', target: 'data_format' }
-        );
-        break;
-        
-      case 'permission_error':
-        steps.push(
-          { type: 'inspect', target: 'user_permissions' },
-          { type: 'test', target: 'authorization_logic' },
-          { type: 'analyze', target: 'access_control' }
-        );
-        break;
-        
-      case 'network_error':
-        steps.push(
-          { type: 'inspect', target: 'network_connectivity' },
-          { type: 'test', target: 'endpoint_availability' },
-          { type: 'analyze', target: 'request_response' }
-        );
-        break;
-        
-      case 'database_error':
-        steps.push(
-          { type: 'inspect', target: 'database_connection' },
-          { type: 'test', target: 'query_execution' },
-          { type: 'analyze', target: 'data_integrity' }
-        );
-        break;
-        
-      default:
-        steps.push(
-          { type: 'inspect', target: 'error_context' },
-          { type: 'trace', target: 'execution_flow' },
-          { type: 'analyze', target: 'code_logic' }
-        );
-    }
-    
-    return steps;
-  }
-
-  /**
-   * Generate debugging checklist
-   */
-  async generateDebugChecklist(issue: BugReport): Promise<DebugChecklist> {
-    const checklist: DebugChecklist = {
-      issue: issue,
-      categories: [
-        {
-          name: 'Environment',
-          items: [
-            'Check Node.js version compatibility',
-            'Verify package dependencies',
-            'Validate environment variables',
-            'Check file system permissions'
-          ]
-        },
-        {
-          name: 'Code',
-          items: [
-            'Review error handling logic',
-            'Check type definitions',
-            'Validate input parameters',
-            'Verify async/await usage'
-          ]
-        },
-        {
-          name: 'Data',
-          items: [
-            'Validate data format',
-            'Check data integrity',
-            'Verify data relationships',
-            'Test edge cases'
-          ]
-        },
-        {
-          name: 'Integration',
-          items: [
-            'Check external API responses',
-            'Verify database connectivity',
-            'Test file system operations',
-            'Validate network requests'
-          ]
-        }
-      ]
-    };
-    
-    return checklist;
-  }
-
-  private async analyzeErrorPattern(error: Error): Promise<ErrorPattern> {
-    return {
-      message: error.message,
-      stack: error.stack,
-      type: error.constructor.name,
-      keywords: this.extractKeywords(error.message)
-    };
-  }
-
-  private extractKeywords(message: string): string[] {
-    // Simple keyword extraction
-    return message
-      .toLowerCase()
-      .split(/\s+/)
-      .filter(word => word.length > 3)
-      .filter(word => !['the', 'and', 'for', 'are', 'but', 'not', 'you', 'all'].includes(word));
-  }
-
-  private matchesPattern(errorPattern: ErrorPattern, pattern: DebugPattern): boolean {
-    // Simple pattern matching logic
-    return pattern.keywords.some(keyword => 
-      errorPattern.keywords.includes(keyword)
-    );
-  }
-
-  private calculateConfidence(errorPattern: ErrorPattern, pattern: DebugPattern): number {
-    const matchingKeywords = pattern.keywords.filter(keyword => 
-      errorPattern.keywords.includes(keyword)
-    );
-    return matchingKeywords.length / pattern.keywords.length;
-  }
-
-  private classifyError(error: Error): string {
-    const message = error.message.toLowerCase();
-    
-    if (message.includes('validation') || message.includes('invalid')) {
-      return 'validation_error';
-    }
-    
-    if (message.includes('permission') || message.includes('unauthorized')) {
-      return 'permission_error';
-    }
-    
-    if (message.includes('network') || message.includes('connection')) {
-      return 'network_error';
-    }
-    
-    if (message.includes('database') || message.includes('sql')) {
-      return 'database_error';
-    }
-    
-    return 'unknown_error';
-  }
-}
-
-interface DiagnosisResult {
-  readonly diagnosis: 'pattern_match' | 'knowledge_base';
-  readonly pattern: DebugPattern | null;
-  readonly solution: DebugSolution | null;
-  readonly confidence: number;
-  readonly steps: DebugStep[];
-}
-
-interface DebugChecklist {
-  readonly issue: BugReport;
-  readonly categories: DebugCategory[];
-}
-
-interface DebugCategory {
-  readonly name: string;
-  readonly items: string[];
-}
-```
-
-## 📊 Debugging Metrics and Monitoring
-
-### 1. Debugging Performance Metrics
-
-```typescript
-/**
- * @debugging-metrics performance
- * @description Metrics and monitoring for debugging performance
- * @version 1.0.0
- */
-class DebuggingMetrics {
-  private readonly metrics: MetricsCollector;
-  private readonly dashboard: MetricsDashboard;
-
-  constructor(
-    metrics: MetricsCollector,
-    dashboard: MetricsDashboard
-  ) {
-    this.metrics = metrics;
-    this.dashboard = dashboard;
-  }
-
-  /**
-   * Track debugging session performance
-   */
-  async trackDebugSession(session: DebugSession): Promise<void> {
-    const metrics = {
-      sessionId: session.id,
-      duration: Date.now() - session.startTime.getTime(),
-      stepsCount: session.steps.length,
-      successRate: this.calculateSuccessRate(session),
-      issueType: session.issue.type,
-      resolutionTime: this.calculateResolutionTime(session)
-    };
-    
-    await this.metrics.record('debug_session', metrics);
-    await this.dashboard.updateDebugMetrics(metrics);
-  }
-
-  /**
-   * Track debugging step performance
-   */
-  async trackDebugStep(step: DebugStep, result: DebugStepResult): Promise<void> {
-    const metrics = {
-      stepType: step.type,
-      target: step.target,
-      success: result.success,
-      duration: result.duration || 0,
-      dataSize: this.calculateDataSize(result.data)
-    };
-    
-    await this.metrics.record('debug_step', metrics);
-  }
-
-  /**
-   * Generate debugging performance report
-   */
-  async generatePerformanceReport(
-    timeRange: TimeRange
-  ): Promise<DebuggingPerformanceReport> {
-    const sessions = await this.metrics.query('debug_session', timeRange);
-    const steps = await this.metrics.query('debug_step', timeRange);
-    
-    return {
-      timeRange,
-      totalSessions: sessions.length,
-      averageSessionDuration: this.calculateAverage(sessions, 'duration'),
-      averageStepsPerSession: this.calculateAverage(sessions, 'stepsCount'),
-      successRate: this.calculateOverallSuccessRate(sessions),
-      mostCommonIssues: this.identifyCommonIssues(sessions),
-      stepPerformance: this.analyzeStepPerformance(steps),
-      recommendations: await this.generatePerformanceRecommendations(sessions, steps)
-    };
-  }
-
-  private calculateSuccessRate(session: DebugSession): number {
-    const successfulSteps = session.steps.filter(s => s.result?.success);
-    return successfulSteps.length / session.steps.length;
-  }
-
-  private calculateResolutionTime(session: DebugSession): number {
-    // Implementation for calculating resolution time
-    return Date.now() - session.startTime.getTime();
-  }
-
-  private calculateDataSize(data: Record<string, unknown> | undefined): number {
-    if (!data) return 0;
-    return JSON.stringify(data).length;
-  }
-
-  private calculateAverage(items: any[], field: string): number {
-    if (items.length === 0) return 0;
-    const sum = items.reduce((acc, item) => acc + item[field], 0);
-    return sum / items.length;
-  }
-
-  private calculateOverallSuccessRate(sessions: any[]): number {
-    if (sessions.length === 0) return 0;
-    const totalSuccess = sessions.reduce((acc, session) => acc + session.successRate, 0);
-    return totalSuccess / sessions.length;
-  }
-
-  private identifyCommonIssues(sessions: any[]): IssueFrequency[] {
-    const issueCounts = new Map<string, number>();
-    
-    sessions.forEach(session => {
-      const issueType = session.issueType;
-      issueCounts.set(issueType, (issueCounts.get(issueType) || 0) + 1);
-    });
-    
-    return Array.from(issueCounts.entries())
-      .map(([issue, count]) => ({ issue, count, percentage: count / sessions.length }))
-      .sort((a, b) => b.count - a.count);
-  }
-
-  private analyzeStepPerformance(steps: any[]): StepPerformanceAnalysis {
-    const stepTypes = new Map<string, StepMetrics>();
-    
-    steps.forEach(step => {
-      const type = step.stepType;
-      if (!stepTypes.has(type)) {
-        stepTypes.set(type, { type, count: 0, totalDuration: 0, successCount: 0 });
-      }
-      
-      const metrics = stepTypes.get(type)!;
-      metrics.count++;
-      metrics.totalDuration += step.duration;
-      if (step.success) metrics.successCount++;
+    // Step 4: Document the solution
+    await documentSolution(issue, rootCause, solution, {
+      implementation: implementationResult,
+      validation: validationResult,
+      testing: testResult
     });
     
     return {
-      stepTypes: Array.from(stepTypes.values()).map(metrics => ({
-        ...metrics,
-        averageDuration: metrics.totalDuration / metrics.count,
-        successRate: metrics.successCount / metrics.count
-      }))
+      success: true,
+      implementation: implementationResult,
+      validation: validationResult,
+      testing: testResult
+    };
+    
+  } catch (error) {
+    logger.error('Solution implementation failed', error);
+    return {
+      success: false,
+      error: error.message
     };
   }
 }
-
-interface DebuggingPerformanceReport {
-  readonly timeRange: TimeRange;
-  readonly totalSessions: number;
-  readonly averageSessionDuration: number;
-  readonly averageStepsPerSession: number;
-  readonly successRate: number;
-  readonly mostCommonIssues: IssueFrequency[];
-  readonly stepPerformance: StepPerformanceAnalysis;
-  readonly recommendations: string[];
-}
-
-interface IssueFrequency {
-  readonly issue: string;
-  readonly count: number;
-  readonly percentage: number;
-}
-
-interface StepPerformanceAnalysis {
-  readonly stepTypes: StepMetrics[];
-}
-
-interface StepMetrics {
-  readonly type: string;
-  readonly count: number;
-  readonly totalDuration: number;
-  readonly successCount: number;
-  readonly averageDuration: number;
-  readonly successRate: number;
-}
 ```
 
-## 📚 Related Documentation
+## Best Practices
 
-- [Debugging Tools](./tools/README.md)
-- [Troubleshooting Guide](./troubleshooting/README.md)
-- [Monitoring Systems](./monitoring/README.md)
-- [Optimization Strategies](./optimization/README.md)
-- [Maintenance Procedures](./maintenance/README.md)
+### 1. Documentation
+- **Document Everything**: Record all debugging steps and findings
+- **Update Project Status**: Keep project documentation current
+- **Create Debug Reports**: Generate comprehensive debug reports
+- **Share Knowledge**: Document solutions for future reference
 
-## 🔗 External Resources
+### 2. Testing
+- **Test Solutions**: Always test fixes thoroughly
+- **Regression Testing**: Ensure fixes don't break other functionality
+- **Performance Testing**: Verify performance impact of solutions
+- **Integration Testing**: Test in realistic environments
 
-- [Node.js Debugging](https://nodejs.org/en/docs/guides/debugging-getting-started/)
-- [Chrome DevTools](https://developers.google.com/web/tools/chrome-devtools)
-- [VS Code Debugging](https://code.visualstudio.com/docs/editor/debugging)
-- [Jest Debugging](https://jestjs.io/docs/troubleshooting)
+### 3. Prevention
+- **Learn from Issues**: Use debugging insights to prevent future issues
+- **Improve Monitoring**: Enhance system monitoring based on debugging findings
+- **Update Documentation**: Keep documentation current to prevent confusion
+- **Code Reviews**: Use debugging insights to improve code review processes
+
+## Getting Started
+
+1. **Understand the System**: Familiarize yourself with the project management system
+2. **Learn the Tools**: Master the debugging tools and utilities
+3. **Practice Techniques**: Use the provided examples to practice debugging
+4. **Document Everything**: Keep detailed records of all debugging activities
+5. **Share Knowledge**: Contribute to the debugging knowledge base
+
+## Next Steps
+
+- [AI Troubleshooting Guides](troubleshooting/README.md)
+- [AI Monitoring Guides](monitoring/README.md)
+- [AI Optimization Guides](optimization/README.md)
+- [AI Maintenance Guides](maintenance/README.md)
 
 ---
 
-*This documentation is part of the NextChat AI Coder Documentation system and follows document-driven architecture principles.*
+*This debugging guide is part of the AI Coder Documentation system and follows document-driven architecture principles.*

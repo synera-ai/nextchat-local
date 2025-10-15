@@ -1,1217 +1,978 @@
-# AI Coder Code Examples
+# AI Code Examples
 
-## 🎯 Overview
+## Introduction
 
-This section provides comprehensive code examples specifically designed for AI coders working with document-driven architecture and project management systems. All examples follow best practices and are optimized for AI understanding and implementation.
+This section provides practical code examples specifically designed for AI agents working with document-driven architecture and project management systems. These examples demonstrate best practices, common patterns, and real-world implementations.
 
-## 🏗️ Architecture Examples
+## Project Management Examples
 
-### 1. Document-Driven Project Management System
+### Basic Project Creation
 
 ```typescript
-// Project Management System Implementation
-// File: app/core/project-management/ProjectManagementSystem.ts
+// Example: Creating a new project
+import { ProjectManager } from '../utils/project-manager';
+import { ProjectMetadata, ProjectContext } from '../types/project';
 
-/**
- * @projectId project-management-system
- * @title Project Management System
- * @description Core system for managing projects with document-driven architecture
- * @version 1.0.0
- * @stage implementation
- */
-export class ProjectManagementSystem {
-  private readonly projectRepository: ProjectRepository;
-  private readonly documentGenerator: DocumentGenerator;
-  private readonly progressTracker: ProgressTracker;
-  private readonly validator: ProjectValidator;
+async function createNewProject() {
+  const manager = new ProjectManager(config);
+  await manager.initialize();
 
-  constructor(
-    projectRepository: ProjectRepository,
-    documentGenerator: DocumentGenerator,
-    progressTracker: ProgressTracker,
-    validator: ProjectValidator
-  ) {
-    this.projectRepository = projectRepository;
-    this.documentGenerator = documentGenerator;
-    this.progressTracker = progressTracker;
-    this.validator = validator;
+  const metadata: ProjectMetadata = {
+    projectId: 'feature-user-authentication',
+    title: 'User Authentication System',
+    stage: 'plan',
+    createdDate: '2025-01-15',
+    lastUpdated: '2025-01-15',
+    priority: 'high',
+    tags: ['authentication', 'security', 'user-management'],
+    version: 'v1.0.0',
+    assignedAgents: ['implementation-agent'],
+    estimatedCompletion: '2025-01-25'
+  };
+
+  const context: ProjectContext = {
+    problemStatement: 'Need to implement secure user authentication system with JWT tokens and role-based access control.',
+    businessValue: [
+      'Improved security for user data',
+      'Better user experience with single sign-on',
+      'Compliance with security standards'
+    ],
+    successCriteria: [
+      'JWT token authentication implemented',
+      'Role-based access control working',
+      'Password hashing and validation',
+      'Session management',
+      'Security testing completed'
+    ],
+    constraints: [
+      'Must use existing database schema',
+      'Should integrate with current user system',
+      'Must comply with security policies'
+    ],
+    stakeholders: [
+      'Security Team',
+      'Frontend Team',
+      'Backend Team',
+      'Product Manager'
+    ],
+    technicalRequirements: [
+      'Implement JWT token generation and validation',
+      'Create user registration and login endpoints',
+      'Add password hashing with bcrypt',
+      'Implement role-based middleware',
+      'Add session management',
+      'Create authentication tests'
+    ],
+    dependencies: [
+      {
+        name: 'Database Schema',
+        type: 'codebase',
+        status: 'available',
+        description: 'Existing user table structure'
+      },
+      {
+        name: 'Security Policies',
+        type: 'documentation',
+        status: 'available',
+        description: 'Company security requirements'
+      }
+    ],
+    acceptanceCriteria: [
+      'All authentication endpoints working',
+      'JWT tokens properly generated and validated',
+      'Password security meets requirements',
+      'Role-based access control functional',
+      'All tests passing',
+      'Security review completed'
+    ],
+    implementationGuidelines: [
+      'Follow existing code patterns',
+      'Use TypeScript for type safety',
+      'Write comprehensive tests',
+      'Document all API endpoints',
+      'Follow security best practices'
+    ],
+    fileReferences: [
+      '/app/api/auth.ts',
+      '/app/middleware/auth.ts',
+      '/app/types/user.ts',
+      '/app/utils/jwt.ts'
+    ]
+  };
+
+  const result = await manager.createProject(metadata, context, 'implementation-agent');
+  
+  if (result.success) {
+    console.log('Project created successfully:', result.result);
+  } else {
+    console.error('Failed to create project:', result.error);
   }
-
-  /**
-   * Creates a new project with document-driven architecture
-   */
-  async createProject(spec: ProjectSpec): Promise<Project> {
-    // 1. Validate project specification
-    await this.validator.validateProjectSpec(spec);
-    
-    // 2. Generate project documentation
-    const documentation = await this.documentGenerator.generateProjectDocs(spec);
-    
-    // 3. Create project with documentation
-    const project = await this.projectRepository.create({
-      ...spec,
-      documentation,
-      status: 'active',
-      createdAt: new Date(),
-      updatedAt: new Date()
-    });
-    
-    // 4. Initialize progress tracking
-    await this.progressTracker.initializeProject(project.id);
-    
-    // 5. Log project creation
-    await this.logProjectCreation(project);
-    
-    return project;
-  }
-
-  /**
-   * Updates project progress based on development activities
-   */
-  async updateProgress(
-    projectId: ProjectId,
-    activity: DevelopmentActivity
-  ): Promise<ProgressUpdate> {
-    // 1. Validate project exists
-    const project = await this.projectRepository.findById(projectId);
-    if (!project) {
-      throw new ProjectNotFoundError(projectId);
-    }
-    
-    // 2. Update progress tracking
-    const progressUpdate = await this.progressTracker.updateProgress(
-      projectId,
-      activity
-    );
-    
-    // 3. Update project documentation
-    await this.documentGenerator.updateProjectProgress(
-      projectId,
-      progressUpdate
-    );
-    
-    // 4. Update project status if needed
-    if (progressUpdate.statusChanged) {
-      await this.updateProjectStatus(projectId, progressUpdate.newStatus);
-    }
-    
-    return progressUpdate;
-  }
-
-  private async logProjectCreation(project: Project): Promise<void> {
-    console.log(`Project created: ${project.id} - ${project.title}`);
-  }
-
-  private async updateProjectStatus(
-    projectId: ProjectId,
-    status: ProjectStatus
-  ): Promise<void> {
-    await this.projectRepository.update(projectId, { status });
-  }
-}
-
-// Supporting interfaces and types
-export interface ProjectSpec {
-  readonly id: ProjectId;
-  readonly title: string;
-  readonly description: string;
-  readonly priority: ProjectPriority;
-  readonly tags: readonly string[];
-  readonly metadata: ProjectMetadata;
-}
-
-export type ProjectId = string & { readonly __brand: 'ProjectId' };
-export type ProjectPriority = 'low' | 'medium' | 'high' | 'critical';
-export type ProjectStatus = 'planning' | 'active' | 'completed' | 'cancelled';
-
-export interface Project extends ProjectSpec {
-  readonly status: ProjectStatus;
-  readonly documentation: ProjectDocumentation;
-  readonly createdAt: Date;
-  readonly updatedAt: Date;
-}
-
-export interface DevelopmentActivity {
-  readonly type: 'commit' | 'file_change' | 'task_completion' | 'milestone';
-  readonly timestamp: Date;
-  readonly data: Record<string, unknown>;
 }
 ```
 
-### 2. Document Generator Implementation
+### Project Status Monitoring
 
 ```typescript
-// Document Generator for Project Management
-// File: app/core/documentation/DocumentGenerator.ts
+// Example: Monitoring project status
+import { useProjectSystem } from '../core/providers/project-provider';
 
-/**
- * @projectId document-generator
- * @title Document Generator
- * @description Generates and maintains project documentation automatically
- * @version 1.0.0
- * @stage implementation
- */
-export class DocumentGenerator {
-  private readonly templateEngine: TemplateEngine;
-  private readonly fileSystem: FileSystem;
-  private readonly gitIntegration: GitIntegration;
+function ProjectStatusMonitor() {
+  const { getActiveProjects, getSystemHealth } = useProjectSystem();
+  const [projects, setProjects] = useState([]);
+  const [health, setHealth] = useState(null);
 
-  constructor(
-    templateEngine: TemplateEngine,
-    fileSystem: FileSystem,
-    gitIntegration: GitIntegration
-  ) {
-    this.templateEngine = templateEngine;
-    this.fileSystem = fileSystem;
-    this.gitIntegration = gitIntegration;
-  }
-
-  /**
-   * Generates comprehensive project documentation
-   */
-  async generateProjectDocs(spec: ProjectSpec): Promise<ProjectDocumentation> {
-    const documentation: ProjectDocumentation = {
-      overview: await this.generateOverview(spec),
-      architecture: await this.generateArchitecture(spec),
-      implementation: await this.generateImplementation(spec),
-      testing: await this.generateTesting(spec),
-      deployment: await this.generateDeployment(spec),
-      maintenance: await this.generateMaintenance(spec)
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [activeProjects, systemHealth] = await Promise.all([
+          getActiveProjects(),
+          getSystemHealth()
+        ]);
+        
+        setProjects(activeProjects);
+        setHealth(systemHealth);
+      } catch (error) {
+        console.error('Failed to load project data:', error);
+      }
     };
 
-    // Save documentation to file system
-    await this.saveDocumentation(spec.id, documentation);
+    loadData();
     
-    return documentation;
-  }
+    // Refresh every 30 seconds
+    const interval = setInterval(loadData, 30000);
+    return () => clearInterval(interval);
+  }, [getActiveProjects, getSystemHealth]);
 
-  /**
-   * Updates project progress in documentation
-   */
-  async updateProjectProgress(
-    projectId: ProjectId,
-    progressUpdate: ProgressUpdate
-  ): Promise<void> {
-    const documentation = await this.loadDocumentation(projectId);
-    
-    // Update progress section
-    documentation.progress = {
-      ...documentation.progress,
-      lastUpdate: new Date(),
-      currentStatus: progressUpdate.newStatus,
-      completedTasks: progressUpdate.completedTasks,
-      remainingTasks: progressUpdate.remainingTasks,
-      milestones: progressUpdate.milestones
-    };
+  return (
+    <div className="project-monitor">
+      <h2>Project Status Monitor</h2>
+      
+      <div className="system-health">
+        <h3>System Health: {health?.score}/100</h3>
+        <div className="health-details">
+          <p>Active Projects: {health?.details?.activeProjects}</p>
+          <p>Total Projects: {health?.details?.totalProjects}</p>
+          <p>Completed: {health?.details?.completedProjects}</p>
+        </div>
+      </div>
 
-    // Update implementation section if needed
-    if (progressUpdate.implementationChanges) {
-      documentation.implementation = await this.updateImplementation(
-        documentation.implementation,
-        progressUpdate.implementationChanges
-      );
-    }
-
-    // Save updated documentation
-    await this.saveDocumentation(projectId, documentation);
-  }
-
-  private async generateOverview(spec: ProjectSpec): Promise<DocumentationSection> {
-    return {
-      title: 'Project Overview',
-      content: await this.templateEngine.render('project-overview', {
-        title: spec.title,
-        description: spec.description,
-        priority: spec.priority,
-        tags: spec.tags,
-        metadata: spec.metadata
-      }),
-      lastUpdated: new Date()
-    };
-  }
-
-  private async generateArchitecture(spec: ProjectSpec): Promise<DocumentationSection> {
-    return {
-      title: 'Architecture',
-      content: await this.templateEngine.render('project-architecture', {
-        projectId: spec.id,
-        requirements: spec.metadata.requirements || [],
-        constraints: spec.metadata.constraints || []
-      }),
-      lastUpdated: new Date()
-    };
-  }
-
-  private async saveDocumentation(
-    projectId: ProjectId,
-    documentation: ProjectDocumentation
-  ): Promise<void> {
-    const docPath = this.getDocumentationPath(projectId);
-    await this.fileSystem.writeFile(docPath, JSON.stringify(documentation, null, 2));
-  }
-
-  private getDocumentationPath(projectId: ProjectId): string {
-    return `/docs/projects/active/v1/${projectId}-v1.0.0.md`;
-  }
-}
-
-export interface ProjectDocumentation {
-  readonly overview: DocumentationSection;
-  readonly architecture: DocumentationSection;
-  readonly implementation: DocumentationSection;
-  readonly testing: DocumentationSection;
-  readonly deployment: DocumentationSection;
-  readonly maintenance: DocumentationSection;
-  readonly progress?: ProgressDocumentation;
-}
-
-export interface DocumentationSection {
-  readonly title: string;
-  readonly content: string;
-  readonly lastUpdated: Date;
+      <div className="projects-list">
+        {projects.map(project => (
+          <ProjectCard key={project.project.projectId} project={project} />
+        ))}
+      </div>
+    </div>
+  );
 }
 ```
 
-## 🔧 Implementation Examples
-
-### 3. Progress Tracker Implementation
+### Project Validation
 
 ```typescript
-// Progress Tracking System
-// File: app/core/progress/ProgressTracker.ts
+// Example: Validating project data
+import { ProjectValidator } from '../utils/project-validator';
 
-/**
- * @projectId progress-tracker
- * @title Progress Tracker
- * @description Tracks project progress based on development activities
- * @version 1.0.0
- * @stage implementation
- */
-export class ProgressTracker {
-  private readonly activityAnalyzer: ActivityAnalyzer;
-  private readonly milestoneDetector: MilestoneDetector;
-  private readonly statusCalculator: StatusCalculator;
+async function validateProjectExample() {
+  const validator = new ProjectValidator();
+  
+  // Example project metadata
+  const metadata = {
+    projectId: 'feature-payment-system',
+    title: 'Payment Processing System',
+    stage: 'implementation',
+    createdDate: '2025-01-10',
+    lastUpdated: '2025-01-15',
+    priority: 'critical',
+    tags: ['payment', 'fintech', 'security'],
+    version: 'v1.0.0'
+  };
 
-  constructor(
-    activityAnalyzer: ActivityAnalyzer,
-    milestoneDetector: MilestoneDetector,
-    statusCalculator: StatusCalculator
-  ) {
-    this.activityAnalyzer = activityAnalyzer;
-    this.milestoneDetector = milestoneDetector;
-    this.statusCalculator = statusCalculator;
+  // Example project context
+  const context = {
+    problemStatement: 'Need to implement secure payment processing with multiple payment methods.',
+    businessValue: ['Enable online payments', 'Improve user experience', 'Increase revenue'],
+    successCriteria: ['Payment processing working', 'Multiple payment methods', 'Security compliance'],
+    constraints: ['PCI compliance required', 'Must integrate with existing system'],
+    stakeholders: ['Finance Team', 'Security Team', 'Product Team'],
+    technicalRequirements: ['Payment gateway integration', 'Security implementation', 'Testing'],
+    dependencies: [],
+    acceptanceCriteria: ['All payment methods working', 'Security tests passing'],
+    implementationGuidelines: ['Follow security standards', 'Write comprehensive tests'],
+    fileReferences: ['/app/api/payments.ts', '/app/types/payment.ts']
+  };
+
+  // Validate the project
+  const validation = validator.validateProject(metadata, context);
+  
+  console.log('Validation Results:');
+  console.log('Valid:', validation.isValid);
+  console.log('Errors:', validation.errors);
+  console.log('Warnings:', validation.warnings);
+  console.log('Suggestions:', validation.suggestions);
+  
+  return validation;
+}
+```
+
+## Component Examples
+
+### Project Card Component
+
+```typescript
+// Example: Reusable project card component
+import React from 'react';
+import { ProjectContextResult } from '../core/types/project';
+import styles from './project-card.module.scss';
+
+interface ProjectCardProps {
+  project: ProjectContextResult;
+  onUpdate?: (projectId: string, updates: any) => void;
+  onDelete?: (projectId: string) => void;
+  className?: string;
+}
+
+export function ProjectCard({ 
+  project, 
+  onUpdate, 
+  onDelete, 
+  className = '' 
+}: ProjectCardProps) {
+  const { project: metadata, status, health, validation } = project;
+  
+  const healthScore = health?.score || 0;
+  const healthColor = healthScore >= 80 ? 'green' : healthScore >= 60 ? 'yellow' : 'red';
+  
+  const handleUpdate = () => {
+    if (onUpdate) {
+      onUpdate(metadata.projectId, { lastUpdated: new Date().toISOString().split('T')[0] });
+    }
+  };
+
+  const handleDelete = () => {
+    if (onDelete && window.confirm('Are you sure you want to delete this project?')) {
+      onDelete(metadata.projectId);
+    }
+  };
+
+  return (
+    <div className={`${styles.projectCard} ${className}`}>
+      <div className={styles.header}>
+        <h3 className={styles.title}>{metadata.title}</h3>
+        <div className={styles.badges}>
+          <span className={`${styles.badge} ${styles[`priority-${metadata.priority}`]}`}>
+            {metadata.priority}
+          </span>
+          <span className={`${styles.badge} ${styles[`stage-${metadata.stage}`]}`}>
+            {metadata.stage}
+          </span>
+          <span className={`${styles.badge} ${styles[`health-${healthColor}`]}`}>
+            {healthScore}/100
+          </span>
+        </div>
+      </div>
+      
+      <div className={styles.meta}>
+        <div className={styles.metaItem}>
+          <span className={styles.label}>Version:</span>
+          <span className={styles.value}>{metadata.version}</span>
+        </div>
+        <div className={styles.metaItem}>
+          <span className={styles.label}>Last Updated:</span>
+          <span className={styles.value}>{metadata.lastUpdated}</span>
+        </div>
+        {metadata.assignedAgents && metadata.assignedAgents.length > 0 && (
+          <div className={styles.metaItem}>
+            <span className={styles.label}>Agents:</span>
+            <span className={styles.value}>{metadata.assignedAgents.join(', ')}</span>
+          </div>
+        )}
+      </div>
+
+      {status && (
+        <div className={styles.progress}>
+          <div className={styles.progressItem}>
+            <span className={styles.label}>Tasks:</span>
+            <span className={styles.value}>
+              {status.tasksCompleted}/{status.totalTasks}
+            </span>
+          </div>
+          <div className={styles.progressItem}>
+            <span className={styles.label}>Blockers:</span>
+            <span className={`${styles.value} ${status.activeBlockers > 0 ? styles.warning : styles.success}`}>
+              {status.activeBlockers}
+            </span>
+          </div>
+        </div>
+      )}
+
+      {validation && !validation.isValid && (
+        <div className={styles.validation}>
+          {validation.errors.length > 0 && (
+            <div className={styles.errors}>
+              <span className={styles.label}>Errors:</span>
+              <span className={styles.count}>{validation.errors.length}</span>
+            </div>
+          )}
+          {validation.warnings.length > 0 && (
+            <div className={styles.warnings}>
+              <span className={styles.label}>Warnings:</span>
+              <span className={styles.count}>{validation.warnings.length}</span>
+            </div>
+          )}
+        </div>
+      )}
+
+      <div className={styles.actions}>
+        <button onClick={handleUpdate} className={styles.updateButton}>
+          Update
+        </button>
+        <button onClick={handleDelete} className={styles.deleteButton}>
+          Delete
+        </button>
+      </div>
+
+      {metadata.tags && metadata.tags.length > 0 && (
+        <div className={styles.tags}>
+          {metadata.tags.map((tag, index) => (
+            <span key={index} className={styles.tag}>{tag}</span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+### Custom Hook Example
+
+```typescript
+// Example: Custom hook for project management
+import { useState, useEffect, useCallback } from 'react';
+import { useProjectSystem } from '../core/providers/project-provider';
+import { ProjectContextResult, ProjectMetadata } from '../core/types/project';
+
+export function useProjectManagement() {
+  const { 
+    getActiveProjects, 
+    createProject, 
+    updateProject, 
+    moveProject,
+    getSystemHealth 
+  } = useProjectSystem();
+  
+  const [projects, setProjects] = useState<ProjectContextResult[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [systemHealth, setSystemHealth] = useState(null);
+
+  const loadProjects = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      const [activeProjects, health] = await Promise.all([
+        getActiveProjects(),
+        getSystemHealth()
+      ]);
+      
+      setProjects(activeProjects);
+      setSystemHealth(health);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load projects');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [getActiveProjects, getSystemHealth]);
+
+  const createNewProject = useCallback(async (
+    metadata: ProjectMetadata, 
+    context: any
+  ) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      const result = await createProject(metadata, context, 'system');
+      
+      if (result.success) {
+        await loadProjects(); // Refresh the list
+        return result;
+      } else {
+        throw new Error(result.error || 'Failed to create project');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to create project');
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [createProject, loadProjects]);
+
+  const updateExistingProject = useCallback(async (
+    projectId: string, 
+    updates: Partial<ProjectMetadata>
+  ) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      const result = await updateProject(projectId, updates, 'system');
+      
+      if (result.success) {
+        await loadProjects(); // Refresh the list
+        return result;
+      } else {
+        throw new Error(result.error || 'Failed to update project');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update project');
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [updateProject, loadProjects]);
+
+  const moveProjectToStage = useCallback(async (
+    projectId: string, 
+    newStage: string
+  ) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      const result = await moveProject(projectId, newStage, 'system');
+      
+      if (result.success) {
+        await loadProjects(); // Refresh the list
+        return result;
+      } else {
+        throw new Error(result.error || 'Failed to move project');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to move project');
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [moveProject, loadProjects]);
+
+  useEffect(() => {
+    loadProjects();
+  }, [loadProjects]);
+
+  return {
+    projects,
+    systemHealth,
+    isLoading,
+    error,
+    loadProjects,
+    createNewProject,
+    updateExistingProject,
+    moveProjectToStage
+  };
+}
+```
+
+## Utility Examples
+
+### Project Search Utility
+
+```typescript
+// Example: Advanced project search functionality
+import { ProjectManager } from '../utils/project-manager';
+import { ProjectSearchResult, ProjectStage, ProjectPriority } from '../types/project';
+
+export class ProjectSearchService {
+  private manager: ProjectManager;
+
+  constructor(manager: ProjectManager) {
+    this.manager = manager;
   }
 
-  /**
-   * Initializes progress tracking for a new project
-   */
-  async initializeProject(projectId: ProjectId): Promise<void> {
-    const initialProgress: ProjectProgress = {
-      projectId,
-      status: 'planning',
-      completedTasks: 0,
+  async searchProjects(
+    searchTerm: string,
+    filters: {
+      stage?: ProjectStage[];
+      priority?: ProjectPriority[];
+      tags?: string[];
+      assignedAgents?: string[];
+      dateRange?: {
+        start: string;
+        end: string;
+      };
+    } = {}
+  ): Promise<ProjectSearchResult> {
+    try {
+      // Get all projects
+      const allProjects = await this.manager.getActiveProjects();
+      
+      // Apply text search
+      let filteredProjects = allProjects;
+      
+      if (searchTerm) {
+        const term = searchTerm.toLowerCase();
+        filteredProjects = filteredProjects.filter(project => 
+          project.project.title.toLowerCase().includes(term) ||
+          project.project.projectId.toLowerCase().includes(term) ||
+          project.context.problemStatement.toLowerCase().includes(term) ||
+          project.project.tags.some(tag => tag.toLowerCase().includes(term))
+        );
+      }
+
+      // Apply filters
+      if (filters.stage && filters.stage.length > 0) {
+        filteredProjects = filteredProjects.filter(project => 
+          filters.stage!.includes(project.project.stage)
+        );
+      }
+
+      if (filters.priority && filters.priority.length > 0) {
+        filteredProjects = filteredProjects.filter(project => 
+          filters.priority!.includes(project.project.priority)
+        );
+      }
+
+      if (filters.tags && filters.tags.length > 0) {
+        filteredProjects = filteredProjects.filter(project => 
+          filters.tags!.some(tag => project.project.tags.includes(tag))
+        );
+      }
+
+      if (filters.assignedAgents && filters.assignedAgents.length > 0) {
+        filteredProjects = filteredProjects.filter(project => 
+          project.project.assignedAgents?.some(agent => 
+            filters.assignedAgents!.includes(agent)
+          )
+        );
+      }
+
+      if (filters.dateRange) {
+        const startDate = new Date(filters.dateRange.start);
+        const endDate = new Date(filters.dateRange.end);
+        
+        filteredProjects = filteredProjects.filter(project => {
+          const projectDate = new Date(project.project.createdDate);
+          return projectDate >= startDate && projectDate <= endDate;
+        });
+      }
+
+      return {
+        projects: filteredProjects,
+        totalCount: filteredProjects.length,
+        searchTerm,
+        filters
+      };
+    } catch (error) {
+      console.error('Search failed:', error);
+      throw new Error(`Search failed: ${error.message}`);
+    }
+  }
+
+  async getProjectSuggestions(searchTerm: string): Promise<string[]> {
+    try {
+      const projects = await this.manager.getActiveProjects();
+      const suggestions = new Set<string>();
+      
+      projects.forEach(project => {
+        // Add project titles
+        if (project.project.title.toLowerCase().includes(searchTerm.toLowerCase())) {
+          suggestions.add(project.project.title);
+        }
+        
+        // Add project IDs
+        if (project.project.projectId.toLowerCase().includes(searchTerm.toLowerCase())) {
+          suggestions.add(project.project.projectId);
+        }
+        
+        // Add tags
+        project.project.tags.forEach(tag => {
+          if (tag.toLowerCase().includes(searchTerm.toLowerCase())) {
+            suggestions.add(tag);
+          }
+        });
+      });
+      
+      return Array.from(suggestions).slice(0, 10);
+    } catch (error) {
+      console.error('Failed to get suggestions:', error);
+      return [];
+    }
+  }
+}
+```
+
+### Project Analytics Utility
+
+```typescript
+// Example: Project analytics and reporting
+import { ProjectContextResult } from '../types/project';
+
+export class ProjectAnalytics {
+  static calculateProjectMetrics(projects: ProjectContextResult[]) {
+    const metrics = {
+      totalProjects: projects.length,
+      byStage: {} as Record<string, number>,
+      byPriority: {} as Record<string, number>,
+      byHealth: {
+        excellent: 0, // 90-100
+        good: 0,      // 70-89
+        fair: 0,      // 50-69
+        poor: 0       // 0-49
+      },
+      averageHealth: 0,
       totalTasks: 0,
-      milestones: [],
-      lastActivity: new Date(),
-      progressPercentage: 0
+      completedTasks: 0,
+      totalBlockers: 0,
+      validationIssues: 0
     };
 
-    await this.saveProgress(projectId, initialProgress);
+    let totalHealthScore = 0;
+
+    projects.forEach(project => {
+      const { project: metadata, status, health, validation } = project;
+      
+      // Count by stage
+      metrics.byStage[metadata.stage] = (metrics.byStage[metadata.stage] || 0) + 1;
+      
+      // Count by priority
+      metrics.byPriority[metadata.priority] = (metrics.byPriority[metadata.priority] || 0) + 1;
+      
+      // Health analysis
+      const healthScore = health?.score || 0;
+      totalHealthScore += healthScore;
+      
+      if (healthScore >= 90) metrics.byHealth.excellent++;
+      else if (healthScore >= 70) metrics.byHealth.good++;
+      else if (healthScore >= 50) metrics.byHealth.fair++;
+      else metrics.byHealth.poor++;
+      
+      // Task analysis
+      if (status) {
+        metrics.totalTasks += status.totalTasks;
+        metrics.completedTasks += status.tasksCompleted;
+        metrics.totalBlockers += status.activeBlockers;
+      }
+      
+      // Validation issues
+      if (validation) {
+        metrics.validationIssues += validation.errors.length + validation.warnings.length;
+      }
+    });
+
+    metrics.averageHealth = projects.length > 0 ? totalHealthScore / projects.length : 0;
+
+    return metrics;
   }
 
-  /**
-   * Updates project progress based on development activity
-   */
-  async updateProgress(
-    projectId: ProjectId,
-    activity: DevelopmentActivity
-  ): Promise<ProgressUpdate> {
-    const currentProgress = await this.loadProgress(projectId);
+  static generateProjectReport(projects: ProjectContextResult[]): string {
+    const metrics = this.calculateProjectMetrics(projects);
     
-    // Analyze the activity
-    const analysis = await this.activityAnalyzer.analyze(activity);
-    
-    // Update progress based on analysis
-    const updatedProgress = await this.calculateUpdatedProgress(
-      currentProgress,
-      analysis
-    );
-    
-    // Check for milestone completion
-    const milestoneUpdates = await this.milestoneDetector.checkMilestones(
-      projectId,
-      updatedProgress
-    );
-    
-    // Calculate new status
-    const newStatus = await this.statusCalculator.calculateStatus(
-      updatedProgress,
-      milestoneUpdates
-    );
-    
-    // Create progress update
-    const progressUpdate: ProgressUpdate = {
-      projectId,
-      previousStatus: currentProgress.status,
-      newStatus,
-      completedTasks: updatedProgress.completedTasks,
-      remainingTasks: updatedProgress.totalTasks - updatedProgress.completedTasks,
-      milestones: milestoneUpdates,
-      statusChanged: newStatus !== currentProgress.status,
-      timestamp: new Date()
-    };
-    
-    // Save updated progress
-    await this.saveProgress(projectId, updatedProgress);
-    
-    return progressUpdate;
+    const report = `
+# Project Analytics Report
+Generated: ${new Date().toISOString()}
+
+## Overview
+- **Total Projects**: ${metrics.totalProjects}
+- **Average Health Score**: ${metrics.averageHealth.toFixed(1)}/100
+- **Total Tasks**: ${metrics.totalTasks}
+- **Completed Tasks**: ${metrics.completedTasks}
+- **Completion Rate**: ${metrics.totalTasks > 0 ? ((metrics.completedTasks / metrics.totalTasks) * 100).toFixed(1) : 0}%
+- **Active Blockers**: ${metrics.totalBlockers}
+- **Validation Issues**: ${metrics.validationIssues}
+
+## Distribution by Stage
+${Object.entries(metrics.byStage)
+  .map(([stage, count]) => `- **${stage}**: ${count} projects`)
+  .join('\n')}
+
+## Distribution by Priority
+${Object.entries(metrics.byPriority)
+  .map(([priority, count]) => `- **${priority}**: ${count} projects`)
+  .join('\n')}
+
+## Health Distribution
+- **Excellent (90-100)**: ${metrics.byHealth.excellent} projects
+- **Good (70-89)**: ${metrics.byHealth.good} projects
+- **Fair (50-69)**: ${metrics.byHealth.fair} projects
+- **Poor (0-49)**: ${metrics.byHealth.poor} projects
+
+## Recommendations
+${this.generateRecommendations(metrics)}
+`;
+
+    return report;
   }
 
-  private async calculateUpdatedProgress(
-    current: ProjectProgress,
-    analysis: ActivityAnalysis
-  ): Promise<ProjectProgress> {
-    return {
-      ...current,
-      completedTasks: current.completedTasks + analysis.completedTasks,
-      totalTasks: Math.max(current.totalTasks, analysis.totalTasks),
-      lastActivity: new Date(),
-      progressPercentage: this.calculateProgressPercentage(
-        current.completedTasks + analysis.completedTasks,
-        Math.max(current.totalTasks, analysis.totalTasks)
-      )
-    };
+  private static generateRecommendations(metrics: any): string {
+    const recommendations = [];
+    
+    if (metrics.byHealth.poor > 0) {
+      recommendations.push(`- Address ${metrics.byHealth.poor} projects with poor health scores`);
+    }
+    
+    if (metrics.totalBlockers > 0) {
+      recommendations.push(`- Resolve ${metrics.totalBlockers} active blockers`);
+    }
+    
+    if (metrics.validationIssues > 0) {
+      recommendations.push(`- Fix ${metrics.validationIssues} validation issues`);
+    }
+    
+    if (metrics.byStage.plan > metrics.byStage.implementation) {
+      recommendations.push('- Consider moving more projects from planning to implementation');
+    }
+    
+    if (recommendations.length === 0) {
+      recommendations.push('- All projects are in good health!');
+    }
+    
+    return recommendations.join('\n');
   }
-
-  private calculateProgressPercentage(completed: number, total: number): number {
-    if (total === 0) return 0;
-    return Math.round((completed / total) * 100);
-  }
-
-  private async saveProgress(projectId: ProjectId, progress: ProjectProgress): Promise<void> {
-    // Implementation for saving progress
-  }
-
-  private async loadProgress(projectId: ProjectId): Promise<ProjectProgress> {
-    // Implementation for loading progress
-    throw new Error('Not implemented');
-  }
-}
-
-export interface ProjectProgress {
-  readonly projectId: ProjectId;
-  readonly status: ProjectStatus;
-  readonly completedTasks: number;
-  readonly totalTasks: number;
-  readonly milestones: Milestone[];
-  readonly lastActivity: Date;
-  readonly progressPercentage: number;
-}
-
-export interface ProgressUpdate {
-  readonly projectId: ProjectId;
-  readonly previousStatus: ProjectStatus;
-  readonly newStatus: ProjectStatus;
-  readonly completedTasks: number;
-  readonly remainingTasks: number;
-  readonly milestones: MilestoneUpdate[];
-  readonly statusChanged: boolean;
-  readonly timestamp: Date;
 }
 ```
 
-### 4. Project Validator Implementation
+## Testing Examples
+
+### Unit Test Example
 
 ```typescript
-// Project Validation System
-// File: app/core/validation/ProjectValidator.ts
+// Example: Comprehensive unit tests
+import { ProjectValidator } from '../utils/project-validator';
+import { ProjectMetadata, ProjectContext } from '../types/project';
 
-/**
- * @projectId project-validator
- * @title Project Validator
- * @description Validates project specifications and requirements
- * @version 1.0.0
- * @stage implementation
- */
-export class ProjectValidator {
-  private readonly schemaValidator: SchemaValidator;
-  private readonly businessRuleValidator: BusinessRuleValidator;
-
-  constructor(
-    schemaValidator: SchemaValidator,
-    businessRuleValidator: BusinessRuleValidator
-  ) {
-    this.schemaValidator = schemaValidator;
-    this.businessRuleValidator = businessRuleValidator;
-  }
-
-  /**
-   * Validates a project specification
-   */
-  async validateProjectSpec(spec: ProjectSpec): Promise<ValidationResult> {
-    const errors: ValidationError[] = [];
-
-    // Schema validation
-    const schemaErrors = await this.schemaValidator.validate(spec);
-    errors.push(...schemaErrors);
-
-    // Business rule validation
-    const businessErrors = await this.businessRuleValidator.validate(spec);
-    errors.push(...businessErrors);
-
-    // Custom validation rules
-    const customErrors = await this.validateCustomRules(spec);
-    errors.push(...customErrors);
-
-    return {
-      isValid: errors.length === 0,
-      errors,
-      warnings: await this.generateWarnings(spec)
-    };
-  }
-
-  /**
-   * Validates project ID format and uniqueness
-   */
-  async validateProjectId(id: string): Promise<ValidationResult> {
-    const errors: ValidationError[] = [];
-
-    // Format validation
-    if (!this.isValidProjectIdFormat(id)) {
-      errors.push({
-        field: 'id',
-        message: 'Project ID must be lowercase with hyphens only',
-        code: 'INVALID_FORMAT'
-      });
-    }
-
-    // Uniqueness validation
-    if (await this.isProjectIdExists(id)) {
-      errors.push({
-        field: 'id',
-        message: 'Project ID already exists',
-        code: 'DUPLICATE_ID'
-      });
-    }
-
-    return {
-      isValid: errors.length === 0,
-      errors,
-      warnings: []
-    };
-  }
-
-  private async validateCustomRules(spec: ProjectSpec): Promise<ValidationError[]> {
-    const errors: ValidationError[] = [];
-
-    // Title validation
-    if (spec.title.length < 3) {
-      errors.push({
-        field: 'title',
-        message: 'Title must be at least 3 characters long',
-        code: 'TITLE_TOO_SHORT'
-      });
-    }
-
-    if (spec.title.length > 200) {
-      errors.push({
-        field: 'title',
-        message: 'Title must be less than 200 characters',
-        code: 'TITLE_TOO_LONG'
-      });
-    }
-
-    // Description validation
-    if (spec.description.length < 10) {
-      errors.push({
-        field: 'description',
-        message: 'Description must be at least 10 characters long',
-        code: 'DESCRIPTION_TOO_SHORT'
-      });
-    }
-
-    // Priority validation
-    if (!['low', 'medium', 'high', 'critical'].includes(spec.priority)) {
-      errors.push({
-        field: 'priority',
-        message: 'Priority must be one of: low, medium, high, critical',
-        code: 'INVALID_PRIORITY'
-      });
-    }
-
-    return errors;
-  }
-
-  private isValidProjectIdFormat(id: string): boolean {
-    return /^[a-z0-9-]+$/.test(id) && id.length >= 3 && id.length <= 50;
-  }
-
-  private async isProjectIdExists(id: string): Promise<boolean> {
-    // Implementation to check if project ID exists
-    return false;
-  }
-
-  private async generateWarnings(spec: ProjectSpec): Promise<ValidationWarning[]> {
-    const warnings: ValidationWarning[] = [];
-
-    if (spec.tags.length === 0) {
-      warnings.push({
-        field: 'tags',
-        message: 'Consider adding tags for better project organization',
-        code: 'NO_TAGS'
-      });
-    }
-
-    if (spec.priority === 'critical' && spec.tags.length < 3) {
-      warnings.push({
-        field: 'tags',
-        message: 'Critical projects should have at least 3 tags',
-        code: 'CRITICAL_PROJECT_TAGS'
-      });
-    }
-
-    return warnings;
-  }
-}
-
-export interface ValidationResult {
-  readonly isValid: boolean;
-  readonly errors: ValidationError[];
-  readonly warnings: ValidationWarning[];
-}
-
-export interface ValidationError {
-  readonly field: string;
-  readonly message: string;
-  readonly code: string;
-}
-
-export interface ValidationWarning {
-  readonly field: string;
-  readonly message: string;
-  readonly code: string;
-}
-```
-
-## 🧪 Testing Examples
-
-### 5. Comprehensive Test Suite
-
-```typescript
-// Test Suite for Project Management System
-// File: test/core/project-management/ProjectManagementSystem.test.ts
-
-/**
- * @projectId project-management-tests
- * @title Project Management System Tests
- * @description Comprehensive test suite for project management system
- * @version 1.0.0
- * @stage testing
- */
-describe('ProjectManagementSystem', () => {
-  let system: ProjectManagementSystem;
-  let mockRepository: jest.Mocked<ProjectRepository>;
-  let mockDocumentGenerator: jest.Mocked<DocumentGenerator>;
-  let mockProgressTracker: jest.Mocked<ProgressTracker>;
-  let mockValidator: jest.Mocked<ProjectValidator>;
+describe('ProjectValidator', () => {
+  let validator: ProjectValidator;
 
   beforeEach(() => {
-    // Create mocks
-    mockRepository = createMockRepository();
-    mockDocumentGenerator = createMockDocumentGenerator();
-    mockProgressTracker = createMockProgressTracker();
-    mockValidator = createMockValidator();
-
-    // Create system instance
-    system = new ProjectManagementSystem(
-      mockRepository,
-      mockDocumentGenerator,
-      mockProgressTracker,
-      mockValidator
-    );
+    validator = new ProjectValidator();
   });
 
-  describe('createProject', () => {
-    it('should create a project successfully with valid specification', async () => {
-      // Arrange
-      const spec: ProjectSpec = createValidProjectSpec();
-      const expectedProject = createExpectedProject();
-      const expectedDocumentation = createExpectedDocumentation();
+  describe('validateProjectMetadata', () => {
+    it('should validate correct project metadata', () => {
+      const metadata: ProjectMetadata = {
+        projectId: 'test-project',
+        title: 'Test Project',
+        stage: 'plan',
+        createdDate: '2025-01-15',
+        lastUpdated: '2025-01-15',
+        priority: 'medium',
+        tags: ['test'],
+        version: 'v1.0.0'
+      };
 
-      mockValidator.validateProjectSpec.mockResolvedValue({
-        isValid: true,
-        errors: [],
-        warnings: []
-      });
-      mockDocumentGenerator.generateProjectDocs.mockResolvedValue(expectedDocumentation);
-      mockRepository.create.mockResolvedValue(expectedProject);
-      mockProgressTracker.initializeProject.mockResolvedValue();
-
-      // Act
-      const result = await system.createProject(spec);
-
-      // Assert
-      expect(result).toEqual(expectedProject);
-      expect(mockValidator.validateProjectSpec).toHaveBeenCalledWith(spec);
-      expect(mockDocumentGenerator.generateProjectDocs).toHaveBeenCalledWith(spec);
-      expect(mockRepository.create).toHaveBeenCalledWith({
-        ...spec,
-        documentation: expectedDocumentation,
-        status: 'active',
-        createdAt: expect.any(Date),
-        updatedAt: expect.any(Date)
-      });
-      expect(mockProgressTracker.initializeProject).toHaveBeenCalledWith(spec.id);
+      const result = validator.validateProjectMetadata(metadata);
+      
+      expect(result.isValid).toBe(true);
+      expect(result.errors).toHaveLength(0);
     });
 
-    it('should throw ValidationError for invalid specification', async () => {
-      // Arrange
-      const spec: ProjectSpec = createInvalidProjectSpec();
-      const validationErrors = [
-        { field: 'title', message: 'Title is required', code: 'REQUIRED_FIELD' }
-      ];
+    it('should reject invalid project ID', () => {
+      const metadata: ProjectMetadata = {
+        projectId: 'Invalid Project ID!', // Invalid characters
+        title: 'Test Project',
+        stage: 'plan',
+        createdDate: '2025-01-15',
+        lastUpdated: '2025-01-15',
+        priority: 'medium',
+        tags: ['test'],
+        version: 'v1.0.0'
+      };
 
-      mockValidator.validateProjectSpec.mockResolvedValue({
-        isValid: false,
-        errors: validationErrors,
-        warnings: []
-      });
-
-      // Act & Assert
-      await expect(system.createProject(spec))
-        .rejects
-        .toThrow(ValidationError);
+      const result = validator.validateProjectMetadata(metadata);
+      
+      expect(result.isValid).toBe(false);
+      expect(result.errors.some(e => e.field === 'projectId')).toBe(true);
     });
 
-    it('should handle repository errors gracefully', async () => {
-      // Arrange
-      const spec: ProjectSpec = createValidProjectSpec();
-      const repositoryError = new Error('Database connection failed');
+    it('should reject missing required fields', () => {
+      const metadata = {
+        projectId: 'test-project',
+        // Missing title, stage, etc.
+      } as ProjectMetadata;
 
-      mockValidator.validateProjectSpec.mockResolvedValue({
-        isValid: true,
-        errors: [],
-        warnings: []
-      });
-      mockDocumentGenerator.generateProjectDocs.mockResolvedValue(createExpectedDocumentation());
-      mockRepository.create.mockRejectedValue(repositoryError);
-
-      // Act & Assert
-      await expect(system.createProject(spec))
-        .rejects
-        .toThrow('Failed to create project');
+      const result = validator.validateProjectMetadata(metadata);
+      
+      expect(result.isValid).toBe(false);
+      expect(result.errors.length).toBeGreaterThan(0);
     });
   });
 
-  describe('updateProgress', () => {
-    it('should update project progress successfully', async () => {
-      // Arrange
-      const projectId = createProjectId('test-project');
-      const activity: DevelopmentActivity = createDevelopmentActivity();
-      const project = createExistingProject(projectId);
-      const progressUpdate: ProgressUpdate = createProgressUpdate();
+  describe('validateProjectContext', () => {
+    it('should validate complete project context', () => {
+      const context: ProjectContext = {
+        problemStatement: 'Need to implement a new feature for better user experience.',
+        businessValue: ['Improved user satisfaction', 'Increased engagement'],
+        successCriteria: ['Feature implemented', 'Tests passing', 'Documentation complete'],
+        constraints: ['Must be backward compatible', 'Performance requirements'],
+        stakeholders: ['Product Team', 'Engineering Team'],
+        technicalRequirements: ['API implementation', 'Database changes', 'Frontend updates'],
+        dependencies: [],
+        acceptanceCriteria: ['All tests passing', 'Code review approved'],
+        implementationGuidelines: ['Follow coding standards', 'Write tests'],
+        fileReferences: ['/app/api/feature.ts', '/app/components/Feature.tsx']
+      };
 
-      mockRepository.findById.mockResolvedValue(project);
-      mockProgressTracker.updateProgress.mockResolvedValue(progressUpdate);
-      mockDocumentGenerator.updateProjectProgress.mockResolvedValue();
-
-      // Act
-      const result = await system.updateProgress(projectId, activity);
-
-      // Assert
-      expect(result).toEqual(progressUpdate);
-      expect(mockRepository.findById).toHaveBeenCalledWith(projectId);
-      expect(mockProgressTracker.updateProgress).toHaveBeenCalledWith(projectId, activity);
-      expect(mockDocumentGenerator.updateProjectProgress).toHaveBeenCalledWith(
-        projectId,
-        progressUpdate
-      );
+      const result = validator.validateProjectContext(context);
+      
+      expect(result.isValid).toBe(true);
+      expect(result.errors).toHaveLength(0);
     });
 
-    it('should throw ProjectNotFoundError for non-existent project', async () => {
-      // Arrange
-      const projectId = createProjectId('non-existent');
-      const activity: DevelopmentActivity = createDevelopmentActivity();
+    it('should warn about incomplete context', () => {
+      const context: ProjectContext = {
+        problemStatement: 'Short problem', // Too short
+        businessValue: [], // Empty
+        successCriteria: ['Only one criteria'], // Too few
+        constraints: [],
+        stakeholders: [],
+        technicalRequirements: [],
+        dependencies: [],
+        acceptanceCriteria: [],
+        implementationGuidelines: [],
+        fileReferences: []
+      };
 
-      mockRepository.findById.mockResolvedValue(null);
-
-      // Act & Assert
-      await expect(system.updateProgress(projectId, activity))
-        .rejects
-        .toThrow(ProjectNotFoundError);
+      const result = validator.validateProjectContext(context);
+      
+      expect(result.warnings.length).toBeGreaterThan(0);
     });
   });
 });
-
-// Helper functions for test setup
-function createMockRepository(): jest.Mocked<ProjectRepository> {
-  return {
-    create: jest.fn(),
-    findById: jest.fn(),
-    update: jest.fn(),
-    delete: jest.fn(),
-    findAll: jest.fn()
-  };
-}
-
-function createMockDocumentGenerator(): jest.Mocked<DocumentGenerator> {
-  return {
-    generateProjectDocs: jest.fn(),
-    updateProjectProgress: jest.fn()
-  };
-}
-
-function createMockProgressTracker(): jest.Mocked<ProgressTracker> {
-  return {
-    initializeProject: jest.fn(),
-    updateProgress: jest.fn()
-  };
-}
-
-function createMockValidator(): jest.Mocked<ProjectValidator> {
-  return {
-    validateProjectSpec: jest.fn(),
-    validateProjectId: jest.fn()
-  };
-}
-
-function createValidProjectSpec(): ProjectSpec {
-  return {
-    id: createProjectId('test-project'),
-    title: 'Test Project',
-    description: 'A test project for validation',
-    priority: 'medium',
-    tags: ['test', 'validation'],
-    metadata: {
-      category: 'testing',
-      team: 'qa'
-    }
-  };
-}
-
-function createProjectId(id: string): ProjectId {
-  return id as ProjectId;
-}
 ```
 
-## 🔒 Security Examples
+## Integration Examples
 
-### 6. Secure Project Management Implementation
-
-```typescript
-// Secure Project Management System
-// File: app/core/security/SecureProjectManagement.ts
-
-/**
- * @projectId secure-project-management
- * @title Secure Project Management
- * @description Secure implementation of project management with authentication and authorization
- * @version 1.0.0
- * @stage implementation
- */
-export class SecureProjectManagement {
-  private readonly projectService: ProjectManagementSystem;
-  private readonly authService: AuthenticationService;
-  private readonly permissionService: PermissionService;
-  private readonly auditLogger: AuditLogger;
-
-  constructor(
-    projectService: ProjectManagementSystem,
-    authService: AuthenticationService,
-    permissionService: PermissionService,
-    auditLogger: AuditLogger
-  ) {
-    this.projectService = projectService;
-    this.authService = authService;
-    this.permissionService = permissionService;
-    this.auditLogger = auditLogger;
-  }
-
-  /**
-   * Creates a project with proper security checks
-   */
-  async createProject(
-    spec: ProjectSpec,
-    user: AuthenticatedUser
-  ): Promise<Project> {
-    // 1. Authenticate user
-    await this.authenticateUser(user);
-    
-    // 2. Check authorization
-    await this.checkCreatePermission(user);
-    
-    // 3. Validate project specification
-    await this.validateProjectSpec(spec, user);
-    
-    // 4. Create project
-    const project = await this.projectService.createProject(spec);
-    
-    // 5. Set project ownership
-    await this.setProjectOwnership(project.id, user.id);
-    
-    // 6. Log audit event
-    await this.auditLogger.logEvent({
-      type: 'project_created',
-      userId: user.id,
-      projectId: project.id,
-      timestamp: new Date(),
-      details: { title: project.title, priority: project.priority }
-    });
-    
-    return project;
-  }
-
-  /**
-   * Updates project with security validation
-   */
-  async updateProject(
-    projectId: ProjectId,
-    updates: ProjectUpdates,
-    user: AuthenticatedUser
-  ): Promise<Project> {
-    // 1. Authenticate user
-    await this.authenticateUser(user);
-    
-    // 2. Check project access
-    await this.checkProjectAccess(projectId, user);
-    
-    // 3. Check update permission
-    await this.checkUpdatePermission(projectId, user);
-    
-    // 4. Validate updates
-    await this.validateProjectUpdates(updates, user);
-    
-    // 5. Update project
-    const updatedProject = await this.projectService.updateProject(projectId, updates);
-    
-    // 6. Log audit event
-    await this.auditLogger.logEvent({
-      type: 'project_updated',
-      userId: user.id,
-      projectId,
-      timestamp: new Date(),
-      details: { updates }
-    });
-    
-    return updatedProject;
-  }
-
-  private async authenticateUser(user: AuthenticatedUser): Promise<void> {
-    if (!user.isAuthenticated) {
-      throw new AuthenticationError('User not authenticated');
-    }
-    
-    const isValid = await this.authService.validateToken(user.token);
-    if (!isValid) {
-      throw new AuthenticationError('Invalid authentication token');
-    }
-  }
-
-  private async checkCreatePermission(user: AuthenticatedUser): Promise<void> {
-    const hasPermission = await this.permissionService.hasPermission(
-      user.id,
-      'project:create'
-    );
-    
-    if (!hasPermission) {
-      throw new AuthorizationError('Insufficient permissions to create projects');
-    }
-  }
-
-  private async checkProjectAccess(
-    projectId: ProjectId,
-    user: AuthenticatedUser
-  ): Promise<void> {
-    const project = await this.projectService.getProject(projectId);
-    if (!project) {
-      throw new ProjectNotFoundError(projectId);
-    }
-    
-    const hasAccess = await this.permissionService.hasProjectAccess(
-      user.id,
-      projectId
-    );
-    
-    if (!hasAccess) {
-      throw new AuthorizationError('No access to this project');
-    }
-  }
-
-  private async validateProjectSpec(
-    spec: ProjectSpec,
-    user: AuthenticatedUser
-  ): Promise<void> {
-    // Validate project ID format
-    if (!this.isValidProjectId(spec.id)) {
-      throw new ValidationError('Invalid project ID format');
-    }
-    
-    // Check for sensitive information in title/description
-    if (this.containsSensitiveInfo(spec.title) || this.containsSensitiveInfo(spec.description)) {
-      throw new ValidationError('Project specification contains sensitive information');
-    }
-    
-    // Validate priority based on user role
-    if (spec.priority === 'critical' && !await this.permissionService.hasPermission(user.id, 'project:create:critical')) {
-      throw new AuthorizationError('Insufficient permissions to create critical projects');
-    }
-  }
-
-  private isValidProjectId(id: string): boolean {
-    return /^[a-z0-9-]+$/.test(id) && id.length >= 3 && id.length <= 50;
-  }
-
-  private containsSensitiveInfo(text: string): boolean {
-    const sensitivePatterns = [
-      /password/i,
-      /secret/i,
-      /key/i,
-      /token/i,
-      /credential/i
-    ];
-    
-    return sensitivePatterns.some(pattern => pattern.test(text));
-  }
-}
-
-export interface AuthenticatedUser {
-  readonly id: string;
-  readonly token: string;
-  readonly isAuthenticated: boolean;
-  readonly roles: string[];
-}
-
-export interface ProjectUpdates {
-  readonly title?: string;
-  readonly description?: string;
-  readonly priority?: ProjectPriority;
-  readonly tags?: string[];
-  readonly metadata?: ProjectMetadata;
-}
-```
-
-## 📊 Performance Examples
-
-### 7. Optimized Project Management with Caching
+### API Integration Example
 
 ```typescript
-// Optimized Project Management with Caching
-// File: app/core/performance/OptimizedProjectManagement.ts
+// Example: Integrating with external APIs
+import { ProjectManager } from '../utils/project-manager';
 
-/**
- * @projectId optimized-project-management
- * @title Optimized Project Management
- * @description High-performance project management with caching and optimization
- * @version 1.0.0
- * @stage implementation
- */
-export class OptimizedProjectManagement {
-  private readonly projectService: ProjectManagementSystem;
-  private readonly cache: ProjectCache;
-  private readonly batchProcessor: BatchProcessor;
-  private readonly performanceMonitor: PerformanceMonitor;
+export class ProjectAPIIntegration {
+  private manager: ProjectManager;
+  private apiBaseUrl: string;
 
-  constructor(
-    projectService: ProjectManagementSystem,
-    cache: ProjectCache,
-    batchProcessor: BatchProcessor,
-    performanceMonitor: PerformanceMonitor
-  ) {
-    this.projectService = projectService;
-    this.cache = cache;
-    this.batchProcessor = batchProcessor;
-    this.performanceMonitor = performanceMonitor;
+  constructor(manager: ProjectManager, apiBaseUrl: string) {
+    this.manager = manager;
+    this.apiBaseUrl = apiBaseUrl;
   }
 
-  /**
-   * Gets project with caching optimization
-   */
-  async getProject(projectId: ProjectId): Promise<Project> {
-    const startTime = Date.now();
-    
+  async syncWithExternalSystem(projectId: string): Promise<void> {
     try {
-      // Check cache first
-      const cached = await this.cache.get(projectId);
-      if (cached && !this.isExpired(cached)) {
-        await this.performanceMonitor.recordCacheHit(projectId);
-        return cached.project;
+      const project = await this.manager.getProject(projectId);
+      if (!project) {
+        throw new Error(`Project ${projectId} not found`);
       }
-      
-      // Load from service
-      const project = await this.projectService.getProject(projectId);
-      
-      // Cache the result
-      await this.cache.set(projectId, {
-        project,
-        timestamp: Date.now(),
-        ttl: this.getCacheTTL(project)
-      });
-      
-      await this.performanceMonitor.recordCacheMiss(projectId);
-      return project;
-      
-    } finally {
-      const duration = Date.now() - startTime;
-      await this.performanceMonitor.recordOperation('getProject', duration);
-    }
-  }
 
-  /**
-   * Batch processes multiple projects
-   */
-  async batchProcessProjects(
-    projectIds: ProjectId[],
-    operation: ProjectOperation
-  ): Promise<BatchResult[]> {
-    const startTime = Date.now();
-    
-    try {
-      // Process in optimized batches
-      const results = await this.batchProcessor.process(
-        projectIds,
-        async (batch: ProjectId[]) => {
-          return Promise.all(
-            batch.map(id => this.processProject(id, operation))
-          );
-        },
-        {
-          batchSize: 10,
-          delay: 100,
-          retries: 3
+      // Prepare data for external API
+      const externalData = {
+        id: project.project.projectId,
+        name: project.project.title,
+        status: project.project.stage,
+        priority: project.project.priority,
+        health: project.health?.score || 0,
+        lastUpdated: project.project.lastUpdated,
+        metadata: {
+          version: project.project.version,
+          tags: project.project.tags,
+          assignedAgents: project.project.assignedAgents
         }
-      );
-      
-      return results.flat();
-      
-    } finally {
-      const duration = Date.now() - startTime;
-      await this.performanceMonitor.recordOperation('batchProcessProjects', duration);
-    }
-  }
+      };
 
-  /**
-   * Optimized project search with indexing
-   */
-  async searchProjects(query: ProjectSearchQuery): Promise<ProjectSearchResult> {
-    const startTime = Date.now();
-    
-    try {
-      // Use cached search results if available
-      const cacheKey = this.generateSearchCacheKey(query);
-      const cached = await this.cache.get(cacheKey);
-      
-      if (cached && !this.isExpired(cached)) {
-        return cached.result;
-      }
-      
-      // Perform optimized search
-      const result = await this.performOptimizedSearch(query);
-      
-      // Cache search results
-      await this.cache.set(cacheKey, {
-        result,
-        timestamp: Date.now(),
-        ttl: 5 * 60 * 1000 // 5 minutes
+      // Send to external API
+      const response = await fetch(`${this.apiBaseUrl}/projects/${projectId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.EXTERNAL_API_TOKEN}`
+        },
+        body: JSON.stringify(externalData)
       });
-      
-      return result;
-      
-    } finally {
-      const duration = Date.now() - startTime;
-      await this.performanceMonitor.recordOperation('searchProjects', duration);
-    }
-  }
 
-  private async processProject(
-    projectId: ProjectId,
-    operation: ProjectOperation
-  ): Promise<BatchResult> {
-    try {
-      const result = await operation(projectId);
-      return { projectId, success: true, result };
+      if (!response.ok) {
+        throw new Error(`API request failed: ${response.statusText}`);
+      }
+
+      console.log(`Successfully synced project ${projectId} with external system`);
     } catch (error) {
-      return { projectId, success: false, error: String(error) };
+      console.error(`Failed to sync project ${projectId}:`, error);
+      throw error;
     }
   }
 
-  private async performOptimizedSearch(query: ProjectSearchQuery): Promise<ProjectSearchResult> {
-    // Implementation for optimized search
-    return {
-      projects: [],
-      total: 0,
-      page: query.page || 1,
-      pageSize: query.pageSize || 20
-    };
-  }
+  async importFromExternalSystem(externalProjectId: string): Promise<string> {
+    try {
+      // Fetch from external API
+      const response = await fetch(`${this.apiBaseUrl}/projects/${externalProjectId}`, {
+        headers: {
+          'Authorization': `Bearer ${process.env.EXTERNAL_API_TOKEN}`
+        }
+      });
 
-  private generateSearchCacheKey(query: ProjectSearchQuery): string {
-    return `search:${JSON.stringify(query)}`;
-  }
+      if (!response.ok) {
+        throw new Error(`Failed to fetch project: ${response.statusText}`);
+      }
 
-  private getCacheTTL(project: Project): number {
-    // Dynamic TTL based on project status
-    switch (project.status) {
-      case 'active':
-        return 2 * 60 * 1000; // 2 minutes
-      case 'completed':
-        return 30 * 60 * 1000; // 30 minutes
-      case 'planning':
-        return 5 * 60 * 1000; // 5 minutes
-      default:
-        return 10 * 60 * 1000; // 10 minutes
+      const externalData = await response.json();
+
+      // Convert to internal format
+      const metadata = {
+        projectId: externalData.id,
+        title: externalData.name,
+        stage: externalData.status,
+        createdDate: new Date().toISOString().split('T')[0],
+        lastUpdated: externalData.lastUpdated,
+        priority: externalData.priority,
+        tags: externalData.metadata.tags || [],
+        version: externalData.metadata.version || 'v1.0.0'
+      };
+
+      const context = {
+        problemStatement: `Imported project: ${externalData.name}`,
+        businessValue: ['Imported from external system'],
+        successCriteria: ['Project successfully imported'],
+        constraints: [],
+        stakeholders: [],
+        technicalRequirements: [],
+        dependencies: [],
+        acceptanceCriteria: [],
+        implementationGuidelines: [],
+        fileReferences: []
+      };
+
+      // Create project
+      const result = await this.manager.createProject(metadata, context, 'import-agent');
+      
+      if (result.success) {
+        return result.result.projectId;
+      } else {
+        throw new Error(result.error || 'Failed to create project');
+      }
+    } catch (error) {
+      console.error(`Failed to import project ${externalProjectId}:`, error);
+      throw error;
     }
   }
-
-  private isExpired(cached: CachedItem): boolean {
-    return Date.now() - cached.timestamp > cached.ttl;
-  }
-}
-
-export interface ProjectCache {
-  get(key: string): Promise<CachedItem | null>;
-  set(key: string, item: CachedItem): Promise<void>;
-  delete(key: string): Promise<void>;
-  clear(): Promise<void>;
-}
-
-export interface CachedItem {
-  readonly project?: Project;
-  readonly result?: any;
-  readonly timestamp: number;
-  readonly ttl: number;
-}
-
-export interface ProjectSearchQuery {
-  readonly query?: string;
-  readonly filters?: ProjectFilters;
-  readonly sort?: ProjectSort;
-  readonly page?: number;
-  readonly pageSize?: number;
-}
-
-export interface BatchResult {
-  readonly projectId: ProjectId;
-  readonly success: boolean;
-  readonly result?: any;
-  readonly error?: string;
 }
 ```
 
-## 📚 Related Documentation
+## Getting Started
 
-- [Architecture Examples](../architecture/README.md)
-- [Best Practices Examples](../best-practices/README.md)
-- [Testing Examples](../testing/README.md)
-- [Security Examples](../security/README.md)
-- [Performance Examples](../performance/README.md)
+1. **Review Examples**: Study the provided code examples
+2. **Understand Patterns**: Learn the common patterns and practices
+3. **Start Simple**: Begin with basic examples and build complexity
+4. **Test Everything**: Write tests for all your code
+5. **Document Changes**: Keep documentation current
+6. **Iterate and Improve**: Continuously refine your implementations
 
-## 🔗 External Resources
+## Next Steps
 
-- [TypeScript Examples](https://www.typescriptlang.org/docs/handbook/2/classes.html)
-- [Node.js Examples](https://nodejs.org/en/docs/guides/)
-- [React Examples](https://react.dev/learn)
-- [Testing Examples](https://jestjs.io/docs/getting-started)
+- [AI Project Examples](projects/README.md)
+- [AI Integration Examples](integration/README.md)
+- [AI Testing Examples](testing/README.md)
+- [AI Deployment Examples](deployment/README.md)
+- [AI Maintenance Examples](maintenance/README.md)
 
 ---
 
-*This documentation is part of the NextChat AI Coder Documentation system and follows document-driven architecture principles.*
+*These examples are part of the AI Coder Documentation system and follow document-driven architecture principles.*
