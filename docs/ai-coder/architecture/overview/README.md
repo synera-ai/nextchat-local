@@ -1,334 +1,195 @@
 # Document-Driven Architecture Overview
 
-## 🎯 What is Document-Driven Architecture?
+## Introduction
 
-Document-Driven Architecture (DDA) is a development methodology where documentation serves as the primary source of truth for system design, implementation, and maintenance. In this approach, code is generated, validated, and maintained based on comprehensive documentation that describes the system's behavior, structure, and requirements.
+Document-driven architecture is a development methodology that places documentation at the center of the development process. Instead of treating documentation as an afterthought, this approach makes documentation the primary driver of development decisions, project structure, and implementation strategies.
 
-## 🏗️ Core Principles
+## Core Principles
 
-### 1. Documentation as Source of Truth
-- **Primary Authority**: Documentation is the authoritative source for all system decisions
-- **Code Generation**: Code is generated from documentation specifications
-- **Validation**: All implementations are validated against documentation
-- **Synchronization**: Documentation and code must always be in sync
+### 1. Documentation as Code
+- All documentation is version-controlled
+- Documentation changes trigger development workflows
+- Documentation serves as the single source of truth
+- Documentation is treated with the same rigor as code
 
-### 2. Automated Documentation Generation
-- **Code Analysis**: Automatic extraction of documentation from code changes
-- **Commit Integration**: Documentation updates based on commit messages and changes
-- **Progress Tracking**: Automatic tracking of project progress from development activities
-- **Status Reporting**: Real-time status reports generated from documentation
+### 2. Project-First Development
+- Every development activity is associated with a project
+- Projects define scope, requirements, and success criteria
+- All work is tracked through project management systems
+- No standalone changes without project context
 
-### 3. Version-Controlled Documentation
-- **Semantic Versioning**: Documentation follows semantic versioning principles
-- **Change Tracking**: All documentation changes are tracked and versioned
-- **Migration Support**: Automated migration between documentation versions
-- **Rollback Capability**: Ability to rollback to previous documentation versions
+### 3. Version-Controlled Planning
+- All projects use semantic versioning
+- File naming prioritizes versioning over chronological organization
+- Plan analysis and version tracking take precedence
+- Clear version progression and rollback capabilities
 
-### 4. AI-Optimized Structure
-- **Machine Readable**: Documentation structured for AI consumption
-- **Consistent Format**: Standardized format across all documentation
-- **Metadata Rich**: Comprehensive metadata for AI processing
-- **Relationship Mapping**: Clear relationships between documentation components
+### 4. Regular Commit Integration
+- Every project phase includes regular commits
+- Commit messages reference project versions and phases
+- Automated commit triggers for project milestones
+- Clear audit trail of all changes
 
-## 🎯 Benefits for AI Development
+## Architecture Components
+
+### Project Management System
+```
+/docs/projects/
+├── ideas/                    # Initial concepts
+├── active/                   # Currently active projects
+│   ├── v1/                   # Version 1 projects
+│   ├── v2/                   # Version 2 projects
+│   └── v3/                   # Version 3 projects
+├── completed/                # Finished projects
+├── templates/                # Project templates
+├── plans/                    # Plan analysis documents
+└── versions/                 # Version tracking
+```
+
+### Documentation Structure
+```
+/docs/
+├── ai-coder/                 # AI-specific documentation
+├── human-developer/          # Human developer guides
+├── api/                      # API documentation
+├── components/               # Component documentation
+└── interactive/              # Interactive examples
+```
+
+### Code Integration
+```
+/app/
+├── core/                     # Core system components
+│   ├── types/                # Type definitions
+│   ├── utils/                # Utility functions
+│   └── providers/            # React providers
+├── components/               # UI components
+└── modules/                  # Feature modules
+```
+
+## Key Benefits
 
 ### For AI Agents
-- **Clear Context**: Comprehensive context for AI decision-making
-- **Consistent Patterns**: Standardized patterns for AI implementation
-- **Automated Validation**: Built-in validation for AI-generated code
-- **Progress Tracking**: Clear visibility into project progress and status
+- **Clear Context**: Comprehensive project context and requirements
+- **Structured Workflow**: Well-defined development processes
+- **Version Control**: Clear versioning and change tracking
+- **Quality Assurance**: Built-in validation and testing
 
-### For AI Coders
-- **Guided Development**: Clear guidance for implementation decisions
-- **Quality Assurance**: Built-in quality checks and validation
-- **Best Practices**: Embedded best practices and patterns
-- **Error Prevention**: Proactive error prevention through documentation
+### For Human Developers
+- **Better Organization**: Clear project structure and documentation
+- **Improved Collaboration**: Shared understanding through documentation
+- **Faster Onboarding**: Comprehensive guides and examples
+- **Quality Control**: Automated validation and testing
 
-### For AI Developers
-- **Rapid Onboarding**: Quick understanding of system architecture
-- **Consistent Implementation**: Standardized implementation approaches
-- **Automated Testing**: Documentation-driven test generation
-- **Performance Optimization**: Built-in performance guidelines
+### For Project Managers
+- **Visibility**: Clear project status and progress tracking
+- **Risk Management**: Early identification of issues and blockers
+- **Resource Planning**: Better estimation and resource allocation
+- **Quality Assurance**: Automated compliance checking
 
-## 🏛️ Architecture Components
+## Implementation Guidelines
 
-### 1. Documentation Layer
-```
-┌─────────────────────────────────────┐
-│           Documentation Layer       │
-├─────────────────────────────────────┤
-│ • Project Documentation             │
-│ • API Documentation                 │
-│ • Component Documentation           │
-│ • Architecture Documentation        │
-│ • Best Practices Documentation      │
-└─────────────────────────────────────┘
-```
+### Project Creation
+1. **Define Project Scope**: Clear problem statement and success criteria
+2. **Create Project Document**: Use standardized templates
+3. **Set Up Versioning**: Initialize with proper version numbers
+4. **Define Dependencies**: Identify and document all dependencies
+5. **Plan Implementation**: Break down into phases and tasks
 
-### 2. Processing Layer
-```
-┌─────────────────────────────────────┐
-│           Processing Layer          │
-├─────────────────────────────────────┤
-│ • Document Analysis                 │
-│ • Code Generation                   │
-│ • Validation Engine                 │
-│ • Progress Tracking                 │
-│ • Status Reporting                  │
-└─────────────────────────────────────┘
-```
+### Development Workflow
+1. **Load Project Context**: Always start with full project understanding
+2. **Follow Project Plan**: Stick to defined phases and tasks
+3. **Update Progress**: Regular progress updates and status reports
+4. **Validate Changes**: Ensure all changes align with project goals
+5. **Commit Regularly**: Frequent commits with proper messaging
 
-### 3. Integration Layer
-```
-┌─────────────────────────────────────┐
-│           Integration Layer         │
-├─────────────────────────────────────┤
-│ • Git Integration                   │
-│ • CI/CD Integration                 │
-│ • Project Management Integration    │
-│ • Monitoring Integration            │
-│ • Notification Integration          │
-└─────────────────────────────────────┘
-```
+### Quality Assurance
+1. **Documentation Validation**: Ensure all documentation is complete
+2. **Code Quality**: Follow established coding standards
+3. **Testing**: Comprehensive testing at all levels
+4. **Review Process**: Regular reviews and feedback
+5. **Continuous Improvement**: Learn from each project
 
-### 4. Application Layer
-```
-┌─────────────────────────────────────┐
-│           Application Layer         │
-├─────────────────────────────────────┤
-│ • NextChat Application              │
-│ • AI Agent Framework                │
-│ • Plugin System                     │
-│ • Component Library                 │
-│ • Testing Framework                 │
-└─────────────────────────────────────┘
-```
+## Best Practices
 
-## 🔄 Workflow Process
+### Documentation
+- **Keep It Current**: Update documentation with every change
+- **Be Specific**: Clear, actionable information
+- **Use Examples**: Practical examples and demonstrations
+- **Version Everything**: Track all changes and versions
 
-### 1. Documentation Creation
-```mermaid
-graph TD
-    A[Project Requirements] --> B[Documentation Creation]
-    B --> C[Documentation Validation]
-    C --> D[Version Control]
-    D --> E[Documentation Storage]
-```
+### Project Management
+- **Start Small**: Begin with minimal viable projects
+- **Iterate Quickly**: Short development cycles
+- **Measure Progress**: Clear metrics and success criteria
+- **Learn Continuously**: Regular retrospectives and improvements
 
-### 2. Code Generation
-```mermaid
-graph TD
-    A[Documentation Analysis] --> B[Code Generation]
-    B --> C[Code Validation]
-    C --> D[Implementation]
-    D --> E[Testing]
-```
+### Code Quality
+- **Follow Standards**: Consistent coding practices
+- **Write Tests**: Comprehensive test coverage
+- **Document Code**: Clear code documentation
+- **Review Regularly**: Regular code reviews
 
-### 3. Progress Tracking
-```mermaid
-graph TD
-    A[Code Changes] --> B[Commit Analysis]
-    B --> C[Progress Update]
-    C --> D[Documentation Update]
-    D --> E[Status Report]
-```
+## Common Patterns
 
-## 📋 Documentation Types
+### Project Lifecycle
+1. **Idea**: Initial concept and research
+2. **Plan**: Detailed planning and architecture
+3. **Design**: Technical design and specification
+4. **Implementation**: Active development
+5. **Testing**: Quality assurance and validation
+6. **Review**: Code review and refinement
+7. **Deployment**: Release and deployment
+8. **Completion**: Post-deployment and retrospective
 
-### 1. Project Documentation
-- **Project Overview**: High-level project description and goals
-- **Requirements**: Detailed functional and non-functional requirements
-- **Architecture**: System architecture and design decisions
-- **Implementation Plan**: Step-by-step implementation roadmap
-- **Testing Strategy**: Comprehensive testing approach
-- **Deployment Guide**: Deployment and configuration instructions
+### Version Management
+- **Semantic Versioning**: Major.Minor.Patch format
+- **Version Bumping**: Clear rules for version increments
+- **Rollback Strategy**: Ability to rollback to previous versions
+- **Migration Paths**: Clear upgrade and migration procedures
 
-### 2. API Documentation
-- **Endpoint Specifications**: Detailed API endpoint documentation
-- **Request/Response Schemas**: Complete data structure definitions
-- **Authentication**: Security and authentication requirements
-- **Error Handling**: Error codes and handling strategies
-- **Rate Limiting**: Performance and rate limiting guidelines
-- **Versioning**: API versioning and migration strategies
+### Integration Patterns
+- **Provider Pattern**: React context providers for state management
+- **Hook Pattern**: Custom hooks for reusable logic
+- **Component Pattern**: Reusable UI components
+- **Utility Pattern**: Shared utility functions
 
-### 3. Component Documentation
-- **Component Overview**: Component purpose and functionality
-- **Props Interface**: Complete props and interface definitions
-- **Usage Examples**: Practical usage examples and patterns
-- **Styling Guide**: Styling and theming guidelines
-- **Accessibility**: Accessibility features and compliance
-- **Performance**: Performance considerations and optimizations
+## Tools and Technologies
 
-### 4. Architecture Documentation
-- **System Overview**: High-level system architecture
-- **Component Relationships**: Component interaction diagrams
-- **Data Flow**: Data flow and processing pipelines
-- **Security Model**: Security architecture and implementation
-- **Scalability**: Scalability considerations and strategies
-- **Monitoring**: Monitoring and observability setup
+### Documentation
+- **Markdown**: Primary documentation format
+- **YAML**: Metadata and configuration
+- **JSON Schema**: Validation and structure
+- **Mermaid**: Diagrams and flowcharts
 
-## 🛠️ Implementation Guidelines
+### Version Control
+- **Git**: Primary version control system
+- **Semantic Versioning**: Version numbering scheme
+- **Branching Strategy**: Feature branches and main branch
+- **Commit Messages**: Structured commit message format
 
-### 1. Documentation Structure
-```yaml
-# Standard documentation structure
-project:
-  metadata:
-    id: string
-    title: string
-    version: string
-    stage: string
-    priority: string
-    tags: string[]
-  
-  context:
-    problem: string
-    solution: string
-    benefits: string[]
-    constraints: string[]
-  
-  requirements:
-    functional: string[]
-    non-functional: string[]
-    technical: string[]
-  
-  implementation:
-    phases: Phase[]
-    tasks: Task[]
-    deliverables: string[]
-  
-  success_criteria:
-    quantitative: Metric[]
-    qualitative: string[]
-```
+### Development
+- **TypeScript**: Type-safe development
+- **React**: UI framework
+- **Next.js**: Full-stack framework
+- **SCSS**: Styling and theming
 
-### 2. Code Generation Patterns
-```typescript
-// Example: Component generation from documentation
-interface ComponentSpec {
-  name: string;
-  props: PropDefinition[];
-  variants: VariantDefinition[];
-  examples: ExampleDefinition[];
-  tests: TestDefinition[];
-}
+## Getting Started
 
-// Generated component structure
-const Component = ({ ...props }: ComponentProps) => {
-  // Implementation based on documentation
-};
-```
+1. **Read This Guide**: Understand the architecture principles
+2. **Explore Examples**: Look at existing projects and documentation
+3. **Start Small**: Begin with a simple project
+4. **Follow Patterns**: Use established patterns and practices
+5. **Iterate and Improve**: Continuously refine your approach
 
-### 3. Validation Rules
-```yaml
-# Validation rules for documentation
-validation:
-  structure:
-    required_fields: string[]
-    field_types: object
-    relationships: object
-  
-  content:
-    completeness: boolean
-    accuracy: boolean
-    consistency: boolean
-  
-  code:
-    syntax: boolean
-    types: boolean
-    tests: boolean
-```
+## Next Steps
 
-## 📊 Metrics and Monitoring
-
-### 1. Documentation Quality Metrics
-- **Completeness**: Percentage of required documentation present
-- **Accuracy**: Percentage of documentation matching implementation
-- **Consistency**: Consistency across documentation sections
-- **Timeliness**: Time between code changes and documentation updates
-
-### 2. Code Quality Metrics
-- **Coverage**: Test coverage based on documentation requirements
-- **Compliance**: Adherence to documented standards and patterns
-- **Performance**: Performance metrics compared to documented targets
-- **Security**: Security compliance based on documented requirements
-
-### 3. Process Metrics
-- **Generation Time**: Time to generate code from documentation
-- **Validation Time**: Time to validate implementation against documentation
-- **Update Frequency**: Frequency of documentation updates
-- **Sync Accuracy**: Accuracy of documentation-code synchronization
-
-## 🎯 Best Practices
-
-### 1. Documentation Writing
-- **Be Specific**: Provide specific, actionable information
-- **Use Examples**: Include practical examples and use cases
-- **Maintain Consistency**: Follow consistent formatting and structure
-- **Keep Updated**: Regularly update documentation with changes
-
-### 2. Code Generation
-- **Follow Patterns**: Use established patterns and templates
-- **Validate Output**: Always validate generated code
-- **Test Thoroughly**: Comprehensive testing of generated code
-- **Monitor Performance**: Track performance of generated code
-
-### 3. Process Management
-- **Automate Everything**: Automate documentation and code generation
-- **Version Control**: Use proper version control for all artifacts
-- **Monitor Quality**: Continuously monitor documentation and code quality
-- **Iterate Continuously**: Continuously improve processes and tools
-
-## 🚀 Getting Started
-
-### 1. Set Up Documentation Structure
-```bash
-# Create documentation directory structure
-mkdir -p docs/ai-coder/architecture/overview
-mkdir -p docs/ai-coder/best-practices
-mkdir -p docs/ai-coder/examples
-mkdir -p docs/ai-coder/debugging
-mkdir -p docs/ai-coder/security
-mkdir -p docs/ai-coder/learning
-```
-
-### 2. Create Initial Documentation
-```bash
-# Create initial project documentation
-touch docs/ai-coder/architecture/overview/README.md
-touch docs/ai-coder/best-practices/coding/README.md
-touch docs/ai-coder/examples/code/README.md
-```
-
-### 3. Set Up Validation
-```bash
-# Set up documentation validation
-npm install -g markdownlint
-npm install -g yaml-lint
-```
-
-### 4. Configure Automation
-```bash
-# Set up automated documentation generation
-npm install -g documentation
-npm install -g jsdoc
-```
-
-## 📚 Related Documentation
-
-- [Project Management System](./project-management/README.md)
-- [Version Control Practices](./version-control/README.md)
-- [Commit Integration](./commit-integration/README.md)
-- [Plan Analysis Framework](./plan-analysis/README.md)
-- [Quality Assurance](./quality-assurance/README.md)
-
-## 🔗 External Resources
-
-- [Document-Driven Development](https://en.wikipedia.org/wiki/Document-driven_development)
-- [API-First Development](https://swagger.io/resources/articles/adopting-an-api-first-approach/)
-- [Test-Driven Development](https://en.wikipedia.org/wiki/Test-driven_development)
-- [Behavior-Driven Development](https://en.wikipedia.org/wiki/Behavior-driven_development)
+- [Project Management Documentation](project-management/README.md)
+- [Version Control Documentation](version-control/README.md)
+- [Commit Integration Documentation](commit-integration/README.md)
+- [Plan Analysis Documentation](plan-analysis/README.md)
+- [Quality Assurance Documentation](quality-assurance/README.md)
 
 ---
 
-*This documentation is part of the NextChat AI Coder Documentation system and follows document-driven architecture principles.*
+*This architecture overview is part of the AI Coder Documentation system and follows document-driven architecture principles.*
