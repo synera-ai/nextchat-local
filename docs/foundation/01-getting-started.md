@@ -1,0 +1,143 @@
+---
+title: "Getting Started with NextChat"
+description: "5-minute quick start guide to understand NextChat basics and get up and running"
+audience: ["everyone"]
+difficulty: "beginner"
+estimated-read-time: 5
+last-updated: 2025-10-15
+version: 1.0.0
+---
+
+# 🚀 Getting Started with NextChat
+
+Welcome to NextChat! This quick guide will get you up to speed in 5 minutes.
+
+## What is NextChat?
+
+NextChat is a lightweight, fast AI chat assistant that supports multiple AI providers (Claude, GPT-4, DeepSeek, Gemini Pro, and more). It features:
+
+- ✨ **Multi-Model Support** - Use any AI model you prefer
+- 🚀 **Fast & Lightweight** - ~5MB client, quick responses
+- 🔒 **Privacy First** - All data stored locally in your browser
+- 🎨 **Beautiful UI** - Dark mode, responsive design
+- 📱 **Works Everywhere** - Web, Desktop (Windows/Mac/Linux), iOS
+
+## Quick Start (2 minutes)
+
+### 1. Access NextChat
+- **Web**: Visit [app.nextchat.club](https://app.nextchat.club)
+- **Desktop**: Download from [GitHub Releases](https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web/releases)
+- **iPhone**: Download from [App Store](https://apps.apple.com/us/app/nextchat-ai/id6743085599)
+
+### 2. Add Your AI Model
+- Click **Settings** (gear icon)
+- Scroll to "Model Provider"
+- Choose your AI provider (OpenAI, Claude, etc.)
+- Enter your API key
+- ✅ You're ready!
+
+### 3. Start Chatting
+- Type your message in the input box
+- Press Enter or click Send
+- Watch the AI respond in real-time
+
+## Key Features (3 minutes)
+
+### 💬 Chat Management
+- **New Chat**: Click the + button to start fresh
+- **Search**: Find old conversations
+- **Export**: Save chats as files
+- **Share**: Share conversations with others
+
+### 🎭 Prompts & Masks
+- **Prompts**: Pre-written templates for common tasks
+- **Masks**: AI personality presets (writer, coder, analyst, etc.)
+- **Custom**: Create your own masks
+
+### ⚙️ Customization
+- **Dark Mode**: Settings → Theme
+- **Language**: Settings → Language (18+ languages)
+- **Model Parameters**: Adjust temperature, max tokens, etc.
+
+### 🔌 Plugins & MCP
+- **Plugins**: Extend functionality with OpenAPI integrations
+- **MCP Servers**: Connect to Model Context Protocol servers
+- See MCP Market for available integrations
+
+## Understanding the Layout
+
+```
+┌─────────────────────────────────────────┐
+│  NextChat              Settings ⚙️      │
+├─────────┬───────────────────────────────┤
+│         │                               │
+│  Chats  │  Chat Messages                │
+│ Sidebar │  (Main Content Area)          │
+│         │                               │
+│  + New  │  ┌─────────────────────────┐ │
+│         │  │ Your message here...    │ │
+│  📝 Mask│  └─────────────────────────┘ │
+│  🎯 All │  Send Button ➜               │
+│         │                               │
+└─────────┴───────────────────────────────┘
+```
+
+## Common Tasks
+
+### How to...
+
+**Change AI Model Mid-Chat?**
+- Settings → Model → Select new provider
+- Your chat history stays, model switches
+
+**Upload a File?**
+- Drag & drop or use the attachment button
+- Supported: images, PDFs, documents
+
+**Use a Specific Prompt Template?**
+- Click the 🎭 Masks icon
+- Select a mask
+- Start a new chat with that mask active
+
+**Export Your Chat?**
+- Click the three dots ⋯ on a chat
+- Select "Export"
+- Choose format (Markdown, PDF, etc.)
+
+## API Keys Needed
+
+Depending on which AI provider you want to use:
+
+| Provider | Key | Cost |
+|----------|-----|------|
+| OpenAI | API Key | Pay-per-use |
+| Claude | API Key | Pay-per-use |
+| DeepSeek | API Key | Very cheap |
+| Gemini | API Key | Free tier available |
+| Local | None | Self-hosted |
+
+[Get API Keys →](../05-quick-reference.md#api-keys)
+
+## Next Steps
+
+### Want to Learn More?
+- 📖 [Architecture Overview](./02-architecture-overview.md) - How NextChat works
+- 👥 [Project Management](./03-project-management.md) - How projects are organized
+- 🤖 [AI Agent Integration](./04-ai-agent-integration.md) - Contributing code
+
+### Need Help?
+- 🔍 [Quick Reference](./05-quick-reference.md) - FAQs and common questions
+- 🐛 Check the [Troubleshooting Guide](../developers/troubleshooting/)
+- 💬 Ask the community
+
+## Pro Tips
+
+💡 **Multi-Chat Comparison**: Open multiple chats to compare AI responses
+💡 **Prompt Optimization**: Refine prompts based on results
+💡 **Model Costs**: DeepSeek is budget-friendly for learning
+💡 **Privacy**: Turn off sync to keep everything local
+💡 **Keyboard Shortcuts**: Ctrl+N for new chat, Ctrl+/ for settings
+
+---
+
+**Ready to explore?** Head to [Architecture Overview](./02-architecture-overview.md) to understand how NextChat works, or jump to [Project Management](./03-project-management.md) if you want to contribute.
