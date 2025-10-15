@@ -1,0 +1,24 @@
+# Jaeger Configuration for NextChat
+# Distributed tracing configuration
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jaeger-config
+  namespace: nextchat
+data:
+  jaeger.yaml: |
+    service:
+      name: nextchat
+      version: v1.0.0
+    sampling:
+      type: const
+      param: 1
+    reporter:
+      logSpans: true
+      localAgentHostPort: jaeger-agent:6831
+    headers:
+      traceContextHeaderName: "uber-trace-id"
+    baggage_restrictions:
+      denyBaggageOnInitializationFailure: false
+      hostPort: ""
