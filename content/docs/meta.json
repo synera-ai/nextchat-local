@@ -29,11 +29,20 @@
     },
     {
       "title": "Reference",
-      "pages": []
+      "pages": [
+        "reference/index",
+        "reference/api/overview",
+        "reference/components/overview",
+        "reference/components/template"
+      ]
     },
     {
       "title": "Projects",
-      "pages": []
+      "pages": [
+        "projects/index",
+        "projects/templates/feature",
+        "projects/plans/plan-analysis-framework"
+      ]
     }
   ]
 }

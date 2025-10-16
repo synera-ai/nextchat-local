@@ -1,0 +1,117 @@
+---
+title: "API Overview"
+description: "NextChat REST API overview, authentication, and endpoints"
+audience: ["developers", "ai-agents"]
+difficulty: "intermediate"
+estimated-read-time: 5
+last-updated: 2025-01-16
+version: 1.0.0
+---
+
+# API Overview
+
+## Base URL
+
+```
+Production: https://api.nextchat.club/api
+Development: http://localhost:3000/api
+```
+
+## Authentication
+
+### API Key Authentication
+```bash
+# Header
+Authorization: Bearer YOUR_API_KEY
+```
+
+### Environment Variables
+```env
+OPENAI_API_KEY=sk-...
+ANTHROPIC_API_KEY=...
+DEEPSEEK_API_KEY=...
+```
+
+## Response Format
+
+### Success Response
+```json
+{
+  "success": true,
+  "data": {},
+  "timestamp": "2025-01-16T10:30:00Z"
+}
+```
+
+### Error Response
+```json
+{
+  "success": false,
+  "error": "Error message",
+  "code": "ERROR_CODE",
+  "timestamp": "2025-01-16T10:30:00Z"
+}
+```
+
+## Error Codes
+
+| Code | Status | Meaning |
+|------|--------|---------|
+| 400 | Bad Request | Invalid request parameters |
+| 401 | Unauthorized | Missing or invalid API key |
+| 403 | Forbidden | Insufficient permissions |
+| 404 | Not Found | Resource not found |
+| 429 | Too Many Requests | Rate limit exceeded |
+| 500 | Server Error | Internal server error |
+
+## Rate Limiting
+
+- Tier 1: 100 requests/minute
+- Tier 2: 500 requests/minute
+- Tier 3: Unlimited
+
+Headers:
+- `X-RateLimit-Limit`: Total requests allowed
+- `X-RateLimit-Remaining`: Requests remaining
+- `X-RateLimit-Reset`: Time until limit resets
+
+## API Endpoints
+
+### Chat Management
+- `POST /api/chat/create` - Create new chat
+- `GET /api/chat/list` - List chats
+- `POST /api/chat/{id}/message` - Send message
+- `GET /api/chat/{id}/history` - Get chat history
+
+### Models
+- `GET /api/models` - List available models
+- `GET /api/models/{id}` - Get model details
+
+### Configuration
+- `GET /api/config` - Get app configuration
+- `PUT /api/config` - Update configuration
+
+## Quick Start
+
+### 1. Get API Key
+Visit your settings and generate an API key.
+
+### 2. Make First Request
+```bash
+curl -X GET "http://localhost:3000/api/models" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+### 3. Create Chat
+```bash
+curl -X POST "http://localhost:3000/api/chat/create" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"title": "My Chat"}'
+```
+
+## See Also
+
+- [Endpoints](./endpoints)
+- [Error Handling](./error-handling)
+- [Authentication](./authentication)

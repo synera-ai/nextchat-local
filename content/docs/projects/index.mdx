@@ -1,0 +1,312 @@
+---
+title: "Project Management System"
+description: "Comprehensive project management system with version-controlled development, plan analysis, and automated commit integration"
+audience: ["developers", "ai-agents", "project-managers"]
+difficulty: "intermediate"
+estimated-read-time: 20
+last-updated: 2025-01-16
+version: 1.0.0
+---
+
+# Project Management System
+
+## Overview
+Comprehensive project management system with version-controlled development, plan analysis, and automated commit integration.
+
+## Directory Structure
+
+```
+/docs/projects/
+├── active/                   # Currently active projects
+│   ├── v1/                   # Version 1 projects
+│   ├── v2/                   # Version 2 projects
+│   └── v3/                   # Version 3 projects
+├── completed/                # Finished projects
+│   ├── v1/                   # Completed v1 projects
+│   ├── v2/                   # Completed v2 projects
+│   └── v3/                   # Completed v3 projects
+├── ideas/                    # Initial project concepts
+├── plans/                    # Plan analysis documents
+├── templates/                # Project templates
+├── versions/                 # Version tracking
+│   ├── v1.0.0/              # Version-specific docs
+│   ├── v1.1.0/
+│   └── v2.0.0/
+├── README.md                 # This file
+├── MIGRATION_LOG.md          # Migration history
+├── AGENT_PROMPTS.md          # Agent interaction prompts
+└── STATUS_TEMPLATE.md        # Status report template
+```
+
+## File Naming Convention
+
+### Version-First Naming
+```
+Format: {project-type}-{project-name}-v{major}.{minor}.{patch}.md
+
+Examples:
+- feature-user-auth-v1.0.0.md
+- refactor-mcp-market-v2.1.0.md
+- bugfix-login-flow-v1.0.1.md
+- documentation-api-guide-v1.0.0.md
+```
+
+### Project Types
+- **feature**: New feature development
+- **refactor**: Code refactoring and restructuring
+- **bugfix**: Bug fixes and issue resolution
+- **documentation**: Documentation updates and creation
+- **infrastructure**: Infrastructure and tooling improvements
+
+## Version Control
+
+### Semantic Versioning
+- **Major (X.0.0)**: Breaking changes, major architectural changes
+- **Minor (1.X.0)**: New features, significant enhancements
+- **Patch (1.0.X)**: Bug fixes, minor improvements
+
+### Version Progression
+- **v1.0.0**: Initial release and foundation
+- **v1.1.0**: Feature additions and enhancements
+- **v1.2.0**: Additional features and improvements
+- **v2.0.0**: Major architectural changes or breaking changes
+
+## Project Lifecycle
+
+### 1. Ideas Phase
+- Initial concept and research
+- Feasibility assessment
+- Resource estimation
+- Stakeholder alignment
+
+### 2. Plan Phase
+- Detailed planning and architecture
+- Task breakdown and estimation
+- Risk assessment and mitigation
+- Timeline and milestone planning
+
+### 3. Design Phase
+- Technical design and specification
+- Architecture decisions
+- Interface design
+- Implementation strategy
+
+### 4. Implementation Phase
+- Active development
+- Regular commits and progress tracking
+- Quality assurance
+- Integration testing
+
+### 5. Testing Phase
+- Comprehensive testing
+- Performance validation
+- Security testing
+- User acceptance testing
+
+### 6. Review Phase
+- Code review and refinement
+- Documentation review
+- Stakeholder review
+- Final validation
+
+### 7. Deployment Phase
+- Release preparation
+- Deployment execution
+- Monitoring and validation
+- Rollback planning
+
+### 8. Completion Phase
+- Post-deployment monitoring
+- Lessons learned
+- Documentation finalization
+- Project retrospective
+
+## Commit Integration
+
+### Commit Message Format
+```
+{type}({project}): {description} [v{major}.{minor}.{patch}]
+
+{detailed-description}
+
+- Files changed: {count} files
+- Lines added: {count} lines
+- Lines removed: {count} lines
+- Tasks completed: {completed}/{total}
+- Blockers resolved: {count} blockers
+- Next phase: {next-phase}
+```
+
+### Commit Types
+- **phase**: Project phase completion
+- **milestone**: Milestone achievement
+- **feat**: New feature implementation
+- **fix**: Bug fix or blocker resolution
+- **refactor**: Code refactoring
+- **docs**: Documentation updates
+- **test**: Testing implementation
+- **daily**: Daily progress updates
+- **complete**: Project completion
+
+### Automated Triggers
+- **Pre-commit**: Project context validation
+- **Post-commit**: Progress tracking and metrics update
+- **Phase completion**: Automatic phase commits
+- **Milestone achievement**: Milestone commits
+
+## Plan Analysis
+
+### Analysis Components
+- **Scope Analysis**: Project boundaries and dependencies
+- **Risk Assessment**: Technical and timeline risks
+- **Resource Planning**: Team, time, and budget allocation
+- **Quality Assurance**: Testing and validation strategies
+- **Version Planning**: Release and compatibility planning
+
+### Validation Checklist
+- [ ] Scope clearly defined and bounded
+- [ ] Dependencies identified and validated
+- [ ] Resource requirements realistic and available
+- [ ] Timeline achievable with appropriate buffers
+- [ ] Risk mitigation strategies in place
+- [ ] Quality criteria measurable and testable
+- [ ] Version strategy defined and communicated
+
+## Quick Commands
+
+### Core Project Management
+- `project new` - Start new project workflow
+- `project status` - Show current project status
+- `project continue` - Resume last active project
+- `project complete` - Mark current project as complete
+- `project version` - Show project version information
+- `project plan` - Show project plan analysis
+
+### Version Management
+- `version bump` - Increment project version
+- `version history` - Show version history
+- `version compare` - Compare project versions
+- `version rollback` - Rollback to previous version
+
+### Commit Management
+- `commit phase` - Commit current project phase
+- `commit milestone` - Commit project milestone
+- `commit daily` - Daily project commit
+- `commit final` - Final project completion commit
+
+### Plan Analysis
+- `plan analyze` - Analyze project plan
+- `plan validate` - Validate project plan
+- `plan optimize` - Optimize project plan
+- `plan track` - Track plan progress
+
+## Status Reporting
+
+### Enhanced Status Report Format
+```
+**Status Report**
+- Project: {name} [v{major}.{minor}.{patch}]
+- Stage: {current-stage}
+- Phase: {current-phase}
+- Files Changed: {count} files
+- Tasks: {completed}/{total}
+- Blockers: {count} active
+- Commits: {count} this phase
+- Next: {next-immediate-action}
+- Version: {next-version}
+```
+
+### Metrics Tracking
+- Task completion percentage
+- Blocker count and priority
+- Estimated vs actual time
+- File change count
+- Commit frequency
+- Version progression
+- Plan adherence percentage
+
+## Quality Assurance
+
+### Project Validation
+- All projects must have complete metadata
+- Version numbers must follow semantic versioning
+- File names must follow version-first convention
+- Progress logs must be updated regularly
+- Commits must reference project versions
+
+### Code Quality Integration
+- All code changes must align with project goals
+- Acceptance criteria must be validated
+- Project constraints must be respected
+- Architectural decisions must be documented
+- Performance impact must be assessed
+
+## Automation Integration
+
+### Git Hooks
+- **Pre-commit**: Validate project context and commit message format
+- **Post-commit**: Update project progress and metrics
+- **Pre-push**: Validate project completeness
+- **Post-merge**: Update project dependencies
+
+### CI/CD Integration
+- **Build triggers**: Automatic builds on phase and milestone commits
+- **Test execution**: Automated testing on feature commits
+- **Deployment triggers**: Deployment on project completion commits
+- **Quality gates**: Quality checks on all commit types
+
+## Best Practices
+
+### Project Creation
+- Always check for existing projects before creating new ones
+- Use appropriate project type and naming convention
+- Include complete metadata and context
+- Define clear acceptance criteria and success metrics
+
+### Development Workflow
+- Work within project scope and constraints
+- Update progress logs regularly
+- Commit frequently with proper message format
+- Document decisions and rationale
+
+### Version Management
+- Use semantic versioning consistently
+- Increment versions appropriately
+- Maintain version history and documentation
+- Plan version progression and compatibility
+
+### Plan Analysis
+- Analyze plans thoroughly before implementation
+- Validate assumptions and dependencies
+- Assess risks and mitigation strategies
+- Optimize plans for efficiency and quality
+
+## Migration History
+
+### v1.0.0 Migration (2025-01-15)
+- Migrated from date-based naming to version-based naming
+- Reorganized directory structure by version
+- Implemented commit integration system
+- Added plan analysis framework
+- Created comprehensive documentation
+
+### Benefits of Migration
+- **Version Control**: Clear version tracking and progression
+- **Plan Analysis**: Better support for plan analysis and optimization
+- **Commit Integration**: Improved commit message standards and automation
+- **Organization**: Version-organized directory structure
+- **Scalability**: Better support for multiple versions and branches
+
+## Support and Documentation
+
+### Additional Resources
+- **Templates**: [Project Templates](./templates/) - Project templates for different types
+- **Plans**: [Plan Analysis](./plans/) - Plan analysis framework and tools
+- **Versions**: [Version Tracking](./versions/) - Version-specific documentation
+- **Migration Log**: [Migration History](./migration-log) - Migration history and notes
+
+### Getting Help
+- Review project templates for guidance
+- Check plan analysis framework for planning help
+- Use quick commands for common operations
+- Refer to version documentation for version-specific information

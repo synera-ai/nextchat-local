@@ -1,0 +1,247 @@
+---
+title: "Feature Development Template"
+description: "Template for documenting feature development projects"
+audience: ["developers", "ai-agents", "project-managers"]
+difficulty: "intermediate"
+estimated-read-time: 10
+last-updated: 2025-01-16
+version: 1.0.0
+---
+
+# Feature Development Template
+
+## Metadata
+
+```yaml
+projectId: feature-descriptive-name
+title: "Descriptive Feature Title"
+stage: idea
+createdDate: YYYY-MM-DD
+lastUpdated: YYYY-MM-DD
+assignedAgents: []
+estimatedCompletion: YYYY-MM-DD
+priority: medium
+tags: [feature, frontend, backend, api]
+```
+
+## Human Context
+
+### Problem Statement
+<!-- Clear description of the problem or opportunity this feature addresses -->
+
+### Business Value
+<!-- Business impact and value proposition -->
+
+### Success Criteria
+<!-- Measurable success criteria -->
+- [ ] Criterion 1
+- [ ] Criterion 2
+- [ ] Criterion 3
+
+### Constraints
+<!-- Business and technical constraints -->
+- Constraint 1
+- Constraint 2
+
+### Stakeholders
+<!-- Key stakeholders and their interests -->
+- Stakeholder 1: Interest/concern
+- Stakeholder 2: Interest/concern
+
+## AI Agent Context
+
+### Technical Requirements
+<!-- Technical requirements for implementation -->
+- [ ] Requirement 1
+- [ ] Requirement 2
+- [ ] Requirement 3
+
+### Dependencies
+<!-- Project dependencies -->
+- **Dependency Name** (type: project/library/service/infrastructure/other)
+  - Status: pending/in-progress/completed/blocked
+  - Description: What this dependency provides
+
+### Acceptance Criteria
+<!-- Technical acceptance criteria -->
+- [ ] Criterion 1
+- [ ] Criterion 2
+- [ ] Criterion 3
+
+### Implementation Guidelines
+<!-- Implementation guidelines and best practices -->
+- Guideline 1
+- Guideline 2
+- Guideline 3
+
+### File References
+<!-- Relevant codebase files -->
+- **File Path**: Purpose/description
+- **File Path**: Purpose/description
+
+## Current Stage
+
+### Stage: idea
+<!-- Current stage: idea/plan/design/implementation/testing/review/deployment/completion -->
+
+### Description
+<!-- Description of current stage activities -->
+
+### Tasks
+<!-- Current stage tasks -->
+- **Task ID**: Task description
+  - Status: pending/in-progress/completed/blocked
+  - Assigned Agent: agent-name
+  - Estimated Hours: X
+  - Dependencies: [task-id-1, task-id-2]
+
+### Deliverables
+<!-- Expected deliverables for this stage -->
+- [ ] Deliverable 1
+- [ ] Deliverable 2
+
+## Progress Log
+
+<!-- Chronological log of project progress -->
+- **YYYY-MM-DD** - **Agent Name**: Description of work completed
+  - Stage: current-stage
+  - Files Changed: [file1, file2]
+
+## Decisions
+
+<!-- Key architectural and technical decisions -->
+- **YYYY-MM-DD** - **Decision**: Brief description
+  - **Rationale**: Why this decision was made
+  - **Impact**: What this affects
+  - **Alternatives**: Other options considered
+  - **Made By**: agent-name
+
+## Blockers
+
+<!-- Current issues and dependencies blocking progress -->
+- **Blocker ID**: Description of blocker
+  - Status: open/in-progress/resolved/deferred
+  - Priority: low/medium/high/critical
+  - Assigned To: agent-name
+  - Created: YYYY-MM-DD
+  - Impact: Description of impact
+
+## Handoff Notes
+
+<!-- Context for agent task transitions -->
+- **YYYY-MM-DD** - **From**: agent-name **To**: agent-name
+  - **Context**: What the receiving agent needs to know
+  - **Completed Work**: [list of completed items]
+  - **Next Steps**: [list of next actions]
+  - **Important Notes**: [warnings, considerations, etc.]
+
+## Enhanced Project Management (Optional)
+
+### Tasks
+<!-- Detailed task breakdown for the project -->
+- **TASK-001**: Task title
+  - **Description**: Detailed task description
+  - **Type**: code/docs/config/test/review
+  - **Status**: pending/in-progress/completed/blocked/cancelled
+  - **Priority**: low/medium/high/critical
+  - **Estimated Hours**: X
+  - **Actual Hours**: X
+  - **Assignee**: agent-name
+  - **Dependencies**: [TASK-002, TASK-003]
+  - **Blocks**: [TASK-004]
+  - **Files**: [file1, file2]
+  - **Commits**: [commit-hash-1, commit-hash-2]
+
+### Checkpoints
+<!-- Human review checkpoints and approval gates -->
+- **CHECKPOINT-001**: Checkpoint name
+  - **Type**: human_review/automated/milestone
+  - **Description**: What this checkpoint validates
+  - **Status**: pending/approved/rejected/bypassed
+  - **Required**: true/false
+  - **Approver**: stakeholder-name
+  - **Criteria**: [criterion1, criterion2]
+
+### Rollback Points
+<!-- Rollback points for safe project recovery -->
+- **ROLLBACK-001**: Rollback point name
+  - **Description**: What this rollback point represents
+  - **Created**: YYYY-MM-DD
+  - **Commit Hash**: commit-hash
+  - **Files**: [file1, file2]
+  - **Actions**: [action1, action2]
+
+### Automation
+<!-- Automated workflows and rules for the project -->
+- **Workflows**:
+  - **Name**: workflow-name
+    - **Trigger**: commit/pr/schedule/manual
+    - **Conditions**: [condition1, condition2]
+    - **Actions**: [action1, action2]
+    - **Notifications**: [notification1, notification2]
+
+- **Rules**:
+  - **Name**: rule-name
+    - **Condition**: condition description
+    - **Action**: action to take
+    - **Enabled**: true/false
+
+---
+
+## Feature-Specific Sections
+
+### User Stories
+<!-- User stories for this feature -->
+- As a [user type], I want [functionality] so that [benefit]
+- As a [user type], I want [functionality] so that [benefit]
+
+### UI/UX Considerations
+<!-- UI/UX requirements and considerations -->
+- Design requirement 1
+- Design requirement 2
+- Accessibility considerations
+
+### API Design
+<!-- API endpoints and data structures -->
+- **Endpoint**: `/api/endpoint`
+  - Method: GET/POST/PUT/DELETE
+  - Description: What this endpoint does
+  - Request/Response: Data structure
+
+### Database Changes
+<!-- Database schema changes required -->
+- Table: table-name
+  - Changes: Description of changes
+  - Migration: Migration details
+
+### Testing Strategy
+<!-- Testing approach for this feature -->
+- Unit tests: What to test
+- Integration tests: What to test
+- E2E tests: What to test
+- Manual testing: What to verify
+
+### Performance Considerations
+<!-- Performance requirements and optimizations -->
+- Performance requirement 1
+- Performance requirement 2
+- Optimization strategy
+
+### Security Considerations
+<!-- Security requirements and considerations -->
+- Security requirement 1
+- Security requirement 2
+- Authentication/authorization needs
+
+### Deployment Notes
+<!-- Deployment considerations and requirements -->
+- Environment variables needed
+- Configuration changes
+- Database migrations
+- Feature flags
+
+### Rollback Plan
+<!-- Plan for rolling back this feature if needed -->
+- Rollback steps
+- Data preservation considerations
+- Communication plan
