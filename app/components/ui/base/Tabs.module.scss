@@ -2,10 +2,8 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  border: 1px solid var(--border-color);
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: var(--card-shadow);
+  border-bottom: rgba(0, 0, 0, 0.1) 1px solid;
+  overflow: visible;
 }
 
 // Tab List (container for tab buttons)
