@@ -1,24 +1,23 @@
-import { source } from "@/lib/source";
-import { DocsLayout } from "fumadocs-ui/layouts/docs";
-import { baseOptions } from "@/lib/layout.shared";
-import { RootProvider } from "fumadocs-ui/provider/next";
-import "../styles/fumadocs.scss";
-
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      </head>
-      <body
-        style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
-      >
-        <RootProvider>
-          <DocsLayout tree={source.pageTree} {...baseOptions()}>
-            {children}
-          </DocsLayout>
-        </RootProvider>
-      </body>
-    </html>
+    <div className="min-h-screen bg-gray-50">
+      <nav className="bg-white shadow-sm border-b">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <h1 className="text-xl font-bold">
+              <a href="/docs" className="text-blue-600 hover:text-blue-800">
+                NextChat Documentation
+              </a>
+            </h1>
+            <div className="flex space-x-4">
+              <a href="/" className="text-gray-600 hover:text-gray-800">
+                ← Back to App
+              </a>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <main className="flex-1">{children}</main>
+    </div>
   );
 }

@@ -2,7 +2,7 @@ import { EventEmitter } from "events";
 
 export interface EventHandler {
   id: string;
-  handler: Function;
+  handler: (...args: any[]) => void;
   once?: boolean;
   priority?: number;
 }
@@ -120,11 +120,7 @@ export class EventBus extends EventEmitter {
     }
   }
 
-  async emit(
-    event: string,
-    data?: any,
-    options?: EventOptions,
-  ): Promise<boolean> {
+  emit(event: string, data?: any, options?: EventOptions): boolean {
     const startTime = Date.now();
     const metadata: EventMetadata = {
       timestamp: new Date(),
@@ -168,7 +164,11 @@ export class EventBus extends EventEmitter {
     }
   }
 
-  on(event: string, handler: Function, options?: EventOptions): this {
+  on(
+    event: string,
+    handler: (...args: any[]) => void,
+    options?: EventOptions,
+  ): this {
     const handlerId = this.generateHandlerId();
     const eventHandler: EventHandler = {
       id: handlerId,
@@ -200,7 +200,11 @@ export class EventBus extends EventEmitter {
     return this;
   }
 
-  once(event: string, handler: Function, options?: EventOptions): this {
+  once(
+    event: string,
+    handler: (...args: any[]) => void,
+    options?: EventOptions,
+  ): this {
     const handlerId = this.generateHandlerId();
     const eventHandler: EventHandler = {
       id: handlerId,
@@ -233,7 +237,7 @@ export class EventBus extends EventEmitter {
     return this;
   }
 
-  off(event: string, handler: Function): this {
+  off(event: string, handler: (...args: any[]) => void): this {
     // Remove from handlers map
     const handlers = this.handlers.get(event);
     if (handlers) {
@@ -304,7 +308,7 @@ export class EventBus extends EventEmitter {
       responseEvent || `${event}:response:${correlationId}`;
 
     // Emit the event
-    await this.emit(event, data, {
+    this.emit(event, data, {
       metadata: { correlationId },
     });
 
@@ -436,7 +440,7 @@ export class EventBus extends EventEmitter {
     return { ...this.config };
   }
 
-  isRunning(): boolean {
+  getIsRunning(): boolean {
     return this.isRunning;
   }
 }

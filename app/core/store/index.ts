@@ -1,34 +1,43 @@
 // Centralized store for NextChat
 
-import { createEnhancedStore } from '../utils/store';
-import { AppState, UserState, ChatState, SettingsState, PluginState, AgentState, UIState, PerformanceState } from '../types';
-import { eventBus, eventCreators, EVENT_TYPES } from '../utils/event-bus';
+import { createEnhancedStore } from "../utils/store";
+import {
+  AppState,
+  UserState,
+  ChatState,
+  SettingsState,
+  PluginState,
+  AgentState,
+  UIState,
+  PerformanceState,
+} from "../types";
+import { eventBus } from "../utils/event-bus";
 
 // Initial state
 const initialState: AppState = {
   user: {
-    id: '',
-    name: '',
-    email: '',
+    id: "",
+    name: "",
+    email: "",
     preferences: {
-      theme: 'auto',
-      language: 'en',
-      timezone: 'UTC',
-      dateFormat: 'MM/DD/YYYY',
+      theme: "auto",
+      language: "en",
+      timezone: "UTC",
+      dateFormat: "MM/DD/YYYY",
     },
     session: {
-      id: '',
+      id: "",
       startTime: Date.now(),
       lastActivity: Date.now(),
       isActive: true,
     },
   },
   app: {
-    version: '1.0.0',
-    environment: 'development',
+    version: "1.0.0",
+    environment: "development",
     config: {
-      apiUrl: '/api',
-      wsUrl: '/ws',
+      apiUrl: "/api",
+      wsUrl: "/ws",
       features: {},
       limits: {},
     },
@@ -40,11 +49,11 @@ const initialState: AppState = {
   chat: {
     sessions: [],
     currentSessionIndex: 0,
-    lastInput: '',
+    lastInput: "",
   },
   settings: {
-    theme: 'auto',
-    language: 'en',
+    theme: "auto",
+    language: "en",
     notifications: {
       email: true,
       push: true,
@@ -71,7 +80,7 @@ const initialState: AppState = {
     sidebar: {
       isOpen: true,
       width: 300,
-      activeTab: 'chat',
+      activeTab: "chat",
     },
     modals: {
       activeModals: [],
@@ -95,7 +104,7 @@ const initialState: AppState = {
     },
     monitoring: {
       isEnabled: true,
-      logLevel: 'info',
+      logLevel: "info",
       metrics: {},
     },
   },
@@ -108,14 +117,14 @@ const createActions = (set: any, get: any) => ({
     set((state: AppState) => {
       state.app.status.isInitialized = true;
     });
-    eventBus.emit(eventCreators.createAppReadyEvent());
+    eventBus.emit("app:ready");
   },
 
   setAppError: (error: Error) => {
     set((state: AppState) => {
       state.app.status.lastError = error.message;
     });
-    eventBus.emit(eventCreators.createAppErrorEvent(error));
+    eventBus.emit("app:error", error);
   },
 
   setOnlineStatus: (isOnline: boolean) => {
@@ -131,13 +140,13 @@ const createActions = (set: any, get: any) => ({
     });
   },
 
-  updateUserPreferences: (preferences: Partial<UserState['preferences']>) => {
+  updateUserPreferences: (preferences: Partial<UserState["preferences"]>) => {
     set((state: AppState) => {
       Object.assign(state.user.preferences, preferences);
     });
   },
 
-  updateUserSession: (session: Partial<UserState['session']>) => {
+  updateUserSession: (session: Partial<UserState["session"]>) => {
     set((state: AppState) => {
       Object.assign(state.user.session, session);
       state.user.session.lastActivity = Date.now();
@@ -145,22 +154,25 @@ const createActions = (set: any, get: any) => ({
   },
 
   // Chat actions
-  setChatSessions: (sessions: ChatState['sessions']) => {
+  setChatSessions: (sessions: ChatState["sessions"]) => {
     set((state: AppState) => {
       state.chat.sessions = sessions;
     });
   },
 
-  addChatSession: (session: ChatState['sessions'][0]) => {
+  addChatSession: (session: ChatState["sessions"][0]) => {
     set((state: AppState) => {
       state.chat.sessions.unshift(session);
     });
-    eventBus.emit(eventCreators.createChatSessionCreateEvent(session.id));
+    eventBus.emit("chat:session:created", session.id);
   },
 
-  updateChatSession: (sessionId: string, updates: Partial<ChatState['sessions'][0]>) => {
+  updateChatSession: (
+    sessionId: string,
+    updates: Partial<ChatState["sessions"][0]>,
+  ) => {
     set((state: AppState) => {
-      const session = state.chat.sessions.find(s => s.id === sessionId);
+      const session = state.chat.sessions.find((s) => s.id === sessionId);
       if (session) {
         Object.assign(session, updates);
       }
@@ -180,21 +192,23 @@ const createActions = (set: any, get: any) => ({
     });
   },
 
-  updateTheme: (theme: SettingsState['theme']) => {
+  updateTheme: (theme: SettingsState["theme"]) => {
     set((state: AppState) => {
       state.settings.theme = theme;
       state.user.preferences.theme = theme;
     });
   },
 
-  updateNotifications: (notifications: Partial<SettingsState['notifications']>) => {
+  updateNotifications: (
+    notifications: Partial<SettingsState["notifications"]>,
+  ) => {
     set((state: AppState) => {
       Object.assign(state.settings.notifications, notifications);
     });
   },
 
   // Plugin actions
-  addPlugin: (plugin: PluginState['plugins'][string]) => {
+  addPlugin: (plugin: PluginState["plugins"][string]) => {
     set((state: AppState) => {
       state.plugins.plugins[plugin.id] = plugin;
       if (plugin.status.isInstalled) {
@@ -204,10 +218,13 @@ const createActions = (set: any, get: any) => ({
         state.plugins.enabledPlugins.push(plugin.id);
       }
     });
-    eventBus.emit(eventCreators.createPluginInstallEvent(plugin.id));
+    eventBus.emit("plugin:installed", plugin.id);
   },
 
-  updatePlugin: (pluginId: string, updates: Partial<PluginState['plugins'][string]>) => {
+  updatePlugin: (
+    pluginId: string,
+    updates: Partial<PluginState["plugins"][string]>,
+  ) => {
     set((state: AppState) => {
       const plugin = state.plugins.plugins[pluginId];
       if (plugin) {
@@ -226,7 +243,7 @@ const createActions = (set: any, get: any) => ({
         }
       }
     });
-    eventBus.emit(eventCreators.createPluginInstallEvent(pluginId));
+    eventBus.emit("plugin:uninstalled", pluginId);
   },
 
   disablePlugin: (pluginId: string) => {
@@ -234,19 +251,24 @@ const createActions = (set: any, get: any) => ({
       const plugin = state.plugins.plugins[pluginId];
       if (plugin) {
         plugin.status.isEnabled = false;
-        state.plugins.enabledPlugins = state.plugins.enabledPlugins.filter(id => id !== pluginId);
+        state.plugins.enabledPlugins = state.plugins.enabledPlugins.filter(
+          (id) => id !== pluginId,
+        );
       }
     });
   },
 
   // Agent actions
-  addAgent: (agent: AgentState['agents'][string]) => {
+  addAgent: (agent: AgentState["agents"][string]) => {
     set((state: AppState) => {
       state.agents.agents[agent.id] = agent;
     });
   },
 
-  updateAgent: (agentId: string, updates: Partial<AgentState['agents'][string]>) => {
+  updateAgent: (
+    agentId: string,
+    updates: Partial<AgentState["agents"][string]>,
+  ) => {
     set((state: AppState) => {
       const agent = state.agents.agents[agentId];
       if (agent) {
@@ -265,7 +287,7 @@ const createActions = (set: any, get: any) => ({
         }
       }
     });
-    eventBus.emit(eventCreators.createAgentStartEvent(agentId));
+    eventBus.emit("agent:started", agentId);
   },
 
   stopAgent: (agentId: string) => {
@@ -273,7 +295,9 @@ const createActions = (set: any, get: any) => ({
       const agent = state.agents.agents[agentId];
       if (agent) {
         agent.status.isActive = false;
-        state.agents.activeAgents = state.agents.activeAgents.filter(id => id !== agentId);
+        state.agents.activeAgents = state.agents.activeAgents.filter(
+          (id) => id !== agentId,
+        );
       }
     });
   },
@@ -283,7 +307,7 @@ const createActions = (set: any, get: any) => ({
     set((state: AppState) => {
       state.ui.sidebar.isOpen = !state.ui.sidebar.isOpen;
     });
-    eventBus.emit(eventCreators.createUISidebarToggleEvent(get().ui.sidebar.isOpen));
+    eventBus.emit("ui:sidebar:toggled", get().ui.sidebar.isOpen);
   },
 
   setSidebarWidth: (width: number) => {
@@ -305,28 +329,34 @@ const createActions = (set: any, get: any) => ({
 
   closeModal: (modalId: string) => {
     set((state: AppState) => {
-      state.ui.modals.activeModals = state.ui.modals.activeModals.filter(id => id !== modalId);
+      state.ui.modals.activeModals = state.ui.modals.activeModals.filter(
+        (id) => id !== modalId,
+      );
       delete state.ui.modals.modalData[modalId];
     });
   },
 
-  addNotification: (notification: UIState['notifications']['notifications'][0]) => {
+  addNotification: (
+    notification: UIState["notifications"]["notifications"][0],
+  ) => {
     set((state: AppState) => {
       state.ui.notifications.notifications.unshift(notification);
       if (!notification.isRead) {
         state.ui.notifications.unreadCount++;
       }
     });
-    eventBus.emit(eventCreators.createUINotificationShowEvent(
-      notification.id,
-      notification.type,
-      notification.message
-    ));
+    eventBus.emit("ui:notification:show", {
+      id: notification.id,
+      type: notification.type,
+      message: notification.message,
+    });
   },
 
   markNotificationAsRead: (notificationId: string) => {
     set((state: AppState) => {
-      const notification = state.ui.notifications.notifications.find(n => n.id === notificationId);
+      const notification = state.ui.notifications.notifications.find(
+        (n) => n.id === notificationId,
+      );
       if (notification && !notification.isRead) {
         notification.isRead = true;
         state.ui.notifications.unreadCount--;
@@ -341,14 +371,16 @@ const createActions = (set: any, get: any) => ({
         if (isLoading) {
           state.ui.loading.loadingTasks.push(task);
         } else {
-          state.ui.loading.loadingTasks = state.ui.loading.loadingTasks.filter(t => t !== task);
+          state.ui.loading.loadingTasks = state.ui.loading.loadingTasks.filter(
+            (t) => t !== task,
+          );
         }
       }
     });
   },
 
   // Performance actions
-  updatePerformanceMetrics: (metrics: Partial<PerformanceState['metrics']>) => {
+  updatePerformanceMetrics: (metrics: Partial<PerformanceState["metrics"]>) => {
     set((state: AppState) => {
       Object.assign(state.performance.metrics, metrics);
     });
@@ -358,7 +390,7 @@ const createActions = (set: any, get: any) => ({
     set((state: AppState) => {
       state.performance.monitoring.metrics[metric] = value;
     });
-    eventBus.emit(eventCreators.createPerformanceMetricEvent(metric, value));
+    eventBus.emit("performance:metric", { metric, value });
   },
 
   // Utility actions
@@ -374,23 +406,27 @@ const createActions = (set: any, get: any) => ({
 
   getActivePlugins: () => {
     const state = get();
-    return state.plugins.enabledPlugins.map(id => state.plugins.plugins[id]).filter(Boolean);
+    return state.plugins.enabledPlugins
+      .map((id) => state.plugins.plugins[id])
+      .filter(Boolean);
   },
 
   getActiveAgents: () => {
     const state = get();
-    return state.agents.activeAgents.map(id => state.agents.agents[id]).filter(Boolean);
+    return state.agents.activeAgents
+      .map((id) => state.agents.agents[id])
+      .filter(Boolean);
   },
 
   getUnreadNotifications: () => {
     const state = get();
-    return state.ui.notifications.notifications.filter(n => !n.isRead);
+    return state.ui.notifications.notifications.filter((n) => !n.isRead);
   },
 });
 
 // Create the store
 export const useAppStore = createEnhancedStore(
-  'app',
+  "app",
   initialState,
   createActions,
   {
@@ -399,18 +435,18 @@ export const useAppStore = createEnhancedStore(
     immer: true,
     middleware: [
       {
-        name: 'event-emitter',
+        name: "event-emitter",
         handler: (store) => (next) => (action) => {
           const result = next(action);
           // Emit events for certain actions
-          if (action.type === 'initializeApp') {
-            eventBus.emit(eventCreators.createAppReadyEvent());
+          if (action.type === "initializeApp") {
+            eventBus.emit("app:ready");
           }
           return result;
         },
       },
     ],
-  }
+  },
 );
 
 // Export store types
@@ -420,18 +456,18 @@ export type AppStoreActions = ReturnType<typeof useAppStore.getState>;
 
 // Store hooks
 export const useAppState = () => useAppStore();
-export const useAppActions = () => useAppStore(state => state.actions);
-export const useAppSelector = <T>(selector: (state: AppStoreState) => T) => 
+export const useAppActions = () => useAppStore();
+export const useAppSelector = <T>(selector: (state: AppStoreState) => T) =>
   useAppStore(selector);
 
 // Specific selectors
-export const useUser = () => useAppStore(state => state.user);
-export const useChat = () => useAppStore(state => state.chat);
-export const useSettings = () => useAppStore(state => state.settings);
-export const usePlugins = () => useAppStore(state => state.plugins);
-export const useAgents = () => useAppStore(state => state.agents);
-export const useUI = () => useAppStore(state => state.ui);
-export const usePerformance = () => useAppStore(state => state.performance);
+export const useUser = () => useAppStore((state) => state.user);
+export const useChat = () => useAppStore((state) => state.chat);
+export const useSettings = () => useAppStore((state) => state.settings);
+export const usePlugins = () => useAppStore((state) => state.plugins);
+export const useAgents = () => useAppStore((state) => state.agents);
+export const useUI = () => useAppStore((state) => state.ui);
+export const usePerformance = () => useAppStore((state) => state.performance);
 
 // Export default
 export default useAppStore;
