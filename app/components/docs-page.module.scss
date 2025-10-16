@@ -823,3 +823,30 @@
     font-size: 0.8rem;
   }
 }
+
+// ========== CLOSE BUTTON STYLES ==========
+.closeButton {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: white;
+  color: #6b7280;
+  font-size: 1.25rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  
+  &:hover {
+    background: #fee2e2;
+    border-color: #ef4444;
+    color: #dc2626;
+  }
+  
+  &:active {
+    transform: scale(0.95);
+  }
+}

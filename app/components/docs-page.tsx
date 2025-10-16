@@ -404,6 +404,13 @@ Plugins are TypeScript classes implementing the Plugin interface.
           >
             {navLayout === "side" ? "≡ Side" : "⊕ Top"}
           </button>
+          <button
+            className={styles.closeButton}
+            onClick={() => navigate("/#")}
+            aria-label="Close documentation"
+          >
+            ✕
+          </button>
         </div>
       </header>
 
