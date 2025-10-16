@@ -53,7 +53,10 @@ function PageContent({ className }: { className?: string }) {
   const sectionProps = activeSection.props || {};
 
   return (
-    <div className={`${styles.container} ${className || ""}`}>
+    <div
+      className={`${styles.container} ${className || ""}`}
+      style={{ padding: "24px 32px" }}
+    >
       <SectionComponent {...sectionProps} />
     </div>
   );

@@ -20,13 +20,15 @@
 .content {
   flex: 1;
   overflow-y: auto;
-  padding: var(--spacing-lg);
+  padding: var(--spacing-lg) var(--spacing-xl);
 }
 
 .container {
   flex: 1;
   overflow-y: auto;
-  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-xl) var(--spacing-2xl);
 }
 
 .error {

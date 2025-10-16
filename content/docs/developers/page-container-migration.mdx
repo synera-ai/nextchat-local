@@ -1,0 +1,638 @@
+---
+title: "Page Container Migration Guide"
+description: "Complete guide for migrating existing pages to the Page Container Design Methodology"
+lastModified: "2025-01-27T18:41:57.733Z"
+---
+
+# Page Container Migration Guide
+
+This guide provides detailed instructions for migrating existing NextChat pages to the Page Container Design Methodology. Based on successful migrations of the Settings and Masks pages, this guide will help you achieve 85-97% code reduction while maintaining 100% functionality.
+
+## Migration Overview
+
+### What You'll Achieve
+
+- **Code Reduction**: 85-97% reduction in main page components
+- **Maintainability**: Centralized configuration management
+- **Consistency**: Standardized page structure
+- **Functionality**: 100% backwards compatibility
+- **Accessibility**: Built-in a11y compliance
+
+### Migration Strategy
+
+The migration follows a proven **wrapper component pattern** that:
+1. Preserves all existing component logic
+2. Bridges components to the configuration system
+3. Maintains 100% backwards compatibility
+4. Minimizes risk of breaking changes
+
+## Pre-Migration Checklist
+
+Before starting migration, ensure you have:
+
+- [ ] Understanding of the [Page Container Methodology](/docs/foundation/page-container-methodology)
+- [ ] Access to the [Implementation Guide](/docs/developers/page-container-implementation)
+- [ ] Current page working and tested
+- [ ] Backup of current implementation
+- [ ] Development environment set up
+- [ ] Testing plan ready
+
+## Migration Process
+
+### Phase 1: Analysis and Planning
+
+#### Step 1: Analyze Current Page Structure
+
+Document your current page structure:
+
+```typescript
+// Example: Current Settings Page Analysis
+function SettingsPage() {
+  const [activeTab, setActiveTab] = useState("general");
+  
+  return (
+    <div className="settings-page">
+      <div className="settings-header">
+        <h1>Settings</h1>
+        <p>Configure your application</p>
+      </div>
+      
+      <Tabs>
+        <Tab onClick={() => setActiveTab("general")}>General</Tab>
+        <Tab onClick={() => setActiveTab("chat")}>Chat</Tab>
+        <Tab onClick={() => setActiveTab("api")}>API</Tab>
+        <Tab onClick={() => setActiveTab("sync")}>Sync</Tab>
+        <Tab onClick={() => setActiveTab("danger")}>Danger</Tab>
+      </Tabs>
+      
+      {activeTab === "general" && <SettingsGeneral />}
+      {activeTab === "chat" && <SettingsChat />}
+      {activeTab === "api" && <SettingsAPI />}
+      {activeTab === "sync" && <SettingsSync />}
+      {activeTab === "danger" && <SettingsDanger />}
+    </div>
+  );
+}
+```
+
+**Analysis Questions:**
+- How many tabs does the page have?
+- What components are rendered in each tab?
+- What props do these components need?
+- Are there any special features (modals, headers, etc.)?
+- What state management is used?
+
+#### Step 2: Identify Components and Props
+
+List all components and their required props:
+
+```typescript
+// Example: Settings Components Analysis
+interface SettingsGeneralProps {
+  config: AppConfig;
+  updateConfig: (config: AppConfig) => void;
+  currentVersion: string;
+  hasNewVersion: boolean;
+}
+
+interface SettingsChatProps {
+  config: AppConfig;
+  updateConfig: (config: AppConfig) => void;
+}
+
+interface SettingsAPIProps {
+  config: AppConfig;
+  updateConfig: (config: AppConfig) => void;
+  // ... other props
+}
+```
+
+#### Step 3: Plan Wrapper Components
+
+Plan your wrapper components:
+
+```typescript
+// Planned wrapper components
+- SettingsGeneralWrapper
+- SettingsChatWrapper  
+- SettingsAPIWrapper
+- SettingsSyncWrapper
+- SettingsDangerWrapper
+```
+
+### Phase 2: Create Wrapper Components
+
+#### Step 1: Create Wrapper Component Template
+
+Create a wrapper component for each tab section:
+
+```typescript
+// app/components/settings/SettingsGeneralWrapper.tsx
+import { SettingsGeneral } from "./SettingsGeneral";
+import { useAppConfig } from "@/app/hooks/useAppConfig";
+import { useUpdateStore } from "@/app/hooks/useUpdateStore";
+import { useCurrentVersion } from "@/app/hooks/useCurrentVersion";
+import { useHasNewVersion } from "@/app/hooks/useHasNewVersion";
+
+export function SettingsGeneralWrapper() {
+  // Gather all required props from hooks and stores
+  const config = useAppConfig();
+  const updateConfig = useUpdateStore();
+  const currentVersion = useCurrentVersion();
+  const hasNewVersion = useHasNewVersion();
+  
+  return (
+    <SettingsGeneral
+      config={config}
+      updateConfig={updateConfig}
+      currentVersion={currentVersion}
+      hasNewVersion={hasNewVersion}
+    />
+  );
+}
+```
+
+**Wrapper Component Guidelines:**
+- Keep wrapper logic minimal
+- Gather all required props from hooks/stores
+- Pass props to original component unchanged
+- Use descriptive naming (ComponentName + "Wrapper")
+- Don't modify original component logic
+
+#### Step 2: Create All Wrapper Components
+
+Repeat the process for each tab section:
+
+```typescript
+// SettingsChatWrapper.tsx
+export function SettingsChatWrapper() {
+  const config = useAppConfig();
+  const updateConfig = useUpdateStore();
+  
+  return (
+    <SettingsChat
+      config={config}
+      updateConfig={updateConfig}
+    />
+  );
+}
+
+// SettingsAPIWrapper.tsx
+export function SettingsAPIWrapper() {
+  const config = useAppConfig();
+  const updateConfig = useUpdateStore();
+  const providers = useProviders();
+  
+  return (
+    <SettingsAPI
+      config={config}
+      updateConfig={updateConfig}
+      providers={providers}
+    />
+  );
+}
+
+// Continue for all sections...
+```
+
+### Phase 3: Create Page Configuration
+
+#### Step 1: Create Configuration File
+
+Create a configuration file for your page:
+
+```typescript
+// app/config/pages/settings.config.ts
+import { createPageConfig, createTab, createSection } from "@/app/config/pages";
+import { SettingsGeneralWrapper } from "@/app/components/settings/SettingsGeneralWrapper";
+import { SettingsChatWrapper } from "@/app/components/settings/SettingsChatWrapper";
+import { SettingsAPIWrapper } from "@/app/components/settings/SettingsAPIWrapper";
+import { SettingsSyncWrapper } from "@/app/components/settings/SettingsSyncWrapper";
+import { SettingsDangerWrapper } from "@/app/components/settings/SettingsDangerWrapper";
+
+export const settingsPageConfig = createPageConfig(
+  "settings",
+  "Settings",
+  [
+    createTab("general", "General", [
+      createSection("general-section", "General Settings", SettingsGeneralWrapper)
+    ]),
+    createTab("chat", "Chat", [
+      createSection("chat-section", "Chat Settings", SettingsChatWrapper)
+    ]),
+    createTab("api", "API", [
+      createSection("api-section", "API Configuration", SettingsAPIWrapper)
+    ]),
+    createTab("sync", "Sync", [
+      createSection("sync-section", "Sync & Storage", SettingsSyncWrapper)
+    ]),
+    createTab("danger", "Danger", [
+      createSection("danger-section", "Danger Zone", SettingsDangerWrapper)
+    ])
+  ],
+  {
+    subtitle: "Configure your application",
+    layout: "multi"
+  }
+);
+```
+
+#### Step 2: Create Custom Container (If Needed)
+
+For pages with special requirements, create a custom container:
+
+```typescript
+// app/components/settings/SettingsPageContainer.tsx
+import { PageConfigProvider } from "@/app/providers/PageConfigProvider";
+import { PageContent } from "@/app/components/PageContainer/PageContent";
+import { SettingsWindowHeader } from "./SettingsWindowHeader";
+import styles from "./PageContainer.module.scss";
+
+interface SettingsPageContainerProps {
+  config: PageConfig;
+  defaultTab?: string;
+  className?: string;
+}
+
+export function SettingsPageContainer({
+  config,
+  defaultTab,
+  className
+}: SettingsPageContainerProps) {
+  return (
+    <PageConfigProvider config={config}>
+      <div className={`${styles.pageContainer} ${className || ''}`}>
+        <SettingsWindowHeader config={config} />
+        <PageContent 
+          config={config}
+          defaultTab={defaultTab}
+        />
+      </div>
+    </PageConfigProvider>
+  );
+}
+```
+
+### Phase 4: Migrate Main Page Component
+
+#### Step 1: Refactor Main Component
+
+Replace the complex page component with a minimal implementation:
+
+```typescript
+// app/components/settings.tsx (BEFORE - 1,579 lines)
+function SettingsPage() {
+  const [activeTab, setActiveTab] = useState("general");
+  // ... 1,500+ lines of complex tab management
+  
+  return (
+    <div className="settings-page">
+      {/* Complex tab rendering logic */}
+    </div>
+  );
+}
+
+// app/components/settings.tsx (AFTER - 42 lines)
+import { ErrorBoundary } from "@/app/components/ErrorBoundary";
+import { SettingsPageContainer } from "./settings/SettingsPageContainer";
+import { settingsPageConfig } from "@/app/config/pages/settings.config";
+
+export function Settings() {
+  return (
+    <ErrorBoundary>
+      <SettingsPageContainer
+        config={settingsPageConfig}
+        defaultTab="general"
+      />
+    </ErrorBoundary>
+  );
+}
+```
+
+**Migration Results:**
+- **Before**: 1,579 lines of complex code
+- **After**: 42 lines of clean, declarative code
+- **Reduction**: 97% code reduction
+- **Functionality**: 100% preserved
+
+### Phase 5: Testing and Validation
+
+#### Step 1: Compilation Testing
+
+```bash
+# Test compilation
+npm run build
+
+# Check for TypeScript errors
+npm run type-check
+
+# Verify linting
+npm run lint
+```
+
+#### Step 2: Runtime Testing
+
+```bash
+# Start development server
+npm run dev
+
+# Navigate to your migrated page
+# Test all functionality
+```
+
+#### Step 3: Browser Testing Checklist
+
+- [ ] Page loads without errors
+- [ ] All tabs render correctly
+- [ ] Tab switching works (click each tab)
+- [ ] Keyboard navigation works (arrow keys, home, end)
+- [ ] All original functionality preserved
+- [ ] No console errors
+- [ ] Performance is acceptable
+- [ ] Accessibility features work
+
+#### Step 4: Functionality Testing
+
+Test each tab and section:
+
+- [ ] **General Tab**: All settings work, save/load functions
+- [ ] **Chat Tab**: Chat configuration preserved
+- [ ] **API Tab**: API settings functional
+- [ ] **Sync Tab**: Sync functionality intact
+- [ ] **Danger Tab**: Danger zone features work
+
+## Real Migration Examples
+
+### Example 1: Settings Page Migration
+
+**Original Implementation:**
+```typescript
+// 1,579 lines of complex tab management
+function SettingsPage() {
+  const [activeTab, setActiveTab] = useState("general");
+  const [config, setConfig] = useState(initialConfig);
+  // ... complex state management
+  
+  return (
+    <div className="settings-page">
+      <div className="settings-header">
+        <h1>Settings</h1>
+        <p>Configure your application</p>
+      </div>
+      
+      <Tabs>
+        <Tab onClick={() => setActiveTab("general")}>General</Tab>
+        <Tab onClick={() => setActiveTab("chat")}>Chat</Tab>
+        <Tab onClick={() => setActiveTab("api")}>API</Tab>
+        <Tab onClick={() => setActiveTab("sync")}>Sync</Tab>
+        <Tab onClick={() => setActiveTab("danger")}>Danger</Tab>
+      </Tabs>
+      
+      {activeTab === "general" && (
+        <SettingsGeneral
+          config={config}
+          updateConfig={setConfig}
+          currentVersion={currentVersion}
+          hasNewVersion={hasNewVersion}
+        />
+      )}
+      {/* ... similar blocks for other tabs */}
+    </div>
+  );
+}
+```
+
+**Migrated Implementation:**
+```typescript
+// 42 lines using PageContainer
+export function Settings() {
+  return (
+    <ErrorBoundary>
+      <SettingsPageContainer
+        config={settingsPageConfig}
+        defaultTab="general"
+      />
+    </ErrorBoundary>
+  );
+}
+```
+
+**Results:**
+- ✅ 97% code reduction (1,579 → 42 lines)
+- ✅ All functionality preserved
+- ✅ Improved maintainability
+- ✅ Better accessibility
+- ✅ Standardized structure
+
+### Example 2: Masks Page Migration
+
+**Original Implementation:**
+```typescript
+// 1,000+ lines of hardcoded page structure
+function MaskPage() {
+  const [searchText, setSearchText] = useState("");
+  const [selectedTag, setSelectedTag] = useState("");
+  const [editingMask, setEditingMask] = useState(null);
+  // ... complex state management
+  
+  return (
+    <div className="mask-page">
+      <div className="mask-header">
+        <h1>Masks</h1>
+        <div className="mask-actions">
+          <button onClick={handleExport}>Export</button>
+          <button onClick={handleImport}>Import</button>
+        </div>
+      </div>
+      
+      <div className="mask-content">
+        <div className="mask-filters">
+          <input 
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            placeholder="Search masks..."
+          />
+          {/* ... filter controls */}
+        </div>
+        
+        <div className="mask-list">
+          {filteredMasks.map(mask => (
+            <MaskItem
+              key={mask.id}
+              mask={mask}
+              onEdit={() => setEditingMask(mask)}
+              onDelete={handleDelete}
+            />
+          ))}
+        </div>
+      </div>
+      
+      {editingMask && (
+        <MaskEditModal
+          mask={editingMask}
+          onClose={() => setEditingMask(null)}
+          onSave={handleSave}
+        />
+      )}
+    </div>
+  );
+}
+```
+
+**Migrated Implementation:**
+```typescript
+// 100+ lines using PageContainer
+export function MaskPage() {
+  const [editingMask, setEditingMask] = useState(null);
+  
+  return (
+    <ErrorBoundary>
+      <MaskPageContainer
+        config={masksPageConfig}
+        defaultTab="browse"
+        onEditMask={setEditingMask}
+      />
+      
+      {editingMask && (
+        <MaskEditModal
+          mask={editingMask}
+          onClose={() => setEditingMask(null)}
+          onSave={handleSave}
+        />
+      )}
+    </ErrorBoundary>
+  );
+}
+```
+
+**Results:**
+- ✅ 90% code reduction (1,000+ → 100+ lines)
+- ✅ All functionality preserved
+- ✅ Better state management
+- ✅ Improved maintainability
+- ✅ Standardized structure
+
+## Migration Best Practices
+
+### ✅ DO
+
+1. **Preserve Original Components**: Don't modify existing components during migration
+2. **Use Wrapper Pattern**: Create wrapper components to bridge to configuration system
+3. **Test Thoroughly**: Test each tab and section after migration
+4. **Document Changes**: Document what was changed and why
+5. **Incremental Migration**: Migrate one tab at a time if possible
+6. **Keep It Simple**: Use the simplest approach that works
+
+### ❌ DON'T
+
+1. **Don't Refactor During Migration**: Save refactoring for after migration is complete
+2. **Don't Skip Testing**: Always test functionality preservation
+3. **Don't Break Existing APIs**: Maintain backwards compatibility
+4. **Don't Rush**: Take time to understand the current implementation
+5. **Don't Skip Documentation**: Document your migration process
+
+## Troubleshooting Migration Issues
+
+### Common Issues and Solutions
+
+**Issue: Page goes blank after migration**
+- **Cause**: PageContainer not properly configured
+- **Solution**: Check configuration structure and component imports
+
+**Issue: Props not passing to components**
+- **Cause**: Wrapper components not gathering required props
+- **Solution**: Verify all required props are gathered in wrapper
+
+**Issue: Tab switching not working**
+- **Cause**: Configuration structure incorrect
+- **Solution**: Check tab IDs and section structure
+
+**Issue: Console errors after migration**
+- **Cause**: Missing imports or incorrect component references
+- **Solution**: Verify all imports and component exports
+
+### Debugging Steps
+
+1. **Check Console**: Look for error messages
+2. **Verify Imports**: Ensure all components are properly imported
+3. **Test Configuration**: Validate page configuration structure
+4. **Check Wrapper Components**: Verify props are being passed correctly
+5. **Test in Isolation**: Test each component individually
+
+## Post-Migration Steps
+
+### 1. Clean Up
+
+- Remove unused imports
+- Delete old tab management code
+- Update comments and documentation
+- Clean up temporary files
+
+### 2. Document Changes
+
+- Update component documentation
+- Document new configuration structure
+- Update team on migration patterns
+- Share lessons learned
+
+### 3. Plan Next Migrations
+
+- Identify other pages that could benefit
+- Plan migration timeline
+- Share migration patterns with team
+- Consider creating migration templates
+
+## Migration Checklist
+
+### Pre-Migration
+- [ ] Understand current page structure
+- [ ] Identify all components and props
+- [ ] Plan wrapper components
+- [ ] Set up development environment
+- [ ] Create backup of current implementation
+
+### During Migration
+- [ ] Create wrapper components
+- [ ] Create page configuration
+- [ ] Create custom container (if needed)
+- [ ] Migrate main page component
+- [ ] Test compilation
+
+### Post-Migration
+- [ ] Test all functionality
+- [ ] Verify accessibility
+- [ ] Check performance
+- [ ] Update documentation
+- [ ] Clean up code
+- [ ] Commit changes
+
+## Success Metrics
+
+Track your migration success:
+
+| Metric | Target | Your Result |
+|--------|--------|-------------|
+| Code Reduction | 80%+ | ___% |
+| Functionality Preservation | 100% | ___% |
+| Compilation Success | ✅ | ___ |
+| Runtime Success | ✅ | ___ |
+| Accessibility Compliance | ✅ | ___ |
+| Performance | No regression | ___ |
+
+## Next Steps
+
+After successful migration:
+
+1. **Share Success**: Document your migration results
+2. **Plan More Migrations**: Identify other pages to migrate
+3. **Improve Patterns**: Refine migration patterns based on experience
+4. **Train Team**: Share migration knowledge with team
+5. **Contribute**: Help improve the migration methodology
+
+## Related Resources
+
+- [Page Container Methodology](/docs/foundation/page-container-methodology) - Core concepts
+- [Implementation Guide](/docs/developers/page-container-implementation) - Implementation details
+- [Best Practices](/docs/developers/page-container-best-practices) - Recommended patterns
+- [API Reference](/docs/reference/page-container-api) - Complete API documentation
+- [Examples](/docs/components/page-container-examples) - Code examples

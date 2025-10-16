@@ -1,0 +1,428 @@
+---
+title: "Page Container Implementation Guide"
+description: "Step-by-step guide to implementing the Page Container Design Methodology"
+lastModified: "2025-01-27T18:41:57.733Z"
+---
+
+# Page Container Implementation Guide
+
+This guide provides step-by-step instructions for implementing the Page Container Design Methodology in your NextChat pages. Follow this guide to create consistent, maintainable pages with the proven page container pattern.
+
+## Prerequisites
+
+Before starting, ensure you have:
+- Basic understanding of React and TypeScript
+- Familiarity with NextChat's component structure
+- Access to the existing page container infrastructure
+- Understanding of the [Page Container Methodology](/docs/foundation/page-container-methodology)
+
+## Quick Start
+
+### 1. Basic Page Container Usage
+
+The simplest way to use Page Container is with an existing configuration:
+
+```typescript
+import { PageContainer } from "@/app/components/PageContainer";
+import { settingsPageConfig } from "@/app/config/pages";
+
+export function SettingsPage() {
+  return <PageContainer config={settingsPageConfig} />;
+}
+```
+
+### 2. With Custom Configuration
+
+Create your own page configuration:
+
+```typescript
+import { createPageConfig, createTab, createSection } from "@/app/config/pages";
+
+const myPageConfig = createPageConfig(
+  "my-page",
+  "My Page",
+  [
+    createTab("tab1", "First Tab", [
+      createSection("section1", "First Section", MyComponent)
+    ])
+  ]
+);
+
+export function MyPage() {
+  return <PageContainer config={myPageConfig} />;
+}
+```
+
+## Step-by-Step Implementation
+
+### Step 1: Create Wrapper Components
+
+Wrapper components bridge existing components to the page container system:
+
+```typescript
+// app/components/my-page/MyComponentWrapper.tsx
+import { MyComponent } from "./MyComponent";
+import { useRequiredHooks } from "@/app/hooks/useRequiredHooks";
+
+export function MyComponentWrapper() {
+  // Gather all required props from hooks and stores
+  const config = useAppConfig();
+  const updateConfig = useUpdateConfig();
+  const someState = useSomeState();
+  
+  return (
+    <MyComponent
+      config={config}
+      updateConfig={updateConfig}
+      someState={someState}
+    />
+  );
+}
+```
+
+**Key Points:**
+- Wrapper components gather all required props
+- Original components remain unchanged
+- Use descriptive names ending in "Wrapper"
+- Keep wrapper logic minimal
+
+### Step 2: Create Page Configuration
+
+Define your page structure using factory functions:
+
+```typescript
+// app/config/pages/my-page.config.ts
+import { createPageConfig, createTab, createSection } from "@/app/config/pages";
+import { MyComponentWrapper } from "@/app/components/my-page/MyComponentWrapper";
+
+export const myPageConfig = createPageConfig(
+  "my-page",
+  "My Page Title",
+  [
+    createTab("general", "General", [
+      createSection("general-section", "General Settings", MyComponentWrapper)
+    ]),
+    createTab("advanced", "Advanced", [
+      createSection("advanced-section", "Advanced Settings", AdvancedComponentWrapper)
+    ])
+  ],
+  {
+    subtitle: "Configure your page settings",
+    layout: "multi"
+  }
+);
+```
+
+**Configuration Best Practices:**
+- Use descriptive IDs (e.g., "settings-general" not "section1")
+- Group related sections in tabs
+- Include helpful subtitles
+- Use consistent naming conventions
+
+### Step 3: Create Custom Page Container (Optional)
+
+For pages with special requirements, create a custom container:
+
+```typescript
+// app/components/my-page/MyPageContainer.tsx
+import { PageConfigProvider } from "@/app/providers/PageConfigProvider";
+import { PageContent } from "@/app/components/PageContainer/PageContent";
+import { MyPageHeader } from "./MyPageHeader";
+
+interface MyPageContainerProps {
+  config: PageConfig;
+  defaultTab?: string;
+  onCustomEvent?: (data: any) => void;
+  className?: string;
+}
+
+export function MyPageContainer({
+  config,
+  defaultTab,
+  onCustomEvent,
+  className
+}: MyPageContainerProps) {
+  return (
+    <PageConfigProvider config={config}>
+      <div className={`my-page-container ${className || ''}`}>
+        <MyPageHeader config={config} onCustomEvent={onCustomEvent} />
+        <PageContent 
+          config={config}
+          defaultTab={defaultTab}
+        />
+      </div>
+    </PageConfigProvider>
+  );
+}
+```
+
+### Step 4: Implement Main Page Component
+
+Create a minimal main page component:
+
+```typescript
+// app/components/my-page.tsx
+import { ErrorBoundary } from "@/app/components/ErrorBoundary";
+import { MyPageContainer } from "./my-page/MyPageContainer";
+import { myPageConfig } from "@/app/config/pages/my-page.config";
+
+export function MyPage() {
+  const [modalState, setModalState] = useState(null);
+  
+  const handleCustomEvent = (data: any) => {
+    setModalState(data);
+  };
+  
+  return (
+    <ErrorBoundary>
+      <MyPageContainer
+        config={myPageConfig}
+        defaultTab="general"
+        onCustomEvent={handleCustomEvent}
+      />
+      
+      {/* Handle modal state separately from PageContainer */}
+      {modalState && (
+        <Modal
+          isOpen={true}
+          onClose={() => setModalState(null)}
+          data={modalState}
+        />
+      )}
+    </ErrorBoundary>
+  );
+}
+```
+
+## Advanced Patterns
+
+### Multi-Section Tabs
+
+Create tabs with multiple sections:
+
+```typescript
+const multiSectionTab = createTab("advanced", "Advanced", [
+  createSection("section1", "Section 1", Component1),
+  createSection("section2", "Section 2", Component2),
+  createSection("section3", "Section 3", Component3)
+]);
+```
+
+### Dynamic Sections
+
+Conditionally include sections based on user permissions:
+
+```typescript
+const createDynamicConfig = (userRole: string) => {
+  const sections = [
+    createSection("basic", "Basic", BasicComponent)
+  ];
+  
+  if (userRole === 'admin') {
+    sections.push(createSection("admin", "Admin", AdminComponent));
+  }
+  
+  return createPageConfig("page", "Title", [
+    createTab("settings", "Settings", sections)
+  ]);
+};
+```
+
+### Custom Props for Components
+
+Pass component-specific props through configuration:
+
+```typescript
+const sectionWithProps = createSection(
+  "custom",
+  "Custom Section",
+  MyComponent,
+  {
+    props: {
+      theme: "dark",
+      onSave: handleSave,
+      initialValues: { name: "", email: "" }
+    }
+  }
+);
+```
+
+### Context Integration
+
+Use React context for complex state management:
+
+```typescript
+// Create context for page-specific state
+const MyPageContext = createContext<{
+  state: MyPageState;
+  actions: MyPageActions;
+}>();
+
+// Wrapper component provides context
+export function MyPageWrapper() {
+  const [state, setState] = useState(initialState);
+  const actions = useMemo(() => createActions(setState), []);
+  
+  return (
+    <MyPageContext.Provider value={{ state, actions }}>
+      <MyComponent />
+    </MyPageContext.Provider>
+  );
+}
+```
+
+## Testing Your Implementation
+
+### 1. Compilation Testing
+
+```bash
+# Ensure code compiles without errors
+npm run build
+
+# Check for TypeScript errors
+npm run type-check
+
+# Verify linting
+npm run lint
+```
+
+### 2. Runtime Testing
+
+```bash
+# Start development server
+npm run dev
+
+# Navigate to your page
+# Test all tabs and sections
+# Verify functionality preservation
+```
+
+### 3. Browser Testing Checklist
+
+- [ ] Page loads without errors
+- [ ] All tabs render correctly
+- [ ] Tab switching works
+- [ ] Keyboard navigation works
+- [ ] No console errors
+- [ ] All original functionality preserved
+- [ ] Performance is acceptable
+
+### 4. Accessibility Testing
+
+- [ ] Tab buttons are keyboard accessible
+- [ ] Focus indicators are visible
+- [ ] ARIA attributes are correct
+- [ ] Screen reader navigation works
+
+## Common Patterns
+
+### Settings Page Pattern
+
+```typescript
+// Configuration with multiple tabs
+const settingsConfig = createPageConfig("settings", "Settings", [
+  createTab("general", "General", [
+    createSection("general-section", "General Settings", SettingsGeneralWrapper)
+  ]),
+  createTab("chat", "Chat", [
+    createSection("chat-section", "Chat Settings", SettingsChatWrapper)
+  ]),
+  createTab("api", "API", [
+    createSection("api-section", "API Configuration", SettingsAPIWrapper)
+  ])
+]);
+
+// Main component
+export function Settings() {
+  return (
+    <ErrorBoundary>
+      <SettingsPageContainer
+        config={settingsConfig}
+        defaultTab="general"
+      />
+    </ErrorBoundary>
+  );
+}
+```
+
+### List Page Pattern
+
+```typescript
+// Single tab with list functionality
+const listConfig = createPageConfig("list", "List Page", [
+  createTab("browse", "Browse", [
+    createSection("browse-section", "Browse Items", ListWrapper)
+  ])
+]);
+
+// Custom container with header actions
+export function ListPage() {
+  const [editState, setEditState] = useState(null);
+  
+  return (
+    <ErrorBoundary>
+      <ListPageContainer
+        config={listConfig}
+        defaultTab="browse"
+        onEditItem={setEditState}
+      />
+      
+      {editState && (
+        <EditModal
+          item={editState}
+          onClose={() => setEditState(null)}
+        />
+      )}
+    </ErrorBoundary>
+  );
+}
+```
+
+## Troubleshooting
+
+### Common Issues
+
+**"usePageConfig must be used within a PageConfigProvider"**
+- Ensure your component is within a PageContainer
+- Check that PageConfigProvider is properly set up
+
+**Configuration validation failures**
+- Verify all required fields are present
+- Check for duplicate IDs
+- Ensure all components are properly imported
+
+**Tab content not rendering**
+- Verify component is passed correctly to createSection
+- Check that component is exported from its module
+- Ensure component accepts any props
+
+**Props not passing to components**
+- Use wrapper components to gather required props
+- Check that props are passed through configuration
+- Verify component prop interfaces
+
+### Debugging Tips
+
+1. **Add console logging** to wrapper components
+2. **Use React DevTools** to inspect component tree
+3. **Check browser console** for errors
+4. **Verify imports** are correct
+5. **Test in isolation** with minimal configuration
+
+## Next Steps
+
+After implementing your page container:
+
+1. **Test thoroughly** using the testing checklist
+2. **Document your patterns** for team reference
+3. **Consider migrating other pages** using the same pattern
+4. **Share learnings** with the team
+5. **Contribute improvements** to the methodology
+
+## Related Resources
+
+- [Page Container Methodology](/docs/foundation/page-container-methodology) - Core concepts
+- [Migration Guide](/docs/developers/page-container-migration) - Migrating existing pages
+- [Best Practices](/docs/developers/page-container-best-practices) - Recommended patterns
+- [API Reference](/docs/reference/page-container-api) - Complete API documentation
+- [Examples](/docs/components/page-container-examples) - Code examples
