@@ -515,3 +515,54 @@ Vigorous testing prevents that.
 
 **Every task must be tested before completion.**
 
+
+---
+
+## CRITICAL: Browser Testing Environment Rules
+
+### Port 3000 MANDATORY
+
+**RULE: Testing MUST ALWAYS be on localhost:3000**
+
+This is NON-NEGOTIABLE because:
+- User has control of port 3000 exclusively
+- Port 3001 is auto-fallback (not controlled)
+- Testing on wrong port gives invalid results
+- Results on 3001 may not match production on 3000
+
+### Before Starting Browser Tests
+
+```bash
+# STEP 1: Kill any process on 3001
+lsof -i :3001 | grep -v COMMAND | awk '{print $2}' | xargs kill -9 2>/dev/null || true
+
+# STEP 2: Ensure port 3000 is available
+lsof -i :3000 | grep -v COMMAND | awk '{print $2}' | xargs kill -9 2>/dev/null || true
+
+# STEP 3: Start dev server
+npm run dev
+
+# STEP 4: Wait for "Ready on localhost:3000"
+
+# STEP 5: Navigate browser to http://localhost:3000
+```
+
+### Port Verification Checklist
+
+- [ ] Dev server output shows "localhost:3000" (not 3001)
+- [ ] Browser URL bar shows "localhost:3000"
+- [ ] Verify with: curl http://localhost:3000 | head -5
+- [ ] If you see port 3001, STOP and restart dev server
+
+### What NOT To Do
+
+❌ Do NOT test on localhost:3001
+❌ Do NOT assume 3001 and 3000 are equivalent
+❌ Do NOT skip port verification
+❌ Do NOT continue if on wrong port
+
+### Why This Matters
+
+Port 3000 is where the user accesses the app. If it works on 3001 but not 3000, 
+the testing was invalid and wasted time. Always test on the production port.
+
