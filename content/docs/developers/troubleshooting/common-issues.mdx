@@ -1,0 +1,177 @@
+---
+title: "Common Issues & Solutions"
+description: "Troubleshooting guide for common development issues"
+audience: ["developers"]
+difficulty: "beginner"
+estimated-read-time: 5
+last-updated: 2025-01-16
+version: 1.0.0
+---
+
+# Common Issues & Solutions
+
+## Build Issues
+
+### Issue: Module not found error
+**Error**: `Cannot find module '@nextchat/components'`
+
+**Solutions**:
+1. Check import path is correct
+2. Run `npm install` to install dependencies
+3. Clear node_modules and reinstall
+4. Check file actually exists
+
+### Issue: TypeScript compilation error
+**Error**: `TS2305: Module has no exported member`
+
+**Solutions**:
+1. Check export name in original file
+2. Verify file path
+3. Run `npm install` for latest types
+4. Check tsconfig.json configuration
+
+### Issue: SCSS module import fails
+**Error**: `Cannot find module './Component.module.scss'`
+
+**Solutions**:
+1. Verify file exists
+2. Check file extension is `.module.scss`
+3. Ensure webpack handles SCSS
+4. Clear build cache
+
+## Runtime Issues
+
+### Issue: Component doesn't render
+**Symptom**: Component returns null or blank
+
+**Debugging**:
+1. Check browser console for errors
+2. Verify props are being passed
+3. Check TypeScript types
+4. Add console.log at top of component
+5. Use React DevTools
+
+### Issue: State doesn't update
+**Symptom**: State changes but UI doesn't update
+
+**Debugging**:
+1. Check state setter is called
+2. Verify dependencies array
+3. Check if mutation instead of update
+4. Use React DevTools to inspect state
+
+### Issue: Memory leak warning
+**Warning**: `Can't perform a React state update on an unmounted component`
+
+**Solutions**:
+1. Add cleanup in useEffect
+2. Use AbortController for fetch
+3. Cancel timers in cleanup
+4. Check mounted status
+
+## API Issues
+
+### Issue: API call returns 401 Unauthorized
+**Error**: `Unauthorized - missing or invalid API key`
+
+**Solutions**:
+1. Check API key is valid
+2. Verify API key has correct permissions
+3. Check Authorization header format
+4. Regenerate API key if expired
+
+### Issue: API returns 429 Too Many Requests
+**Error**: Rate limit exceeded
+
+**Solutions**:
+1. Wait before making new requests
+2. Implement request throttling
+3. Check X-RateLimit headers
+4. Upgrade to higher tier
+
+### Issue: API returns 500 Internal Error
+**Error**: Server error response
+
+**Solutions**:
+1. Check request is valid
+2. Review server logs
+3. Try request again (may be temporary)
+4. Contact support if persistent
+
+## Development Environment
+
+### Issue: Hot reload not working
+**Problem**: Changes don't reflect without restart
+
+**Solutions**:
+1. Check `next dev` is running
+2. Verify file is being edited
+3. Check webpack watch is enabled
+4. Clear next cache: `rm -rf .next`
+
+### Issue: Environment variables not loading
+**Problem**: Process.env.VAR is undefined
+
+**Solutions**:
+1. Check `.env` file exists
+2. Verify variable name matches
+3. Check prefix (NEXT_PUBLIC_)
+4. Restart dev server
+
+## Testing Issues
+
+### Issue: Tests fail locally but pass in CI
+**Problem**: Inconsistent test behavior
+
+**Solutions**:
+1. Check Node version matches
+2. Clear node_modules and reinstall
+3. Check test environment variables
+4. Run exact CI command locally
+
+### Issue: Async test times out
+**Error**: Test timeout
+
+**Solutions**:
+1. Increase timeout: `jest.setTimeout(10000)`
+2. Check async code completes
+3. Verify no infinite loops
+4. Check promise resolution
+
+## Performance Issues
+
+### Issue: Component renders slowly
+**Problem**: Sluggish UI updates
+
+**Debugging**:
+1. Check render time with React DevTools
+2. Look for unnecessary re-renders
+3. Profile with performance tab
+4. Check for large computations
+
+**Solutions**:
+1. Memoize expensive components
+2. Use useCallback for callbacks
+3. Split into smaller components
+4. Move state to separate store
+
+## Styling Issues
+
+### Issue: Styles don't apply
+**Problem**: CSS not showing up
+
+**Debugging**:
+1. Check CSS is in correct file
+2. Verify module is imported
+3. Check selector specificity
+4. Use browser DevTools to inspect
+
+**Solutions**:
+1. Check CSS variables are defined
+2. Verify color mode (dark/light)
+3. Check media queries
+4. Use `!important` as last resort
+
+---
+
+**See Also**: [Debugging Guide](./debugging-guide) | [Performance Optimization](./performance-optimization)

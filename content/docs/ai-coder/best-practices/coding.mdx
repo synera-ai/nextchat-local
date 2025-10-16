@@ -1,0 +1,539 @@
+---
+title: "AI Coding Best Practices"
+description: "Comprehensive best practices for AI agents working with code in document-driven architecture"
+audience: ["ai-agents", "developers"]
+difficulty: "intermediate"
+estimated-read-time: 25
+last-updated: 2025-01-16
+version: 1.0.0
+---
+
+# AI Coding Best Practices
+
+## Introduction
+
+This guide provides comprehensive best practices for AI agents working with code in a document-driven architecture environment. These practices ensure high-quality, maintainable, and well-documented code that follows established patterns and standards.
+
+## Core Principles
+
+### 1. Documentation-First Development
+- **Write Documentation First**: Document your approach before writing code
+- **Keep Documentation Current**: Update documentation with every code change
+- **Use Clear Examples**: Provide practical examples for all concepts
+- **Document Assumptions**: Clearly state any assumptions or constraints
+
+### 2. Project-Driven Development
+- **Always Work Within Projects**: Never make standalone changes
+- **Follow Project Plans**: Stick to defined phases and tasks
+- **Update Project Status**: Regular progress updates and status reports
+- **Validate Against Goals**: Ensure all changes align with project objectives
+
+### 3. Quality-First Approach
+- **Write Tests**: Comprehensive test coverage for all code
+- **Follow Standards**: Consistent coding practices and conventions
+- **Code Reviews**: Regular reviews and feedback
+- **Continuous Improvement**: Learn from each implementation
+
+## Code Organization
+
+### File Structure
+```
+/app/
+├── core/                     # Core system components
+│   ├── types/                # Type definitions
+│   │   ├── index.ts          # Main type exports
+│   │   └── project.ts        # Project-specific types
+│   ├── utils/                # Utility functions
+│   │   ├── project-detector.ts
+│   │   ├── project-manager.ts
+│   │   └── project-validator.ts
+│   └── providers/            # React providers
+│       └── project-provider.tsx
+├── components/               # UI components
+│   ├── project-status.tsx
+│   ├── project-status.module.scss
+│   └── projects-page.tsx
+└── modules/                  # Feature modules
+    └── project-management/
+```
+
+### Naming Conventions
+- **Files**: Use kebab-case for file names (`project-manager.ts`)
+- **Components**: Use PascalCase for React components (`ProjectStatus`)
+- **Functions**: Use camelCase for function names (`getProjectStatus`)
+- **Types**: Use PascalCase for type names (`ProjectMetadata`)
+- **Constants**: Use UPPER_SNAKE_CASE for constants (`DEFAULT_CONFIG`)
+
+### Import Organization
+```typescript
+// 1. External libraries
+import React from 'react';
+import { promises as fs } from 'fs';
+
+// 2. Internal utilities
+import { ProjectManager } from '../utils/project-manager';
+import { ProjectValidator } from '../utils/project-validator';
+
+// 3. Types
+import { ProjectMetadata, ProjectContext } from '../types/project';
+
+// 4. Local imports
+import styles from './component.module.scss';
+```
+
+## TypeScript Best Practices
+
+### Type Definitions
+```typescript
+// Use interfaces for object shapes
+interface ProjectMetadata {
+  projectId: string;
+  title: string;
+  stage: ProjectStage;
+  createdDate: string;
+  lastUpdated: string;
+  priority: ProjectPriority;
+  tags: string[];
+  version: string;
+}
+
+// Use type unions for specific values
+type ProjectStage = 'idea' | 'plan' | 'design' | 'implementation' | 'testing' | 'review' | 'deployment' | 'completion';
+type ProjectPriority = 'low' | 'medium' | 'high' | 'critical';
+
+// Use generics for reusable types
+interface ProjectOperation<T = any> {
+  type: string;
+  projectId: string;
+  data?: T;
+  timestamp: string;
+  agent: string;
+}
+```
+
+### Function Signatures
+```typescript
+// Use explicit return types
+async function getProject(projectId: string): Promise<ProjectContextResult | null> {
+  // Implementation
+}
+
+// Use optional parameters appropriately
+function updateProject(
+  projectId: string, 
+  updates: Partial<ProjectMetadata>,
+  agent: string = 'system'
+): Promise<ProjectOperationResult> {
+  // Implementation
+}
+
+// Use proper error handling
+async function validateProject(projectId: string): Promise<ProjectValidation> {
+  try {
+    // Implementation
+    return validation;
+  } catch (error) {
+    console.error(`Error validating project ${projectId}:`, error);
+    throw new Error(`Failed to validate project: ${error.message}`);
+  }
+}
+```
+
+### Error Handling
+```typescript
+// Use specific error types
+class ProjectNotFoundError extends Error {
+  constructor(projectId: string) {
+    super(`Project not found: ${projectId}`);
+    this.name = 'ProjectNotFoundError';
+  }
+}
+
+// Handle errors gracefully
+async function loadProject(projectId: string): Promise<ProjectContextResult | null> {
+  try {
+    return await projectManager.getProject(projectId);
+  } catch (error) {
+    if (error instanceof ProjectNotFoundError) {
+      console.warn(`Project ${projectId} not found`);
+      return null;
+    }
+    console.error(`Unexpected error loading project ${projectId}:`, error);
+    throw error;
+  }
+}
+```
+
+## React Best Practices
+
+### Component Structure
+```typescript
+// Use functional components with hooks
+export function ProjectStatus({ className = '', showDetails = false }: ProjectStatusProps) {
+  const { isInitialized, isLoading, error, systemHealth } = useProjectSystem();
+  
+  // Early returns for loading and error states
+  if (!isInitialized) {
+    return <LoadingState />;
+  }
+  
+  if (error) {
+    return <ErrorState error={error} />;
+  }
+  
+  return (
+    <div className={`project-status ${className}`}>
+      {/* Component content */}
+    </div>
+  );
+}
+```
+
+### Custom Hooks
+```typescript
+// Create reusable custom hooks
+export function useProject(projectId: string) {
+  const { getProject, getProjectStatus, getProjectHealth, validateProject } = useProjectSystem();
+  const [project, setProject] = useState<ProjectContextResult | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadProject = async () => {
+      if (!projectId) return;
+      
+      try {
+        setIsLoading(true);
+        setError(null);
+        
+        const projectData = await getProject(projectId);
+        setProject(projectData);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load project');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadProject();
+  }, [projectId, getProject]);
+
+  return { project, isLoading, error, refetch: loadProject };
+}
+```
+
+### Props and State Management
+```typescript
+// Use proper prop types
+interface ProjectCardProps {
+  project: ProjectContextResult;
+  className?: string;
+  onUpdate?: (projectId: string, updates: any) => void;
+  onDelete?: (projectId: string) => void;
+}
+
+// Use proper state management
+const [projects, setProjects] = useState<ProjectContextResult[]>([]);
+const [isLoading, setIsLoading] = useState(false);
+const [error, setError] = useState<string | null>(null);
+
+// Use useCallback for event handlers
+const handleUpdate = useCallback((projectId: string, updates: any) => {
+  setProjects(prev => prev.map(p => 
+    p.project.projectId === projectId 
+      ? { ...p, project: { ...p.project, ...updates } }
+      : p
+  ));
+}, []);
+```
+
+## Testing Best Practices
+
+### Unit Tests
+```typescript
+// Test individual functions
+describe('ProjectValidator', () => {
+  let validator: ProjectValidator;
+
+  beforeEach(() => {
+    validator = new ProjectValidator();
+  });
+
+  it('should validate project metadata correctly', () => {
+    const metadata: ProjectMetadata = {
+      projectId: 'test-project',
+      title: 'Test Project',
+      stage: 'plan',
+      createdDate: '2025-01-15',
+      lastUpdated: '2025-01-15',
+      priority: 'medium',
+      tags: ['test'],
+      version: 'v1.0.0'
+    };
+
+    const result = validator.validateProjectMetadata(metadata);
+    
+    expect(result.isValid).toBe(true);
+    expect(result.errors).toHaveLength(0);
+  });
+
+  it('should reject invalid project metadata', () => {
+    const metadata = {
+      projectId: '', // Invalid: empty project ID
+      title: 'Test Project',
+      // Missing required fields
+    } as ProjectMetadata;
+
+    const result = validator.validateProjectMetadata(metadata);
+    
+    expect(result.isValid).toBe(false);
+    expect(result.errors.length).toBeGreaterThan(0);
+  });
+});
+```
+
+### Integration Tests
+```typescript
+// Test component integration
+describe('ProjectStatus Component', () => {
+  it('should render project status correctly', () => {
+    const mockProject = createMockProject();
+    
+    render(
+      <ProjectSystemProvider>
+        <ProjectStatus showDetails={true} />
+      </ProjectSystemProvider>
+    );
+
+    expect(screen.getByText('Project System:')).toBeInTheDocument();
+    expect(screen.getByText('Active')).toBeInTheDocument();
+  });
+
+  it('should handle loading state', () => {
+    render(
+      <ProjectSystemProvider>
+        <ProjectStatus />
+      </ProjectSystemProvider>
+    );
+
+    expect(screen.getByText('Initializing...')).toBeInTheDocument();
+  });
+});
+```
+
+## Performance Best Practices
+
+### Code Splitting
+```typescript
+// Use dynamic imports for large components
+const ProjectsPage = dynamic(
+  async () => (await import('./projects-page')).ProjectsPage,
+  {
+    loading: () => <Loading noLogo />,
+  }
+);
+
+// Lazy load heavy utilities
+const loadProjectManager = async () => {
+  const { ProjectManager } = await import('../utils/project-manager');
+  return new ProjectManager(config);
+};
+```
+
+### Memoization
+```typescript
+// Use React.memo for expensive components
+export const ProjectCard = React.memo<ProjectCardProps>(({ project, className }) => {
+  // Component implementation
+});
+
+// Use useMemo for expensive calculations
+const expensiveCalculation = useMemo(() => {
+  return projects.reduce((acc, project) => {
+    // Expensive calculation
+    return acc + project.health.score;
+  }, 0);
+}, [projects]);
+
+// Use useCallback for event handlers
+const handleProjectUpdate = useCallback((projectId: string, updates: any) => {
+  // Handler implementation
+}, []);
+```
+
+### Bundle Optimization
+```typescript
+// Use tree shaking friendly imports
+import { ProjectManager } from '../utils/project-manager';
+// Instead of
+import * as ProjectUtils from '../utils/project-manager';
+
+// Use proper exports
+export { ProjectManager } from './project-manager';
+export { ProjectValidator } from './project-validator';
+export type { ProjectMetadata, ProjectContext } from '../types/project';
+```
+
+## Security Best Practices
+
+### Input Validation
+```typescript
+// Validate all inputs
+function validateProjectId(projectId: string): boolean {
+  if (!projectId || typeof projectId !== 'string') {
+    return false;
+  }
+  
+  // Check for valid format
+  if (!/^[a-z0-9-]+$/.test(projectId)) {
+    return false;
+  }
+  
+  return true;
+}
+
+// Sanitize user inputs
+function sanitizeProjectTitle(title: string): string {
+  return title
+    .trim()
+    .replace(/[<>]/g, '') // Remove potential HTML tags
+    .substring(0, 100); // Limit length
+}
+```
+
+### Error Handling
+```typescript
+// Don't expose sensitive information in errors
+try {
+  await loadProject(projectId);
+} catch (error) {
+  // Log detailed error for debugging
+  console.error('Project loading failed:', error);
+  
+  // Return generic error to user
+  throw new Error('Failed to load project');
+}
+```
+
+## Documentation Best Practices
+
+### Code Comments
+```typescript
+/**
+ * Loads project context including metadata, progress, and validation
+ * @param projectId - Unique project identifier
+ * @returns Promise resolving to project context or null if not found
+ * @throws {ProjectNotFoundError} When project doesn't exist
+ * @throws {ValidationError} When project validation fails
+ */
+async function loadProjectContext(projectId: string): Promise<ProjectContextResult | null> {
+  // Implementation
+}
+```
+
+### README Files
+```markdown
+# Project Manager
+
+A comprehensive project management system for document-driven development.
+
+## Features
+
+- Project detection and context loading
+- Validation and compliance checking
+- User interface for project management
+- Integration with development workflow
+
+## Usage
+
+```typescript
+import { ProjectManager } from './project-manager';
+
+const manager = new ProjectManager(config);
+await manager.initialize();
+
+const project = await manager.getProject('my-project');
+```
+
+## API Reference
+
+See [API Documentation](./api.md) for detailed API reference.
+```
+
+## Common Patterns
+
+### Provider Pattern
+```typescript
+// Create context provider
+const ProjectSystemContext = createContext<ProjectSystemContextType | null>(null);
+
+export function ProjectSystemProvider({ children, config }: ProjectSystemProviderProps) {
+  const [state, setState] = useState(initialState);
+  
+  const value = useMemo(() => ({
+    ...state,
+    // Actions
+  }), [state]);
+  
+  return (
+    <ProjectSystemContext.Provider value={value}>
+      {children}
+    </ProjectSystemContext.Provider>
+  );
+}
+```
+
+### Hook Pattern
+```typescript
+// Create custom hook
+export function useProjectSystem(): ProjectSystemContextType {
+  const context = useContext(ProjectSystemContext);
+  
+  if (!context) {
+    throw new Error('useProjectSystem must be used within a ProjectSystemProvider');
+  }
+  
+  return context;
+}
+```
+
+### Utility Pattern
+```typescript
+// Create utility class
+export class ProjectValidator {
+  private schema: any;
+  
+  constructor() {
+    this.schema = this.loadSchema();
+  }
+  
+  validateProject(metadata: ProjectMetadata, context: ProjectContext): ProjectValidation {
+    // Implementation
+  }
+  
+  private loadSchema(): any {
+    // Implementation
+  }
+}
+```
+
+## Getting Started
+
+1. **Read This Guide**: Understand the coding best practices
+2. **Set Up Your Environment**: Configure your development environment
+3. **Start with Examples**: Look at existing code examples
+4. **Follow Patterns**: Use established patterns and practices
+5. **Write Tests**: Ensure comprehensive test coverage
+6. **Document Everything**: Keep documentation current and comprehensive
+
+## Next Steps
+
+- [AI Project Management Practices](../projects/project-management)
+- [AI Code Quality Practices](../projects/code-quality)
+- [AI Testing Practices](../projects/testing)
+- [AI Deployment Practices](../projects/deployment)
+- [AI Maintenance Practices](../projects/maintenance)
+
+---
+
+*This guide is part of the AI Coder Documentation system and follows document-driven architecture principles.*

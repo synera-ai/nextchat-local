@@ -14,11 +14,18 @@
     },
     {
       "title": "Developers",
-      "pages": []
+      "pages": [
+        "developers/index",
+        "developers/troubleshooting/common-issues"
+      ]
     },
     {
       "title": "AI Coder",
-      "pages": []
+      "pages": [
+        "ai-coder/index",
+        "ai-coder/architecture/overview",
+        "ai-coder/best-practices/coding"
+      ]
     },
     {
       "title": "Reference",
