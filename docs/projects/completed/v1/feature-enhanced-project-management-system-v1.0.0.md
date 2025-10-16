@@ -91,10 +91,10 @@ The current project system is basic and lacks granular task decomposition, autom
 - Document all new features thoroughly
 
 ### File References
-- **File Path**: `/Users/jhm/nextchat-clean/docs/projects/.project-schema.json` - Current schema to enhance
-- **File Path**: `/Users/jhm/nextchat-clean/.cursorrules` - Cursor rules to extend
-- **File Path**: `/Users/jhm/nextchat-clean/docs/projects/templates/` - Project templates to enhance
-- **File Path**: `/Users/jhm/nextchat-clean/docs/projects/README.md` - Documentation to update
+- **File Path**: `.//docs/projects/.project-schema.json` - Current schema to enhance
+- **File Path**: `.//.cursorrules` - Cursor rules to extend
+- **File Path**: `.//docs/projects/templates/` - Project templates to enhance
+- **File Path**: `.//docs/projects/README.md` - Documentation to update
 
 ## Current Stage
 
@@ -144,13 +144,13 @@ The project has completed Phase 1 implementation (cursor rules enhancement, sche
   - Files Changed: []
 - **2025-01-15** - **architecture-agent**: Enhanced project schema extension completed
   - Stage: plan
-  - Files Changed: [`/Users/jhm/nextchat-clean/docs/projects/.project-schema.json`]
+  - Files Changed: [`.//docs/projects/.project-schema.json`]
 - **2025-01-15** - **implementation-agent**: Cursor rules enhancement completed
   - Stage: plan
-  - Files Changed: [`/Users/jhm/nextchat-clean/.cursorrules`]
+  - Files Changed: [`.//.cursorrules`]
 - **2025-01-15** - **documentation-agent**: Documentation updates completed
   - Stage: plan
-  - Files Changed: [`/Users/jhm/nextchat-clean/docs/projects-guide/prompts.md`, `/Users/jhm/nextchat-clean/docs/projects/templates/`]
+  - Files Changed: [`.//docs/projects-guide/prompts.md`, `.//docs/projects/templates/`]
 
 ## Decisions
 
@@ -203,7 +203,7 @@ The project has completed Phase 1 implementation (cursor rules enhancement, sche
 
 - **2025-01-15** - **system-implementation-agent**: Phase 2 implementation completed
   - Stage: completion
-  - Files Changed: [`/Users/jhm/nextchat-clean/docs/projects-guide/human-in-the-loop-system.md`, `/Users/jhm/nextchat-clean/docs/projects-guide/task-decomposition-engine.md`, `/Users/jhm/nextchat-clean/docs/projects-guide/rollback-safety-mechanisms.md`]
+  - Files Changed: [`.//docs/projects-guide/human-in-the-loop-system.md`, `.//docs/projects-guide/task-decomposition-engine.md`, `.//docs/projects-guide/rollback-safety-mechanisms.md`]
   - **Completed Work**: 
     - **Human-in-the-Loop System Design**: Complete system design with checkpoints, approval workflows, escalation procedures, and bypass mechanisms
     - **Task Decomposition Engine**: Comprehensive engine for breaking down projects into atomic tasks with dependency mapping and parallel execution planning

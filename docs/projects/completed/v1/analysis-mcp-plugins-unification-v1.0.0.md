@@ -86,10 +86,10 @@ The codebase contains both MCP (Model Context Protocol) and Plugins systems that
 - Consider integration with project management system
 
 ### File References
-- **File Path**: `/Users/jhm/nextchat-clean/app/mcp/` - MCP system implementation
-- **File Path**: `/Users/jhm/nextchat-clean/app/components/plugin.tsx` - Plugin system implementation
-- **File Path**: `/Users/jhm/nextchat-clean/app/store/plugin.ts` - Plugin state management
-- **File Path**: `/Users/jhm/nextchat-clean/app/hooks/useMcpMarket.ts` - MCP market integration
+- **File Path**: `.//app/mcp/` - MCP system implementation
+- **File Path**: `.//app/components/plugin.tsx` - Plugin system implementation
+- **File Path**: `.//app/store/plugin.ts` - Plugin state management
+- **File Path**: `.//app/hooks/useMcpMarket.ts` - MCP market integration
 
 ## Current Stage
 
@@ -143,11 +143,11 @@ Comprehensive analysis of MCP and Plugins systems has been completed. Key findin
 
 - **2025-01-15** - **Human Developer**: Created initial project document and defined requirements
   - Stage: plan
-  - Files Changed: [`/Users/jhm/nextchat-clean/docs/projects/active/v1/analysis-mcp-plugins-unification-v1.0.0.md`]
+  - Files Changed: [`.//docs/projects/active/v1/analysis-mcp-plugins-unification-v1.0.0.md`]
 
 - **2025-01-15** - **analysis-agent**: Completed comprehensive analysis of MCP and Plugins systems
   - Stage: implementation
-  - Files Changed: [`/Users/jhm/nextchat-clean/docs/projects/active/v1/analysis-mcp-plugins-unification-v1.0.0.md`]
+  - Files Changed: [`.//docs/projects/active/v1/analysis-mcp-plugins-unification-v1.0.0.md`]
   - **Completed Work**: 
     - Analyzed MCP system architecture and functionality
     - Analyzed Plugins system architecture and functionality

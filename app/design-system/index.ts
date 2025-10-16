@@ -27,7 +27,7 @@ export const designSystemMetadata = {
   description: "Comprehensive design system for NextChat application",
   author: "NextChat Team",
   license: "MIT",
-  repository: "https://github.com/nextchat/nextchat-clean",
+  repository: "https://github.com/nextchat/nextchat",
   documentation: "https://docs.nextchat.com/design-system",
 
   // Features

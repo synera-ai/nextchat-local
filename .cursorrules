@@ -20,7 +20,7 @@
 ## Project Management Rules
 
 ### Project Detection and Context
-- **Always** check `/docs/projects/active/` and `/docs/projects/ideas/` before starting work
+- **Always** check `./docs/projects/active/` and `./docs/projects/ideas/` before starting work
 - Load full project context when working on existing projects
 - Create new projects for any significant changes (features, refactoring, documentation)
 - Update project documents with every code change
@@ -48,7 +48,7 @@ Examples:
 
 ### Directory Structure (Version-Organized)
 ```
-/docs/projects/
+./docs/projects/
 ├── ideas/                    # Initial concepts
 ├── active/                   # Currently active projects
 │   ├── v1/                   # Version 1 projects
@@ -159,6 +159,14 @@ fix(login): resolve password validation issue [v1.0.1]
 - Project constraints must be respected
 - Architectural decisions must be documented
 - Performance impact must be assessed
+
+### Relative Path Compliance
+- **MANDATORY**: All file references must use relative paths from project root
+- **FORBIDDEN**: Absolute paths like `/Users/username/` or `C:\Users\`
+- **REQUIRED**: Use `./` prefix for current directory references
+- **ENFORCED**: All documentation must use relative paths
+- **VALIDATED**: Path references must be portable across different environments
+- **UTILITY**: Use `app/utils/path.ts` functions for consistent path handling
 
 ## Automation Integration
 

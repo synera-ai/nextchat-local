@@ -97,13 +97,13 @@ The NextChat codebase has grown organically and now contains significant technic
 - Use incremental refactoring approach
 
 ### File References
-- **File Path**: `/Users/jhm/nextchat-clean/app/components/mcp-market.tsx` - 1029-line component needing decomposition
-- **File Path**: `/Users/jhm/nextchat-clean/app/components/chat.tsx` - Complex chat interface
-- **File Path**: `/Users/jhm/nextchat-clean/app/components/settings.tsx` - Large settings component
-- **File Path**: `/Users/jhm/nextchat-clean/app/components/home.tsx` - Main layout component
-- **File Path**: `/Users/jhm/nextchat-clean/app/utils.ts` - Monolithic utility file (28 functions)
-- **File Path**: `/Users/jhm/nextchat-clean/app/store/` - 8 separate store files
-- **File Path**: `/Users/jhm/nextchat-clean/app/api/` - 15+ platform-specific API files
+- **File Path**: `.//app/components/mcp-market.tsx` - 1029-line component needing decomposition
+- **File Path**: `.//app/components/chat.tsx` - Complex chat interface
+- **File Path**: `.//app/components/settings.tsx` - Large settings component
+- **File Path**: `.//app/components/home.tsx` - Main layout component
+- **File Path**: `.//app/utils.ts` - Monolithic utility file (28 functions)
+- **File Path**: `.//app/store/` - 8 separate store files
+- **File Path**: `.//app/api/` - 15+ platform-specific API files
 
 ## Current Stage
 
@@ -152,7 +152,7 @@ The project has completed comprehensive analysis and is now in the implementatio
   - Files Changed: []
 - **2025-01-15** - **refactoring-agent**: Utility function consolidation completed
   - Stage: implementation
-  - Files Changed: [`/Users/jhm/nextchat-clean/app/utils/dom/`, `/Users/jhm/nextchat-clean/app/utils/clipboard/`, `/Users/jhm/nextchat-clean/app/utils/device/`, `/Users/jhm/nextchat-clean/app/utils/format/`]
+  - Files Changed: [`.//app/utils/dom/`, `.//app/utils/clipboard/`, `.//app/utils/device/`, `.//app/utils/format/`]
 - **2025-01-15** - **implementation-agent**: React-specific modularization refocus initiated
   - Stage: implementation
   - Files Changed: []
@@ -208,7 +208,7 @@ The project has completed comprehensive analysis and is now in the implementatio
 
 - **2025-01-15** - **react-component-specialist-agent**: MCP Market component decomposition completed
   - Stage: implementation
-  - Files Changed: [`/Users/jhm/nextchat-clean/app/hooks/useMcpMarket.ts`, `/Users/jhm/nextchat-clean/app/components/mcp-market/`]
+  - Files Changed: [`.//app/hooks/useMcpMarket.ts`, `.//app/components/mcp-market/`]
   - **Completed Work**: 
     - Created `useMcpMarket` custom hook for state management
     - Decomposed 1029-line component into 5 focused sub-components:

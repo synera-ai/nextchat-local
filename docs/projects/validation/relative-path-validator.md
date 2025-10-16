@@ -1,0 +1,243 @@
+# Relative Path Compliance Validator
+
+## Overview
+
+This document defines the validation rules and procedures for ensuring 100% relative path compliance across the codebase.
+
+## Validation Rules
+
+### Absolute Path Detection
+
+**FORBIDDEN PATTERNS:**
+- `/Users/` - macOS user directory
+- `/home/` - Linux user directory  
+- `C:\Users\` - Windows user directory
+- `D:\` - Windows drive letters
+- `/var/` - System directories
+- `/opt/` - System directories
+- `~/` - Home directory shortcuts
+
+**REQUIRED PATTERNS:**
+- `./` - Current directory references
+- `../` - Parent directory references
+- Relative paths from project root
+
+### File Types to Validate
+
+1. **Documentation Files** (`.md`)
+   - All project documentation
+   - README files
+   - Setup guides
+   - API documentation
+
+2. **Configuration Files** (`.json`, `.yaml`, `.yml`)
+   - Project configuration
+   - Build configuration
+   - Deployment configuration
+
+3. **Template Files** (`.md`, `.txt`)
+   - Project templates
+   - Code templates
+   - Documentation templates
+
+4. **Script Files** (`.sh`, `.js`, `.ts`)
+   - Build scripts
+   - Utility scripts
+   - Configuration scripts
+
+## Validation Commands
+
+### Check for Absolute Paths
+
+```bash
+# Check for macOS user paths
+grep -r "/Users/" docs/ --include="*.md" --include="*.json" --include="*.yaml"
+
+# Check for Linux user paths  
+grep -r "/home/" docs/ --include="*.md" --include="*.json" --include="*.yaml"
+
+# Check for Windows paths
+grep -r "C:\\Users\\" docs/ --include="*.md" --include="*.json" --include="*.yaml"
+
+# Check for home directory shortcuts
+grep -r "~/" docs/ --include="*.md" --include="*.json" --include="*.yaml"
+```
+
+### Validate Relative Paths
+
+```bash
+# Check that all paths start with ./
+grep -r "^[^./]" docs/ --include="*.md" | grep -E "(docs/|app/|src/)"
+
+# Check for proper relative path format
+grep -r "docs/" docs/ --include="*.md" | grep -v "^\./"
+```
+
+## Automated Validation
+
+### Pre-commit Hook
+
+```bash
+#!/bin/bash
+# .git/hooks/pre-commit
+
+echo "Validating relative path compliance..."
+
+# Check for absolute paths
+if grep -r "/Users/" docs/ --include="*.md" --include="*.json" --include="*.yaml"; then
+    echo "ERROR: Found absolute paths in documentation"
+    exit 1
+fi
+
+if grep -r "/home/" docs/ --include="*.md" --include="*.json" --include="*.yaml"; then
+    echo "ERROR: Found absolute paths in documentation"
+    exit 1
+fi
+
+if grep -r "C:\\Users\\" docs/ --include="*.md" --include="*.json" --include="*.yaml"; then
+    echo "ERROR: Found absolute paths in documentation"
+    exit 1
+fi
+
+echo "Relative path validation passed"
+exit 0
+```
+
+### CI/CD Validation
+
+```yaml
+# .github/workflows/validate-paths.yml
+name: Validate Relative Paths
+
+on: [push, pull_request]
+
+jobs:
+  validate-paths:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Check for absolute paths
+        run: |
+          if grep -r "/Users/" docs/ --include="*.md" --include="*.json" --include="*.yaml"; then
+            echo "ERROR: Found absolute paths in documentation"
+            exit 1
+          fi
+          echo "Relative path validation passed"
+```
+
+## Manual Validation Checklist
+
+### Documentation Files
+- [ ] No absolute paths in project documentation
+- [ ] All file references use relative paths
+- [ ] Paths are portable across environments
+- [ ] No hardcoded user directories
+
+### Configuration Files
+- [ ] No absolute paths in configuration
+- [ ] All paths are relative to project root
+- [ ] Environment-specific paths are configurable
+- [ ] No system-specific paths
+
+### Template Files
+- [ ] Templates use relative path placeholders
+- [ ] No hardcoded absolute paths
+- [ ] Paths are environment-agnostic
+- [ ] Consistent path format across templates
+
+## Common Issues and Solutions
+
+### Issue: Absolute Paths in Documentation
+**Problem**: Documentation contains paths like `/Users/jhm/nextchat-clean/`
+**Solution**: Replace with relative paths like `./docs/`
+
+### Issue: Hardcoded User Directories
+**Problem**: Scripts reference specific user directories
+**Solution**: Use environment variables or relative paths
+
+### Issue: System-Specific Paths
+**Problem**: Paths that only work on specific operating systems
+**Solution**: Use cross-platform path utilities
+
+## Validation Tools
+
+### Path Utility Functions
+Use the utility functions in `app/utils/path.ts`:
+- `getRelativePath()` - Convert absolute to relative
+- `isRelativePath()` - Validate relative paths
+- `getProjectRootRelativePath()` - Get project-relative paths
+
+### Automated Scripts
+- `scripts/validate-paths.sh` - Comprehensive path validation
+- `scripts/fix-paths.sh` - Automated path correction
+- `scripts/check-compliance.sh` - Compliance checking
+
+## Compliance Reporting
+
+### Validation Report Format
+```
+Relative Path Compliance Report
+==============================
+
+Total Files Checked: {count}
+Files with Issues: {count}
+Compliance Rate: {percentage}%
+
+Issues Found:
+- {file}: {issue-description}
+- {file}: {issue-description}
+
+Recommendations:
+- {recommendation}
+- {recommendation}
+```
+
+### Regular Validation Schedule
+- **Pre-commit**: Automatic validation on every commit
+- **Daily**: Automated validation in CI/CD pipeline
+- **Weekly**: Comprehensive manual review
+- **Release**: Full compliance audit before releases
+
+## Enforcement
+
+### Development Workflow
+1. **Pre-commit**: Automatic validation prevents absolute paths
+2. **Code Review**: Manual review of path usage
+3. **CI/CD**: Automated validation in build pipeline
+4. **Release**: Final compliance check before deployment
+
+### Violation Handling
+1. **Warning**: First-time violations get warnings
+2. **Blocking**: Repeated violations block commits
+3. **Education**: Provide guidance on proper path usage
+4. **Automation**: Suggest automated fixes where possible
+
+## Best Practices
+
+### Path Usage Guidelines
+1. **Always use relative paths** from project root
+2. **Use `./` prefix** for current directory references
+3. **Avoid hardcoded paths** in any configuration
+4. **Test portability** across different environments
+5. **Use utility functions** for consistent path handling
+
+### Documentation Standards
+1. **Use relative paths** in all documentation
+2. **Provide examples** with relative paths
+3. **Update templates** to enforce relative paths
+4. **Validate examples** before publishing
+5. **Maintain consistency** across all documentation
+
+## Maintenance
+
+### Regular Updates
+- Update validation rules as needed
+- Add new patterns to forbidden list
+- Improve automated detection
+- Enhance utility functions
+
+### Monitoring
+- Track compliance metrics
+- Monitor validation failures
+- Analyze common issues
+- Improve prevention measures

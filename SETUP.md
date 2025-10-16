@@ -2,7 +2,7 @@
 
 ## ✅ Installation Complete!
 
-NextChat has been successfully installed to your workspace at `/Users/jhm/nextchat-clean`.
+NextChat has been successfully installed to your workspace.
 
 ## 🚀 Current Status
 

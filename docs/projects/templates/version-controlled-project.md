@@ -173,8 +173,8 @@
 - **{project-id}**: {project-name} - {dependency-type}
 
 ### Documentation
-- **{doc-path}**: {documentation-description}
-- **{doc-path}**: {documentation-description}
+- **{./doc-path}**: {documentation-description}
+- **{./doc-path}**: {documentation-description}
 
 ## Version Control
 

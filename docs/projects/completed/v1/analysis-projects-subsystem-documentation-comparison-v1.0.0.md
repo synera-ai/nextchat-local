@@ -83,12 +83,12 @@ We need to understand how well the human and AI layers of our projects subsystem
 - Maintain objective, analytical tone
 
 ### File References
-- **File Path**: `/Users/jhm/nextchat-clean/docs/projects/README.md` - Main project system documentation
-- **File Path**: `/Users/jhm/nextchat-clean/docs/projects/.project-schema.json` - Project document schema
-- **File Path**: `/Users/jhm/nextchat-clean/.cursorrules` - Main workspace rules
-- **File Path**: `/Users/jhm/nextchat-clean/docs/projects/.cursorrules` - Project-specific rules
-- **File Path**: `/Users/jhm/nextchat-clean/docs/projects-guide/` - Human documentation layer
-- **File Path**: `/Users/jhm/nextchat-clean/docs/projects/AGENT_PROMPTS.md` - AI agent documentation
+- **File Path**: `.//docs/projects/README.md` - Main project system documentation
+- **File Path**: `.//docs/projects/.project-schema.json` - Project document schema
+- **File Path**: `.//.cursorrules` - Main workspace rules
+- **File Path**: `.//docs/projects/.cursorrules` - Project-specific rules
+- **File Path**: `.//docs/projects-guide/` - Human documentation layer
+- **File Path**: `.//docs/projects/AGENT_PROMPTS.md` - AI agent documentation
 
 ## Current Stage
 
@@ -137,7 +137,7 @@ Comprehensive analysis of the projects subsystem documentation has been complete
 
 - **2025-01-15** - **analysis-agent**: Completed comprehensive analysis of projects subsystem documentation
   - Stage: implementation
-  - Files Changed: [`/Users/jhm/nextchat-clean/docs/projects/active/v1/analysis-projects-subsystem-documentation-comparison-v1.0.0.md`]
+  - Files Changed: [`.//docs/projects/active/v1/analysis-projects-subsystem-documentation-comparison-v1.0.0.md`]
   - **Completed Work**: 
     - Analyzed documentation structure across all layers
     - Compared human vs AI documentation completeness and quality

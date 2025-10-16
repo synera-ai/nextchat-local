@@ -375,6 +375,42 @@ SiliconFlow API URL.
 
 302.AI API URL.
 
+### `TENCENT_API_KEY` (optional)
+
+Tencent Hunyuan API Key.
+
+### `TENCENT_URL` (optional)
+
+Tencent Hunyuan API URL.
+
+### `MOONSHOT_API_KEY` (optional)
+
+Moonshot API Key.
+
+### `MOONSHOT_URL` (optional)
+
+Moonshot API URL.
+
+### `XAI_API_KEY` (optional)
+
+XAI (Grok) API Key.
+
+### `XAI_URL` (optional)
+
+XAI (Grok) API URL.
+
+### `GTM_ID` (optional)
+
+Google Tag Manager ID for analytics.
+
+### `CLOUDFLARE_ACCOUNT_ID` (optional)
+
+Cloudflare Account ID for KV storage integration.
+
+### `CLOUDFLARE_KV_NAMESPACE_ID` (optional)
+
+Cloudflare KV Namespace ID for storage integration.
+
 ## Requirements
 
 NodeJS >= 18, Docker >= 20
@@ -455,6 +491,7 @@ bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/s
 
 > Please go to the [docs][./docs] directory for more documentation instructions.
 
+- [MCP (Model Context Protocol) Guide](./docs/mcp-en.md)
 - [Deploy with cloudflare (Deprecated)](./docs/cloudflare-pages-en.md)
 - [Frequent Ask Questions](./docs/faq-en.md)
 - [How to add a new translation](./docs/translation.md)

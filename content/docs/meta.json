@@ -1,0 +1,28 @@
+{
+  "title": "NextChat Documentation",
+  "pages": [
+    "index",
+    {
+      "title": "Foundation",
+      "pages": [
+        "foundation/getting-started"
+      ]
+    },
+    {
+      "title": "Developers",
+      "pages": []
+    },
+    {
+      "title": "AI Coder",
+      "pages": []
+    },
+    {
+      "title": "Reference",
+      "pages": []
+    },
+    {
+      "title": "Projects",
+      "pages": []
+    }
+  ]
+}

@@ -85,10 +85,10 @@ The application has various theme and layout implementations scattered throughou
 - Consider integration with project management system
 
 ### File References
-- **File Path**: `/Users/jhm/nextchat-clean/app/styles/` - Global styles and theme definitions
-- **File Path**: `/Users/jhm/nextchat-clean/app/components/` - UI components with individual styles
-- **File Path**: `/Users/jhm/nextchat-clean/app/layout.tsx` - Main layout component
-- **File Path**: `/Users/jhm/nextchat-clean/app/global.d.ts` - Global type definitions
+- **File Path**: `.//app/styles/` - Global styles and theme definitions
+- **File Path**: `.//app/components/` - UI components with individual styles
+- **File Path**: `.//app/layout.tsx` - Main layout component
+- **File Path**: `.//app/global.d.ts` - Global type definitions
 
 ## Current Stage
 
@@ -142,7 +142,7 @@ Currently in the planning stage, defining the scope and approach for analyzing e
 
 - **2025-01-15** - **Human Developer**: Created initial project document and defined requirements
   - Stage: plan
-  - Files Changed: [`/Users/jhm/nextchat-clean/docs/projects/active/v1/analysis-themes-layouts-architecture-v1.0.0.md`]
+  - Files Changed: [`.//docs/projects/active/v1/analysis-themes-layouts-architecture-v1.0.0.md`]
 
 ## Decisions
 

@@ -84,10 +84,10 @@ The current project structure has incomplete projects that may be better organiz
 - Test new structure before full implementation
 
 ### File References
-- **File Path**: `/Users/jhm/nextchat-clean/docs/projects/active/` - Active projects to analyze
-- **File Path**: `/Users/jhm/nextchat-clean/docs/projects/completed/` - Completed projects to review
-- **File Path**: `/Users/jhm/nextchat-clean/docs/projects/ideas/` - Ideas to evaluate
-- **File Path**: `/Users/jhm/nextchat-clean/docs/projects/.project-schema.json` - Schema for validation
+- **File Path**: `.//docs/projects/active/` - Active projects to analyze
+- **File Path**: `.//docs/projects/completed/` - Completed projects to review
+- **File Path**: `.//docs/projects/ideas/` - Ideas to evaluate
+- **File Path**: `.//docs/projects/.project-schema.json` - Schema for validation
 
 ## Current Stage
 
@@ -141,10 +141,10 @@ This meta-project will analyze all existing projects, identify opportunities for
 
 - **2025-01-15** - **analysis-agent**: Project created and initial analysis started
   - Stage: plan
-  - Files Changed: [`/Users/jhm/nextchat-clean/docs/projects/active/2025-01-15-project-reorganization-analysis.md`]
+  - Files Changed: [`.//docs/projects/active/2025-01-15-project-reorganization-analysis.md`]
 - **2025-01-15** - **analysis-agent**: Comprehensive project analysis completed
   - Stage: plan
-  - Files Changed: [`/Users/jhm/nextchat-clean/docs/projects/active/2025-01-15-project-reorganization-analysis.md`]
+  - Files Changed: [`.//docs/projects/active/2025-01-15-project-reorganization-analysis.md`]
   - **Key Findings**:
     - 2 completed projects misplaced in active/ directory
     - 1 project blocked on MCP Market component (needs specialized agent)
@@ -153,14 +153,14 @@ This meta-project will analyze all existing projects, identify opportunities for
     - Specific reorganization actions identified and prioritized
 - **2025-01-15** - **reorganization-agent**: Action 1 completed - Archived completed projects
   - Stage: plan
-  - Files Changed: [`/Users/jhm/nextchat-clean/docs/projects/completed/2025-01-15-documentation-translation-project.md`, `/Users/jhm/nextchat-clean/docs/projects/completed/2025-01-15-english-only-repository-project.md`]
+  - Files Changed: [`.//docs/projects/completed/2025-01-15-documentation-translation-project.md`, `.//docs/projects/completed/2025-01-15-english-only-repository-project.md`]
   - **Actions Taken**:
     - Moved Documentation Translation Project to completed/ directory
     - Moved English-Only Repository Project to completed/ directory
     - Cleaned up active/ directory structure
 - **2025-01-15** - **reorganization-agent**: Actions 2-4 completed - Agent reassignments executed
   - Stage: plan
-  - Files Changed: [`/Users/jhm/nextchat-clean/docs/projects/active/2025-01-15-codebase-modularization-project.md`, `/Users/jhm/nextchat-clean/docs/projects/active/2025-01-15-enhanced-project-management-system.md`, `/Users/jhm/nextchat-clean/docs/projects/ideas/2025-01-15-example-user-authentication-feature.md`]
+  - Files Changed: [`.//docs/projects/active/2025-01-15-codebase-modularization-project.md`, `.//docs/projects/active/2025-01-15-enhanced-project-management-system.md`, `.//docs/projects/ideas/2025-01-15-example-user-authentication-feature.md`]
   - **Actions Taken**:
     - Reassigned Codebase Modularization to react-component-specialist-agent
     - Reassigned Enhanced Project Management to system-implementation-agent

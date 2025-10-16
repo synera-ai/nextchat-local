@@ -1,0 +1,284 @@
+# MCP (Model Context Protocol) Documentation
+
+## Overview
+
+NextChat supports the Model Context Protocol (MCP), which allows AI assistants to access external tools and data sources through a standardized interface. This enables more powerful and interactive AI experiences by connecting the chat interface to various services and capabilities.
+
+## What is MCP?
+
+The Model Context Protocol is a standard that enables AI assistants to:
+- Access external tools and APIs
+- Read and write files
+- Execute system commands
+- Connect to databases and services
+- Perform complex operations beyond text generation
+
+## Enabling MCP
+
+To enable MCP functionality in NextChat:
+
+1. **Set Environment Variable**: Add `ENABLE_MCP=true` to your environment variables
+2. **Restart Application**: Restart your NextChat instance for the changes to take effect
+3. **Configure MCP Servers**: Set up MCP servers through the MCP Market interface
+
+### Docker Deployment
+
+```bash
+docker run -d -p 3000:3000 \
+   -e OPENAI_API_KEY=sk-xxxx \
+   -e CODE=your-password \
+   -e ENABLE_MCP=true \
+   yidadaa/chatgpt-next-web
+```
+
+### Local Development
+
+Add to your `.env.local` file:
+```
+ENABLE_MCP=true
+```
+
+## MCP Market
+
+The MCP Market is a built-in interface that allows you to:
+- Browse available MCP servers
+- Install and configure MCP servers
+- Manage server status and settings
+- Create custom server configurations
+
+### Accessing MCP Market
+
+1. Navigate to the MCP Market in your NextChat interface
+2. Browse available servers by category
+3. Click on a server to view details and installation options
+4. Configure the server with required parameters
+5. Start the server to make it available for use
+
+## Available MCP Servers
+
+### File System Operations
+- **Filesystem Server**: Read, write, and manage files and directories
+- **Git Server**: Perform Git operations and repository management
+
+### Development Tools
+- **Code Analysis**: Analyze code quality and structure
+- **Package Management**: Manage dependencies and packages
+- **Build Tools**: Execute build processes and scripts
+
+### Data Sources
+- **Database Connectors**: Connect to various database systems
+- **API Integrations**: Connect to external APIs and services
+- **Web Scraping**: Extract data from web pages
+
+### System Operations
+- **Process Management**: Monitor and control system processes
+- **Network Tools**: Network diagnostics and management
+- **System Information**: Get system status and information
+
+## Using MCP Tools
+
+Once MCP servers are configured and running, you can use them in your conversations:
+
+### Basic Usage
+
+1. **Ask for Help**: Simply ask the AI what tools are available
+2. **Request Operations**: Ask the AI to perform specific tasks
+3. **Interactive Workflow**: The AI will use appropriate tools automatically
+
+### Example Interactions
+
+```
+User: "Can you list the files in my current directory?"
+AI: [Uses filesystem tool to list files]
+
+User: "Create a new file called 'notes.txt' with some content"
+AI: [Uses filesystem tool to create the file]
+
+User: "What's the status of my Git repository?"
+AI: [Uses Git tool to check repository status]
+```
+
+## MCP Server Configuration
+
+### Server Configuration Format
+
+MCP servers are configured using JSON format:
+
+```json
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/path/to/allowed/directory"],
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }
+  }
+}
+```
+
+### Configuration Parameters
+
+- **command**: The executable command to run the MCP server
+- **args**: Command-line arguments for the server
+- **env**: Environment variables for the server process
+- **status**: Server status (active, paused, error)
+
+### Custom Server Configuration
+
+You can create custom MCP server configurations:
+
+1. **Define Server**: Specify command, arguments, and environment
+2. **Set Permissions**: Configure what the server can access
+3. **Test Configuration**: Verify the server starts correctly
+4. **Deploy**: Make the server available for use
+
+## Security Considerations
+
+### Access Control
+- MCP servers run with the same permissions as the NextChat process
+- Limit server access to necessary directories and resources
+- Use environment variables for sensitive configuration
+
+### Best Practices
+- Only install MCP servers from trusted sources
+- Regularly update MCP servers to latest versions
+- Monitor server logs for unusual activity
+- Use minimal required permissions for each server
+
+### Sandboxing
+- Consider running MCP servers in isolated environments
+- Use containerization for additional security
+- Implement network restrictions where appropriate
+
+## Troubleshooting
+
+### Common Issues
+
+#### Server Won't Start
+- Check that the command and arguments are correct
+- Verify required dependencies are installed
+- Check server logs for error messages
+- Ensure proper permissions for the server process
+
+#### Tools Not Available
+- Verify the MCP server is running and connected
+- Check that tools are properly registered
+- Restart the MCP server if needed
+- Check NextChat logs for connection issues
+
+#### Permission Errors
+- Ensure the server has access to required resources
+- Check file and directory permissions
+- Verify environment variables are set correctly
+- Run with appropriate user permissions
+
+### Debug Mode
+
+Enable debug logging for MCP operations:
+
+```bash
+# Set debug environment variable
+DEBUG=mcp* yarn dev
+```
+
+### Log Files
+
+MCP-related logs can be found in:
+- NextChat application logs
+- MCP server process logs
+- System logs (for permission issues)
+
+## Advanced Configuration
+
+### Custom MCP Servers
+
+You can create custom MCP servers for specific needs:
+
+1. **Implement MCP Protocol**: Follow the MCP specification
+2. **Define Tools**: Implement the tools your server provides
+3. **Handle Requests**: Process tool calls and return results
+4. **Error Handling**: Implement proper error responses
+
+### Server Management
+
+- **Start/Stop Servers**: Control server lifecycle
+- **Monitor Status**: Check server health and performance
+- **Update Servers**: Keep servers up to date
+- **Backup Configuration**: Save server configurations
+
+### Integration with Other Services
+
+MCP servers can integrate with:
+- External APIs and services
+- Database systems
+- File storage solutions
+- Development tools and IDEs
+- Monitoring and logging systems
+
+## API Reference
+
+### MCP Message Format
+
+MCP uses JSON-RPC 2.0 for communication:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": "1",
+  "method": "tools/call",
+  "params": {
+    "name": "tool_name",
+    "arguments": {
+      "param1": "value1",
+      "param2": "value2"
+    }
+  }
+}
+```
+
+### Response Format
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": "1",
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Tool execution result"
+      }
+    ]
+  }
+}
+```
+
+## Resources
+
+- [MCP Specification](https://spec.modelcontextprotocol.io/)
+- [MCP SDK Documentation](https://github.com/modelcontextprotocol/sdk)
+- [NextChat MCP Market](https://github.com/ChatGPTNextWeb/NextChat-MCP-Market)
+- [Community MCP Servers](https://github.com/modelcontextprotocol/servers)
+
+## Support
+
+For MCP-related issues:
+- Check the troubleshooting section above
+- Review MCP server documentation
+- Check NextChat GitHub issues
+- Join the NextChat community for help
+
+## Changelog
+
+### Version 2.15.8
+- Initial MCP support added
+- MCP Market interface implemented
+- Basic filesystem and Git servers included
+
+### Future Updates
+- Additional MCP servers
+- Enhanced security features
+- Improved error handling
+- Performance optimizations

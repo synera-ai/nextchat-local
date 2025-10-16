@@ -85,9 +85,9 @@ The comprehensive project management system described in documentation is not im
 - Write unit and integration tests
 
 ### File References
-- **File Path**: `/Users/jhm/nextchat-clean/docs/projects/` - Project management documentation
-- **File Path**: `/Users/jhm/nextchat-clean/app/` - Application codebase for integration
-- **File Path**: `/Users/jhm/nextchat-clean/.cursorrules` - Workspace rules for integration
+- **File Path**: `.//docs/projects/` - Project management documentation
+- **File Path**: `.//app/` - Application codebase for integration
+- **File Path**: `.//.cursorrules` - Workspace rules for integration
 
 ## Current Stage
 
@@ -161,24 +161,24 @@ Successfully implemented the basic project management functionality in the codeb
 
 - **2025-01-15** - **Human Developer**: Created initial project document and defined requirements
   - Stage: plan
-  - Files Changed: [`/Users/jhm/nextchat-clean/docs/projects/active/v1/feature-basic-project-system-implementation-v1.0.0.md`]
+  - Files Changed: [`.//docs/projects/active/v1/feature-basic-project-system-implementation-v1.0.0.md`]
 
 - **2025-01-15** - **AI Implementation Agent**: Completed basic project system implementation
   - Stage: completion
   - Files Changed: [
-    `/Users/jhm/nextchat-clean/app/core/types/project.ts`,
-    `/Users/jhm/nextchat-clean/app/core/utils/project-detector.ts`,
-    `/Users/jhm/nextchat-clean/app/core/utils/project-manager.ts`,
-    `/Users/jhm/nextchat-clean/app/core/utils/project-validator.ts`,
-    `/Users/jhm/nextchat-clean/app/core/providers/project-provider.tsx`,
-    `/Users/jhm/nextchat-clean/app/components/project-status.tsx`,
-    `/Users/jhm/nextchat-clean/app/components/project-status.module.scss`,
-    `/Users/jhm/nextchat-clean/app/components/projects-page.tsx`,
-    `/Users/jhm/nextchat-clean/app/components/projects-page.module.scss`,
-    `/Users/jhm/nextchat-clean/app/components/home.tsx`,
-    `/Users/jhm/nextchat-clean/app/components/sidebar.tsx`,
-    `/Users/jhm/nextchat-clean/app/constant.ts`,
-    `/Users/jhm/nextchat-clean/docs/projects/PROJECTS_HEALTH_DASHBOARD.md`
+    `.//app/core/types/project.ts`,
+    `.//app/core/utils/project-detector.ts`,
+    `.//app/core/utils/project-manager.ts`,
+    `.//app/core/utils/project-validator.ts`,
+    `.//app/core/providers/project-provider.tsx`,
+    `.//app/components/project-status.tsx`,
+    `.//app/components/project-status.module.scss`,
+    `.//app/components/projects-page.tsx`,
+    `.//app/components/projects-page.module.scss`,
+    `.//app/components/home.tsx`,
+    `.//app/components/sidebar.tsx`,
+    `.//app/constant.ts`,
+    `.//docs/projects/PROJECTS_HEALTH_DASHBOARD.md`
   ]
   - Implementation: Complete project management system with detection, validation, UI, and integration
 

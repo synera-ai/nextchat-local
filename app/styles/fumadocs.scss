@@ -1,0 +1,55 @@
+/* Fumadocs styles integration with existing design system */
+
+/* Import Tailwind CSS */
+@import 'tailwindcss';
+
+/* Import Fumadocs base styles */
+@import 'fumadocs-ui/css/neutral.css';
+@import 'fumadocs-ui/css/preset.css';
+
+/* Integrate with existing design system variables */
+:root {
+  /* Map Fumadocs variables to existing design system */
+  --fumadocs-primary: var(--primary);
+  --fumadocs-background: var(--theme-color);
+  --fumadocs-foreground: var(--black);
+  --fumadocs-border: var(--border-in-light);
+  --fumadocs-muted: var(--hover-color);
+  
+  /* Typography */
+  --fumadocs-font-family: "Noto Sans", "SF Pro SC", "SF Pro Text", "SF Pro Icons", "PingFang SC", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+}
+
+/* Dark theme integration */
+.dark {
+  --fumadocs-primary: var(--primary);
+  --fumadocs-background: var(--theme-color);
+  --fumadocs-foreground: var(--black);
+  --fumadocs-border: var(--border-in-light);
+  --fumadocs-muted: var(--hover-color);
+}
+
+/* Ensure Fumadocs components use existing design system */
+.fumadocs-content {
+  font-family: var(--fumadocs-font-family);
+  color: var(--fumadocs-foreground);
+  background-color: var(--fumadocs-background);
+}
+
+/* Sidebar styling integration */
+.fumadocs-sidebar {
+  background-color: var(--fumadocs-background);
+  border-right: var(--fumadocs-border);
+}
+
+/* Navigation styling */
+.fumadocs-nav {
+  background-color: var(--fumadocs-background);
+  border-bottom: var(--fumadocs-border);
+}
+
+/* Code block styling integration */
+.fumadocs-code {
+  background-color: var(--fumadocs-muted);
+  border: var(--fumadocs-border);
+}

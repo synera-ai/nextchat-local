@@ -26,8 +26,8 @@ Before you begin, make sure you have:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-org/nextchat-clean.git
-cd nextchat-clean
+git clone https://github.com/your-org/nextchat.git
+cd nextchat
 ```
 
 ### 2. Install Dependencies
@@ -90,7 +90,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser to see NextC
 ## Project Structure
 
 ```
-nextchat-clean/
+nextchat/
 ├── app/                    # Next.js app directory
 │   ├── api/               # API routes
 │   ├── components/        # React components

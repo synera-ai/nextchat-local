@@ -86,10 +86,10 @@ The application currently lacks user authentication, which limits its functional
 - Write unit and integration tests
 
 ### File References
-- **File Path**: `/Users/jhm/nextchat-clean/app/api/auth.ts` - Authentication API endpoints
-- **File Path**: `/Users/jhm/nextchat-clean/app/components/auth.tsx` - Authentication UI components
-- **File Path**: `/Users/jhm/nextchat-clean/app/store/access.ts` - Access control store
-- **File Path**: `/Users/jhm/nextchat-clean/app/utils/` - Utility functions
+- **File Path**: `.//app/api/auth.ts` - Authentication API endpoints
+- **File Path**: `.//app/components/auth.tsx` - Authentication UI components
+- **File Path**: `.//app/store/access.ts` - Access control store
+- **File Path**: `.//app/utils/` - Utility functions
 
 ## Current Stage
 
@@ -143,7 +143,7 @@ Currently in the plan stage, with comprehensive research completed and detailed 
   - Files Changed: []
 - **2025-01-15** - **research-agent**: Authentication research and planning completed
   - Stage: plan
-  - Files Changed: [`/Users/jhm/nextchat-clean/docs/projects-guide/user-authentication-research.md`]
+  - Files Changed: [`.//docs/projects-guide/user-authentication-research.md`]
   - **Completed Work**: 
     - Comprehensive research on authentication patterns (JWT, Session-based, OAuth)
     - Security best practices analysis and recommendations

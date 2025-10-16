@@ -67,7 +67,7 @@ export function McpMarketPage() {
     }
   };
 
-  const handleViewTools = async (serverId: string) => {
+  const handleViewToolsLocal = async (serverId: string) => {
     await handleViewTools(serverId);
   };
 
@@ -123,7 +123,7 @@ export function McpMarketPage() {
             onDeleteServer={handleDeleteServer}
             onPauseServer={handlePauseServer}
             onResumeServer={handleResumeServer}
-            onViewTools={handleViewTools}
+            onViewTools={handleViewToolsLocal}
             onViewGithub={handleViewGithub}
           />
         </div>

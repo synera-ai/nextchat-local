@@ -304,6 +304,42 @@ SiliconFlow API URL.
 
 302.AI API URL.
 
+### `TENCENT_API_KEY` (Optional)
+
+Tencent Hunyuan API Key.
+
+### `TENCENT_URL` (Optional)
+
+Tencent Hunyuan API URL.
+
+### `MOONSHOT_API_KEY` (Optional)
+
+Moonshot API Key.
+
+### `MOONSHOT_URL` (Optional)
+
+Moonshot API URL.
+
+### `XAI_API_KEY` (Optional)
+
+XAI (Grok) API Key.
+
+### `XAI_URL` (Optional)
+
+XAI (Grok) API URL.
+
+### `GTM_ID` (Optional)
+
+Google Tag Manager ID for analytics.
+
+### `CLOUDFLARE_ACCOUNT_ID` (Optional)
+
+Cloudflare Account ID for KV storage integration.
+
+### `CLOUDFLARE_KV_NAMESPACE_ID` (Optional)
+
+Cloudflare KV Namespace ID for storage integration.
+
 ## Development
 
 Click the button below to start secondary development:

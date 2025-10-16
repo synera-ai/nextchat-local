@@ -85,9 +85,9 @@ The current project management system relies heavily on manual documentation and
 - Ensure high performance and low latency
 
 ### File References
-- **File Path**: `/Users/jhm/nextchat-clean/docs/projects/` - Project management system
-- **File Path**: `/Users/jhm/nextchat-clean/.git/` - Git repository for commit analysis
-- **File Path**: `/Users/jhm/nextchat-clean/app/` - Application codebase for analysis
+- **File Path**: `.//docs/projects/` - Project management system
+- **File Path**: `.//.git/` - Git repository for commit analysis
+- **File Path**: `.//app/` - Application codebase for analysis
 
 ## Current Stage
 
@@ -153,7 +153,7 @@ Currently in the planning stage, defining the architecture and approach for impl
 
 - **2025-01-15** - **Human Developer**: Created initial project document and defined requirements
   - Stage: plan
-  - Files Changed: [`/Users/jhm/nextchat-clean/docs/projects/active/v1/feature-document-driven-architecture-v1.0.0.md`]
+  - Files Changed: [`.//docs/projects/active/v1/feature-document-driven-architecture-v1.0.0.md`]
 
 ## Decisions
 

@@ -57,10 +57,10 @@
 ## File Organization
 
 ### Directory Structure
-- `/ideas/` - Initial project concepts
-- `/active/` - Currently active projects
-- `/completed/` - Finished projects (archive)
-- `/templates/` - Project templates
+- `./ideas/` - Initial project concepts
+- `./active/` - Currently active projects
+- `./completed/` - Finished projects (archive)
+- `./templates/` - Project templates
 
 ### Naming Convention
 - Format: `YYYY-MM-DD-descriptive-project-name.md`
@@ -70,8 +70,10 @@
 ## Integration Points
 
 ### Codebase References
-- Use absolute file paths in project documents
-- Reference existing documentation and code
+- **MANDATORY**: Use relative file paths in project documents
+- **FORBIDDEN**: Absolute paths like `/Users/username/` or `C:\Users\`
+- **REQUIRED**: Use `./` prefix for current directory references
+- Reference existing documentation and code using relative paths
 - Maintain alignment with codebase structure
 
 ### Cross-Project Dependencies

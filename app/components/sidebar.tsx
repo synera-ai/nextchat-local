@@ -38,6 +38,7 @@ const DISCOVERY = [
   { name: "Stable Diffusion", path: Path.Sd },
   { name: Locale.SearchChat.Page.Title, path: Path.SearchChat },
   { name: "Projects", path: Path.Projects },
+  { name: "Documentation", path: "/docs" },
 ];
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {

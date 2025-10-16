@@ -1,18 +1,24 @@
 // Project Management System Provider
 
-'use client';
+"use client";
 
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { ProjectManager } from '../utils/project-manager';
-import { ProjectValidator } from '../utils/project-validator';
-import { 
-  ProjectSystemConfig, 
-  ProjectSystemState, 
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
+// import { ProjectManager } from '../utils/project-manager';
+import { ProjectValidator } from "../utils/project-validator";
+import {
+  ProjectSystemConfig,
+  ProjectSystemState,
   ProjectContextResult,
   ProjectStatus,
   ProjectHealth,
-  ProjectValidation
-} from '../types/project';
+  ProjectValidation,
+} from "../types/project";
 
 // Project System Context
 interface ProjectSystemContextType {
@@ -21,7 +27,7 @@ interface ProjectSystemContextType {
   isLoading: boolean;
   error: string | null;
   systemHealth: any;
-  
+
   // Project operations
   getProject: (projectId: string) => Promise<ProjectContextResult | null>;
   getActiveProjects: () => Promise<ProjectContextResult[]>;
@@ -29,23 +35,33 @@ interface ProjectSystemContextType {
   getProjectHealth: (projectId: string) => Promise<ProjectHealth | null>;
   validateProject: (projectId: string) => Promise<ProjectValidation | null>;
   searchProjects: (searchTerm: string, filters?: any) => Promise<any>;
-  
+
   // Project management
   createProject: (metadata: any, context: any, agent?: string) => Promise<any>;
-  updateProject: (projectId: string, updates: any, agent?: string) => Promise<any>;
-  moveProject: (projectId: string, newStage: string, agent?: string) => Promise<any>;
-  
+  updateProject: (
+    projectId: string,
+    updates: any,
+    agent?: string,
+  ) => Promise<any>;
+  moveProject: (
+    projectId: string,
+    newStage: string,
+    agent?: string,
+  ) => Promise<any>;
+
   // System operations
   refresh: () => Promise<void>;
   getSystemStatus: () => ProjectSystemState;
-  
+
   // Validation
   validateProjectMetadata: (metadata: any) => ProjectValidation;
   validateProjectContext: (context: any) => ProjectValidation;
   validateProjectFile: (content: string) => ProjectValidation;
 }
 
-const ProjectSystemContext = createContext<ProjectSystemContextType | null>(null);
+const ProjectSystemContext = createContext<ProjectSystemContextType | null>(
+  null,
+);
 
 // Project System Provider Props
 interface ProjectSystemProviderProps {
@@ -55,32 +71,36 @@ interface ProjectSystemProviderProps {
 
 // Default configuration
 const defaultConfig: ProjectSystemConfig = {
-  projectsPath: '/docs/projects',
-  activePath: '/docs/projects/active',
-  completedPath: '/docs/projects/completed',
-  ideasPath: '/docs/projects/ideas',
-  templatesPath: '/docs/projects/templates',
-  versionsPath: '/docs/projects/versions',
-  schemaPath: '/docs/projects/.project-schema.json',
+  projectsPath: "/docs/projects",
+  activePath: "/docs/projects/active",
+  completedPath: "/docs/projects/completed",
+  ideasPath: "/docs/projects/ideas",
+  templatesPath: "/docs/projects/templates",
+  versionsPath: "/docs/projects/versions",
+  schemaPath: "/docs/projects/.project-schema.json",
   autoValidation: true,
   autoCommit: false,
   statusReporting: true,
-  healthMonitoring: true
+  healthMonitoring: true,
 };
 
 // Project System Provider Component
-export function ProjectSystemProvider({ children, config }: ProjectSystemProviderProps) {
+export function ProjectSystemProvider({
+  children,
+  config,
+}: ProjectSystemProviderProps) {
   const [isInitialized, setIsInitialized] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [systemHealth, setSystemHealth] = useState<any>(null);
-  
+
   // Initialize managers
   const [projectManager] = useState(() => {
     const mergedConfig = { ...defaultConfig, ...config };
-    return new ProjectManager(mergedConfig);
+    // return new ProjectManager(mergedConfig);
+    return null;
   });
-  
+
   const [validator] = useState(() => new ProjectValidator());
 
   // Initialize the project system
@@ -89,17 +109,24 @@ export function ProjectSystemProvider({ children, config }: ProjectSystemProvide
       try {
         setIsLoading(true);
         setError(null);
-        
-        await projectManager.initialize();
-        const health = projectManager.getSystemHealth();
-        setSystemHealth(health);
-        setIsInitialized(true);
-        
-        console.log('Project Management System initialized successfully');
+
+        if (projectManager) {
+          await projectManager.initialize();
+          const health = projectManager.getSystemHealth();
+          setSystemHealth(health);
+          setIsInitialized(true);
+          console.log("Project Management System initialized successfully");
+        } else {
+          console.log("Project Management System not available (disabled)");
+          setIsInitialized(true);
+        }
       } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'Failed to initialize project system';
+        const errorMessage =
+          err instanceof Error
+            ? err.message
+            : "Failed to initialize project system";
         setError(errorMessage);
-        console.error('Failed to initialize Project Management System:', err);
+        console.error("Failed to initialize Project Management System:", err);
       } finally {
         setIsLoading(false);
       }
@@ -109,7 +136,10 @@ export function ProjectSystemProvider({ children, config }: ProjectSystemProvide
   }, [projectManager]);
 
   // Project operations
-  const getProject = async (projectId: string): Promise<ProjectContextResult | null> => {
+  const getProject = async (
+    projectId: string,
+  ): Promise<ProjectContextResult | null> => {
+    if (!projectManager) return null;
     try {
       return await projectManager.getProject(projectId);
     } catch (err) {
@@ -119,15 +149,19 @@ export function ProjectSystemProvider({ children, config }: ProjectSystemProvide
   };
 
   const getActiveProjects = async (): Promise<ProjectContextResult[]> => {
+    if (!projectManager) return [];
     try {
       return await projectManager.getActiveProjects();
     } catch (err) {
-      console.error('Error getting active projects:', err);
+      console.error("Error getting active projects:", err);
       return [];
     }
   };
 
-  const getProjectStatus = async (projectId: string): Promise<ProjectStatus | null> => {
+  const getProjectStatus = async (
+    projectId: string,
+  ): Promise<ProjectStatus | null> => {
+    if (!projectManager) return null;
     try {
       return await projectManager.getProjectStatus(projectId);
     } catch (err) {
@@ -136,7 +170,10 @@ export function ProjectSystemProvider({ children, config }: ProjectSystemProvide
     }
   };
 
-  const getProjectHealth = async (projectId: string): Promise<ProjectHealth | null> => {
+  const getProjectHealth = async (
+    projectId: string,
+  ): Promise<ProjectHealth | null> => {
+    if (!projectManager) return null;
     try {
       return await projectManager.getProjectHealth(projectId);
     } catch (err) {
@@ -145,7 +182,10 @@ export function ProjectSystemProvider({ children, config }: ProjectSystemProvide
     }
   };
 
-  const validateProject = async (projectId: string): Promise<ProjectValidation | null> => {
+  const validateProject = async (
+    projectId: string,
+  ): Promise<ProjectValidation | null> => {
+    if (!projectManager) return null;
     try {
       return await projectManager.validateProject(projectId);
     } catch (err) {
@@ -154,43 +194,66 @@ export function ProjectSystemProvider({ children, config }: ProjectSystemProvide
     }
   };
 
-  const searchProjects = async (searchTerm: string, filters: any = {}): Promise<any> => {
+  const searchProjects = async (
+    searchTerm: string,
+    filters: any = {},
+  ): Promise<any> => {
+    if (!projectManager)
+      return { projects: [], totalCount: 0, searchTerm, filters };
     try {
       return await projectManager.searchProjects(searchTerm, filters);
     } catch (err) {
-      console.error('Error searching projects:', err);
+      console.error("Error searching projects:", err);
       return { projects: [], totalCount: 0, searchTerm, filters };
     }
   };
 
   // Project management operations
-  const createProject = async (metadata: any, context: any, agent: string = 'system'): Promise<any> => {
+  const createProject = async (
+    metadata: any,
+    context: any,
+    agent: string = "system",
+  ): Promise<any> => {
+    if (!projectManager) throw new Error("Project manager not available");
     try {
       setIsLoading(true);
-      const result = await projectManager.createProject(metadata, context, agent);
-      
+      const result = await projectManager.createProject(
+        metadata,
+        context,
+        agent,
+      );
+
       // Refresh system health after creation
       const health = projectManager.getSystemHealth();
       setSystemHealth(health);
-      
+
       return result;
     } catch (err) {
-      console.error('Error creating project:', err);
+      console.error("Error creating project:", err);
       throw err;
     } finally {
       setIsLoading(false);
     }
   };
 
-  const updateProject = async (projectId: string, updates: any, agent: string = 'system'): Promise<any> => {
+  const updateProject = async (
+    projectId: string,
+    updates: any,
+    agent: string = "system",
+  ): Promise<any> => {
+    if (!projectManager) throw new Error("Project manager not available");
     try {
       setIsLoading(true);
-      const result = await projectManager.updateProject(projectId, updates, agent);
-      
+      const result = await projectManager.updateProject(
+        projectId,
+        updates,
+        agent,
+      );
+
       // Refresh system health after update
       const health = projectManager.getSystemHealth();
       setSystemHealth(health);
-      
+
       return result;
     } catch (err) {
       console.error(`Error updating project ${projectId}:`, err);
@@ -200,15 +263,24 @@ export function ProjectSystemProvider({ children, config }: ProjectSystemProvide
     }
   };
 
-  const moveProject = async (projectId: string, newStage: string, agent: string = 'system'): Promise<any> => {
+  const moveProject = async (
+    projectId: string,
+    newStage: string,
+    agent: string = "system",
+  ): Promise<any> => {
+    if (!projectManager) throw new Error("Project manager not available");
     try {
       setIsLoading(true);
-      const result = await projectManager.moveProject(projectId, newStage, agent);
-      
+      const result = await projectManager.moveProject(
+        projectId,
+        newStage,
+        agent,
+      );
+
       // Refresh system health after move
       const health = projectManager.getSystemHealth();
       setSystemHealth(health);
-      
+
       return result;
     } catch (err) {
       console.error(`Error moving project ${projectId}:`, err);
@@ -220,13 +292,14 @@ export function ProjectSystemProvider({ children, config }: ProjectSystemProvide
 
   // System operations
   const refresh = async (): Promise<void> => {
+    if (!projectManager) return;
     try {
       setIsLoading(true);
       await projectManager.refresh();
       const health = projectManager.getSystemHealth();
       setSystemHealth(health);
     } catch (err) {
-      console.error('Error refreshing project system:', err);
+      console.error("Error refreshing project system:", err);
       throw err;
     } finally {
       setIsLoading(false);
@@ -234,6 +307,8 @@ export function ProjectSystemProvider({ children, config }: ProjectSystemProvide
   };
 
   const getSystemStatus = (): ProjectSystemState => {
+    if (!projectManager)
+      return { status: "unavailable", health: "unknown", initialized: false };
     return projectManager.getSystemStatus();
   };
 
@@ -257,7 +332,7 @@ export function ProjectSystemProvider({ children, config }: ProjectSystemProvide
     isLoading,
     error,
     systemHealth,
-    
+
     // Project operations
     getProject,
     getActiveProjects,
@@ -265,20 +340,20 @@ export function ProjectSystemProvider({ children, config }: ProjectSystemProvide
     getProjectHealth,
     validateProject,
     searchProjects,
-    
+
     // Project management
     createProject,
     updateProject,
     moveProject,
-    
+
     // System operations
     refresh,
     getSystemStatus,
-    
+
     // Validation
     validateProjectMetadata,
     validateProjectContext,
-    validateProjectFile
+    validateProjectFile,
   };
 
   return (
@@ -291,17 +366,20 @@ export function ProjectSystemProvider({ children, config }: ProjectSystemProvide
 // Hook to use the project system
 export function useProjectSystem(): ProjectSystemContextType {
   const context = useContext(ProjectSystemContext);
-  
+
   if (!context) {
-    throw new Error('useProjectSystem must be used within a ProjectSystemProvider');
+    throw new Error(
+      "useProjectSystem must be used within a ProjectSystemProvider",
+    );
   }
-  
+
   return context;
 }
 
 // Specific hooks for common operations
 export function useProject(projectId: string) {
-  const { getProject, getProjectStatus, getProjectHealth, validateProject } = useProjectSystem();
+  const { getProject, getProjectStatus, getProjectHealth, validateProject } =
+    useProjectSystem();
   const [project, setProject] = useState<ProjectContextResult | null>(null);
   const [status, setStatus] = useState<ProjectStatus | null>(null);
   const [health, setHealth] = useState<ProjectHealth | null>(null);
@@ -312,31 +390,38 @@ export function useProject(projectId: string) {
   useEffect(() => {
     const loadProject = async () => {
       if (!projectId) return;
-      
+
       try {
         setIsLoading(true);
         setError(null);
-        
-        const [projectData, statusData, healthData, validationData] = await Promise.all([
-          getProject(projectId),
-          getProjectStatus(projectId),
-          getProjectHealth(projectId),
-          validateProject(projectId)
-        ]);
-        
+
+        const [projectData, statusData, healthData, validationData] =
+          await Promise.all([
+            getProject(projectId),
+            getProjectStatus(projectId),
+            getProjectHealth(projectId),
+            validateProject(projectId),
+          ]);
+
         setProject(projectData);
         setStatus(statusData);
         setHealth(healthData);
         setValidation(validationData);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load project');
+        setError(err instanceof Error ? err.message : "Failed to load project");
       } finally {
         setIsLoading(false);
       }
     };
 
     loadProject();
-  }, [projectId, getProject, getProjectStatus, getProjectHealth, validateProject]);
+  }, [
+    projectId,
+    getProject,
+    getProjectStatus,
+    getProjectHealth,
+    validateProject,
+  ]);
 
   return {
     project,
@@ -348,31 +433,34 @@ export function useProject(projectId: string) {
     refetch: () => {
       const loadProject = async () => {
         if (!projectId) return;
-        
+
         try {
           setIsLoading(true);
           setError(null);
-          
-          const [projectData, statusData, healthData, validationData] = await Promise.all([
-            getProject(projectId),
-            getProjectStatus(projectId),
-            getProjectHealth(projectId),
-            validateProject(projectId)
-          ]);
-          
+
+          const [projectData, statusData, healthData, validationData] =
+            await Promise.all([
+              getProject(projectId),
+              getProjectStatus(projectId),
+              getProjectHealth(projectId),
+              validateProject(projectId),
+            ]);
+
           setProject(projectData);
           setStatus(statusData);
           setHealth(healthData);
           setValidation(validationData);
         } catch (err) {
-          setError(err instanceof Error ? err.message : 'Failed to load project');
+          setError(
+            err instanceof Error ? err.message : "Failed to load project",
+          );
         } finally {
           setIsLoading(false);
         }
       };
-      
+
       loadProject();
-    }
+    },
   };
 }
 
@@ -387,11 +475,13 @@ export function useActiveProjects() {
       try {
         setIsLoading(true);
         setError(null);
-        
+
         const activeProjects = await getActiveProjects();
         setProjects(activeProjects);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load active projects');
+        setError(
+          err instanceof Error ? err.message : "Failed to load active projects",
+        );
       } finally {
         setIsLoading(false);
       }
@@ -408,15 +498,17 @@ export function useActiveProjects() {
       try {
         setIsLoading(true);
         setError(null);
-        
+
         const activeProjects = await getActiveProjects();
         setProjects(activeProjects);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load active projects');
+        setError(
+          err instanceof Error ? err.message : "Failed to load active projects",
+        );
       } finally {
         setIsLoading(false);
       }
-    }
+    },
   };
 }
 
@@ -430,11 +522,13 @@ export function useProjectSearch() {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       const searchResults = await searchProjects(searchTerm, filters);
       setResults(searchResults);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to search projects');
+      setError(
+        err instanceof Error ? err.message : "Failed to search projects",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -444,7 +538,7 @@ export function useProjectSearch() {
     results,
     isLoading,
     error,
-    search
+    search,
   };
 }
 

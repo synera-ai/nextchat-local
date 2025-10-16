@@ -152,11 +152,11 @@ Successfully implemented comprehensive AI coder documentation system with archit
 - **2025-01-15** - **AI Documentation Agent**: Completed comprehensive AI coder documentation system
   - Stage: completion
   - Files Changed: [
-    `/Users/jhm/nextchat-clean/docs/ai-coder/README.md`,
-    `/Users/jhm/nextchat-clean/docs/ai-coder/architecture/overview/README.md`,
-    `/Users/jhm/nextchat-clean/docs/ai-coder/best-practices/coding/README.md`,
-    `/Users/jhm/nextchat-clean/docs/ai-coder/examples/code/README.md`,
-    `/Users/jhm/nextchat-clean/docs/ai-coder/debugging/techniques/README.md`
+    `.//docs/ai-coder/README.md`,
+    `.//docs/ai-coder/architecture/overview/README.md`,
+    `.//docs/ai-coder/best-practices/coding/README.md`,
+    `.//docs/ai-coder/examples/code/README.md`,
+    `.//docs/ai-coder/debugging/techniques/README.md`
   ]
   - Implementation: Complete AI coder documentation system with architecture guides, best practices, code examples, and debugging techniques
 
