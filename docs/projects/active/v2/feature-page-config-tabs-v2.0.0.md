@@ -161,13 +161,57 @@ export function Settings() {
 
 ## Phase 3: Second Page Migration (v2.0.0)
 
-**Status**: ⏳ PENDING
+**Status**: ⏳ IN PROGRESS
 
 **Deliverables**:
-- [ ] Masks page migrated as example
-- [ ] Configuration created
-- [ ] Integration testing
-- [ ] Documentation of pattern
+- [ ] Analyze Masks page structure and content organization
+- [ ] Create wrapper components for Masks sections
+- [ ] Update masks config with actual components
+- [ ] Refactor mask.tsx to use MaskPageContainer
+- [ ] Test Masks page migration
+- [ ] Document migration pattern
+
+**Strategic Approach for Masks Migration**:
+
+Unlike Settings which has 5 distinct tabs with different components, the Masks page has a **simpler structure**:
+- Single main content section (MasksList with search/filter)
+- Window header with export/import/close actions
+- Editing modal overlay (separate from tab system)
+
+**Key Insights**:
+1. **Not truly multi-tab**: Current masks page shows ALL masks in one view with filtering
+2. **Could be single-section**: Can use PageContainer with single tab, OR
+3. **Could be multi-tab refactor**: Create logical tabs (Browse, My Masks, Builtin Masks) for better UX
+4. **Chosen approach**: Keep current behavior (single content view) for Phase 3, can be enhanced in Phase 4
+
+**Phase 3 Implementation Plan**:
+
+1. **Create MasksListWrapper**
+   - Wraps the main masks list/search/filter UI
+   - Handles mask store interaction
+   - Returns searchable, filterable mask list
+
+2. **Create MaskPageContainer**
+   - Similar to SettingsPageContainer
+   - Includes window header with export/import buttons
+   - Manages mask modal state externally
+
+3. **Update masksPageConfig**
+   - Replace placeholder components with MasksListWrapper
+   - Single tab: "Browse" with MasksListWrapper section
+
+4. **Refactor mask.tsx**
+   - Minimal wrapper like Settings
+   - Use MaskPageContainer + masksPageConfig
+   - Keep modal state management
+
+5. **Testing Strategy**
+   - Same as Settings: compile, runtime, functionality checks
+   - Verify mask creation/editing still works
+   - Verify search/filter functionality
+   - Verify export/import buttons work
+
+**Estimated Timeline**: 30-45 minutes
 
 ## Phase 4: Integration Testing & Documentation (v2.0.0)
 

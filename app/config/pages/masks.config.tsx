@@ -1,58 +1,20 @@
-import React from "react";
 import { createPageConfig, createTab, createSection } from "./factory";
+import { MasksListWrapper } from "../../components/mask/MasksListWrapper";
 
 /**
- * Example configuration component for Masks Browse section
- */
-function MasksBrowseSection() {
-  return (
-    <div style={{ padding: "20px", color: "var(--color-text-primary)" }}>
-      <h3>Browse Masks</h3>
-      <p>Manage and browse available masks</p>
-    </div>
-  );
-}
-
-/**
- * Example configuration component for Masks My Masks section
- */
-function MasksMyMasksSection() {
-  return (
-    <div style={{ padding: "20px", color: "var(--color-text-primary)" }}>
-      <h3>My Masks</h3>
-      <p>Manage your personal masks</p>
-    </div>
-  );
-}
-
-/**
- * Example configuration component for Masks Search section
- */
-function MasksSearchSection() {
-  return (
-    <div style={{ padding: "20px", color: "var(--color-text-primary)" }}>
-      <h3>Search Masks</h3>
-      <p>Search and discover masks</p>
-    </div>
-  );
-}
-
-/**
- * Masks page configuration example
- * Demonstrates reusability of page configuration system across different pages
+ * Masks page configuration
+ * Defines the tab structure and content components for the Masks page
+ * Uses the MasksListWrapper to provide proper props to the masks list UI
+ *
+ * NOTE: The onEditMask callback needs to be passed from the page component
+ * through section props to handle modal state management at the page level
  */
 export const masksPageConfig = createPageConfig(
   "masks",
   "Masks",
   [
     createTab("browse", "Browse", [
-      createSection("browse-section", "Browse Masks", MasksBrowseSection),
-    ]),
-    createTab("my-masks", "My Masks", [
-      createSection("my-masks-section", "My Masks", MasksMyMasksSection),
-    ]),
-    createTab("search", "Search", [
-      createSection("search-section", "Search Masks", MasksSearchSection),
+      createSection("browse-section", "Browse Masks", MasksListWrapper),
     ]),
   ],
   {
