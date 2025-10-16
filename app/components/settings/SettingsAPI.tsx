@@ -12,11 +12,14 @@ export function SettingsAPI(props: SettingsAPIProps) {
 
   return (
     <List>
-      <ListItem title="Model Configuration">
-        <div style={{ width: "100%" }}>
-          <ModelConfigList />
-        </div>
-      </ListItem>
+      <ModelConfigList
+        modelConfig={config.modelConfig}
+        updateConfig={(updater) => {
+          const modelConfig = { ...config.modelConfig };
+          updater(modelConfig);
+          config.update((config: any) => (config.modelConfig = modelConfig));
+        }}
+      />
 
       {accessStore?.enabledAccessControl() && (
         <ListItem
