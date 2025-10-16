@@ -1,8 +1,11 @@
-import React, { useState, useCallback } from "react";
+import React, { useCallback } from "react";
 import styles from "./Tabs.module.scss";
 import clsx from "clsx";
 
-// Type definitions
+/**
+ * TabDefinition - Define a single tab with its metadata and content
+ * @deprecated Use PageSection from page config system instead
+ */
 export interface TabDefinition {
   id: string;
   label: string;
@@ -12,10 +15,15 @@ export interface TabDefinition {
   disabled?: boolean;
 }
 
+/**
+ * TabsProps - Props for the Tabs component
+ * Now a controlled component - state management moved to PageConfigProvider
+ * @deprecated For new implementations, use PageContainer with PageConfig
+ */
 export interface TabsProps {
   tabs: TabDefinition[];
-  defaultTab?: string;
-  onChange?: (tabId: string) => void;
+  activeTab: string; // Now required - component is controlled
+  onChange: (tabId: string) => void; // Now required
   variant?: "underline" | "pill" | "vertical";
   size?: "sm" | "md" | "lg";
   disabled?: boolean;
@@ -23,9 +31,20 @@ export interface TabsProps {
   ariaLabel?: string;
 }
 
+/**
+ * Tabs - Cleaned up presentational component
+ *
+ * MIGRATION CHANGES:
+ * - Removed useState (was managing activeTab internally)
+ * - Now receives activeTab as controlled prop
+ * - Requires onChange callback (must be provided)
+ * - Kept keyboard navigation logic
+ * - Kept rendering logic
+ * - Kept accessibility features (ARIA, focus management)
+ */
 export const Tabs: React.FC<TabsProps> = ({
   tabs,
-  defaultTab,
+  activeTab,
   onChange,
   variant = "underline",
   size = "md",
@@ -33,13 +52,10 @@ export const Tabs: React.FC<TabsProps> = ({
   className,
   ariaLabel = "Tabs",
 }) => {
-  const [activeTab, setActiveTab] = useState(defaultTab || tabs[0]?.id);
-
   const handleTabClick = useCallback(
     (tabId: string) => {
       if (!disabled) {
-        setActiveTab(tabId);
-        onChange?.(tabId);
+        onChange(tabId);
       }
     },
     [disabled, onChange],
@@ -76,8 +92,7 @@ export const Tabs: React.FC<TabsProps> = ({
 
     if (newIndex !== null) {
       const newTabId = tabs[newIndex].id;
-      setActiveTab(newTabId);
-      onChange?.(newTabId);
+      onChange(newTabId);
     }
   };
 
