@@ -1,5 +1,24 @@
 # Tabbed Settings Page v1.0.0
 
+## Metadata
+
+```yaml
+projectId: feature-tabbed-settings
+title: "Tabbed Settings Page - UI/UX Enhancement"
+type: feature
+stage: plan
+version: v1.0.0
+createdDate: 2025-10-16
+lastUpdated: 2025-10-16
+assignedAgents: []
+estimatedCompletion: 2025-11-16
+priority: HIGH
+tags: [feature, frontend, ui-ux, settings, components, accessibility]
+relatedDocuments:
+  - guide-tabbed-settings-summary-v1.0.0.md
+  - guide-tabbed-settings-roadmap-v1.0.0.md
+```
+
 ## Project Overview
 Implement a comprehensive tabbed interface for the Settings page to improve organization, discoverability, and user experience. Replace the current long linear list format with organized, categorized tabs that make settings easier to find and manage.
 
