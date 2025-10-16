@@ -5,76 +5,220 @@
     {
       "title": "Foundation",
       "pages": [
-        "foundation/getting-started",
-        "foundation/architecture-overview",
-        "foundation/project-management",
+        "foundation/01-getting-started",
+        "foundation/02-architecture-overview",
+        "foundation/03-project-management",
+        "foundation/04-ai-agent-integration",
+        "foundation/05-quick-reference",
+        "foundation/README",
         "foundation/ai-agent-integration",
+        "foundation/architecture-overview",
+        "foundation/getting-started",
+        "foundation/project-management",
         "foundation/quick-reference"
       ]
     },
     {
       "title": "Developers",
       "pages": [
+        "developers/README",
         "developers/index",
+        "developers/troubleshooting/01-common-issues",
         "developers/troubleshooting/common-issues"
       ]
     },
     {
       "title": "Human Developer",
       "pages": [
-        "human-developer/index",
-        "human-developer/getting-started/index"
+        "human-developer/README",
+        "human-developer/getting-started/README",
+        "human-developer/getting-started/index",
+        "human-developer/index"
       ]
     },
     {
       "title": "AI Coder",
       "pages": [
-        "ai-coder/index",
+        "ai-coder/README",
         "ai-coder/architecture/overview",
-        "ai-coder/best-practices/coding"
+        "ai-coder/architecture/overview/README",
+        "ai-coder/best-practices/coding",
+        "ai-coder/best-practices/coding/README",
+        "ai-coder/debugging/techniques/README",
+        "ai-coder/examples/code/README",
+        "ai-coder/index",
+        "ai-coder/security/best-practices/README"
+      ]
+    },
+    {
+      "title": "AI Developers",
+      "pages": [
+        "ai-developers/README",
+        "ai-developers/patterns/01-component-patterns",
+        "ai-developers/workflows/01-feature-implementation"
       ]
     },
     {
       "title": "Reference",
       "pages": [
-        "reference/index",
+        "reference/README",
+        "reference/api/01-overview",
         "reference/api/overview",
+        "reference/components/01-overview",
+        "reference/components/02-component-template",
         "reference/components/overview",
-        "reference/components/template"
+        "reference/components/template",
+        "reference/index"
       ]
     },
     {
       "title": "Projects",
       "pages": [
-        "projects/index",
-        "projects/README",
         "projects/AGENT_PROMPTS",
+        "projects/AGENT_RULES_ENHANCED",
+        "projects/ENHANCED_SYSTEM_SUMMARY",
+        "projects/MIGRATION_LOG",
+        "projects/PROJECTS_HEALTH_DASHBOARD",
+        "projects/README",
+        "projects/STATUS_TEMPLATE",
+        "projects/active/v1/audit-documentation-accuracy-completeness-v1.0.0",
+        "projects/active/v1/audit-enterprise-readiness-assessment-v1.0.0",
+        "projects/active/v1/audit-fumadocs-duplication-repair-v1.0.0",
+        "projects/active/v1/feature-browser-debugging-system-v1.0.0",
+        "projects/active/v1/feature-document-driven-architecture-v1.0.0",
+        "projects/active/v1/feature-documentation-asset-migration-v1.0.0",
+        "projects/active/v1/feature-documentation-content-migration-v1.0.0",
+        "projects/active/v1/feature-documentation-navigation-integration-v1.0.0",
+        "projects/active/v1/feature-documentation-performance-optimization-v1.0.0",
+        "projects/active/v1/feature-documentation-search-enhancement-v1.0.0",
+        "projects/active/v1/feature-fumadocs-documentation-integration-v1.0.0",
+        "projects/active/v1/feature-fumadocs-system-recovery-integration-v1.0.0",
+        "projects/active/v1/feature-generative-agent-stubs-v1.0.0",
+        "projects/active/v1/feature-human-browser-testing-v1.0.0",
+        "projects/active/v1/feature-ui-ux-enhancement-v1.0.0",
+        "projects/active/v1/feature-visual-stunning-ui-v1.0.0",
+        "projects/active/v1/foundation-core-architecture-analysis-v1.0.0",
+        "projects/active/v1/plan-ai-developer-integration-adoption-v1.0.0",
+        "projects/active/v1/plan-community-ecosystem-development-v1.0.0",
+        "projects/active/v1/plan-comprehensive-implementation-timeline-resource-allocation-v1.0.0",
+        "projects/active/v1/plan-enterprise-feature-roadmap-integration-v1.0.0",
+        "projects/active/v1/plan-enterprise-operations-reliability-v1.0.0",
+        "projects/active/v1/plan-go-to-market-adoption-acceleration-v1.0.0",
+        "projects/active/v1/plan-human-developer-adoption-strategy-v1.0.0",
+        "projects/active/v1/plan-performance-scalability-enterprise-v1.0.0",
+        "projects/active/v1/plan-security-hardening-enterprise-v1.0.0",
+        "projects/active/v1/plan-testing-quality-assurance-enterprise-v1.0.0",
+        "projects/active/v1/refactor-absolute-to-relative-paths-v1.0.0",
+        "projects/completed/v1/analysis-mcp-plugins-unification-v1.0.0",
+        "projects/completed/v1/analysis-projects-subsystem-documentation-comparison-v1.0.0",
+        "projects/completed/v1/analysis-themes-layouts-architecture-v1.0.0",
+        "projects/completed/v1/audit-fumadocs-duplication-repair-v1.0.0",
+        "projects/completed/v1/documentation-documentation-translation-project-v1.0.0",
+        "projects/completed/v1/feature-ai-agent-visual-feedback-v1.0.0",
+        "projects/completed/v1/feature-ai-coder-documentation-v1.0.0",
+        "projects/completed/v1/feature-basic-project-system-implementation-v1.0.0",
+        "projects/completed/v1/feature-documentation-asset-migration-v1.0.0",
+        "projects/completed/v1/feature-documentation-content-migration-v1.0.0",
+        "projects/completed/v1/feature-documentation-navigation-integration-v1.0.0",
+        "projects/completed/v1/feature-documentation-search-enhancement-v1.0.0",
+        "projects/completed/v1/feature-english-only-repository-project-v1.0.0",
+        "projects/completed/v1/feature-enhanced-project-management-system-v1.0.0",
+        "projects/completed/v1/feature-example-user-authentication-feature-v1.0.0",
+        "projects/completed/v1/feature-modular-plugin-system-v1.0.0",
+        "projects/completed/v1/feature-plugin-marketplace-v1.0.0",
+        "projects/completed/v1/feature-plugin-stubbing-system-v1.0.0",
+        "projects/completed/v1/feature-project-reorganization-analysis-v1.0.0",
+        "projects/completed/v1/feature-projects-system-nickname-decomposition-enhancement-v1.0.0",
+        "projects/completed/v1/foundation-ai-agent-framework-v1.0.0",
+        "projects/completed/v1/foundation-component-library-creation-v1.0.0",
+        "projects/completed/v1/foundation-core-architecture-analysis-v1.0.0",
+        "projects/completed/v1/foundation-core-architecture-modernization-v1.0.0",
+        "projects/completed/v1/foundation-deployment-system-v1.0.0",
+        "projects/completed/v1/foundation-design-system-establishment-v1.0.0",
+        "projects/completed/v1/foundation-documentation-system-v1.0.0",
+        "projects/completed/v1/foundation-mcp-integration-enhancement-v1.0.0",
+        "projects/completed/v1/foundation-testing-system-v1.0.0",
+        "projects/completed/v1/refactor-codebase-modularization-project-v1.0.0",
+        "projects/completed/v1/refactor-workspace-rules-flow-repair-v1.0.0",
+        "projects/ideas/feature-fumadocs-system-recovery-integration-v1.0.0",
+        "projects/ideas/foundation-architecture-modernization-v1.0.0",
+        "projects/index",
+        "projects/plans/commit-integration-system",
+        "projects/plans/nickname-generation-system",
+        "projects/plans/plan-analysis-framework",
+        "projects/plans/project-decomposition-system",
+        "projects/templates/bugfix",
+        "projects/templates/documentation",
         "projects/templates/feature",
-        "projects/plans/plan-analysis-framework"
+        "projects/templates/refactoring",
+        "projects/templates/version-controlled-project",
+        "projects/validation/relative-path-validator",
+        "projects/versions/v1.0.0/README"
+      ]
+    },
+    {
+      "title": "Projects Guide",
+      "pages": [
+        "projects-guide/agent-interaction",
+        "projects-guide/getting-started",
+        "projects-guide/human-in-the-loop-system",
+        "projects-guide/index",
+        "projects-guide/prompts",
+        "projects-guide/rollback-safety-mechanisms",
+        "projects-guide/task-decomposition-engine",
+        "projects-guide/troubleshooting",
+        "projects-guide/user-authentication-research",
+        "projects-guide/visual-guide",
+        "projects-guide/workflows"
       ]
     },
     {
       "title": "Deployment",
       "pages": [
         "bt-en",
-        "vercel-en",
-        "cloudflare-pages-en"
+        "cloudflare-pages-en",
+        "vercel-en"
       ]
     },
     {
       "title": "User Guides",
       "pages": [
-        "user-manual-en",
         "faq-en",
         "mcp-en",
-        "synchronise-chat-logs-en"
+        "synchronise-chat-logs-en",
+        "user-manual-en"
       ]
     },
     {
       "title": "System",
       "pages": [
-        "translation",
-        "documentation-maintenance-plan"
+        "documentation-maintenance-plan",
+        "projects/completed/v1/documentation-documentation-translation-project-v1.0.0",
+        "translation"
+      ]
+    },
+    {
+      "title": "API",
+      "pages": [
+        "api/README"
+      ]
+    },
+    {
+      "title": "Architecture",
+      "pages": [
+        "architecture/README"
+      ]
+    },
+    {
+      "title": "Components",
+      "pages": [
+        "components/README"
+      ]
+    },
+    {
+      "title": "Interactive",
+      "pages": [
+        "interactive/README"
       ]
     }
   ]

@@ -1,0 +1,587 @@
+---
+title: "Component Documentation"
+description: "Component Documentation - NextChat Documentation"
+lastModified: "2025-10-16T18:41:57.733Z"
+---
+
+# Component Documentation
+
+Welcome to the NextChat component documentation. This guide covers all UI components, their usage, props, and customization options.
+
+## Overview
+
+The NextChat component library provides a comprehensive set of React components built with:
+
+- **TypeScript**: Full type safety and IntelliSense support
+- **SCSS Modules**: Scoped styling with CSS modules
+- **Accessibility**: WCAG 2.1 AA compliant components
+- **Responsive Design**: Mobile-first responsive components
+- **Theme Support**: Light and dark theme support
+- **Animation**: Smooth animations and transitions
+
+## Component Categories
+
+### Layout Components
+
+#### Container
+
+A responsive container component that centers content and applies consistent padding.
+
+```tsx
+import { Container } from '@/components/layout/Container';
+
+<Container size="lg" className="my-custom-class">
+  <h1>Page Content</h1>
+</Container>
+```
+
+**Props:**
+- `size?: 'sm' | 'md' | 'lg' | 'xl'` - Container size
+- `className?: string` - Additional CSS classes
+- `children: React.ReactNode` - Container content
+
+#### Grid
+
+A flexible grid system for creating responsive layouts.
+
+```tsx
+import { Grid, GridItem } from '@/components/layout/Grid';
+
+<Grid columns={3} gap={4}>
+  <GridItem span={2}>Main content</GridItem>
+  <GridItem span={1}>Sidebar</GridItem>
+</Grid>
+```
+
+**Props:**
+- `columns?: number` - Number of grid columns
+- `gap?: number` - Gap between grid items
+- `className?: string` - Additional CSS classes
+
+#### Stack
+
+A component for stacking elements vertically or horizontally with consistent spacing.
+
+```tsx
+import { Stack } from '@/components/layout/Stack';
+
+<Stack direction="vertical" spacing={4}>
+  <div>Item 1</div>
+  <div>Item 2</div>
+  <div>Item 3</div>
+</Stack>
+```
+
+### Form Components
+
+#### Button
+
+A versatile button component with multiple variants and states.
+
+```tsx
+import { Button } from '@/components/form/Button';
+
+<Button 
+  variant="primary" 
+  size="md" 
+  loading={isLoading}
+  onClick={handleClick}
+>
+  Click me
+</Button>
+```
+
+**Props:**
+- `variant?: 'primary' | 'secondary' | 'ghost' | 'danger'` - Button style
+- `size?: 'sm' | 'md' | 'lg'` - Button size
+- `loading?: boolean` - Loading state
+- `disabled?: boolean` - Disabled state
+- `onClick?: () => void` - Click handler
+
+#### Input
+
+A form input component with validation and error states.
+
+```tsx
+import { Input } from '@/components/form/Input';
+
+<Input
+  type="text"
+  placeholder="Enter your name"
+  value={value}
+  onChange={setValue}
+  error={error}
+  label="Name"
+/>
+```
+
+**Props:**
+- `type?: string` - Input type
+- `placeholder?: string` - Placeholder text
+- `value: string` - Input value
+- `onChange: (value: string) => void` - Change handler
+- `error?: string` - Error message
+- `label?: string` - Input label
+
+#### Select
+
+A dropdown select component with search and multi-select support.
+
+```tsx
+import { Select } from '@/components/form/Select';
+
+<Select
+  options={options}
+  value={selectedValue}
+  onChange={setSelectedValue}
+  placeholder="Choose an option"
+  searchable
+/>
+```
+
+**Props:**
+- `options: SelectOption[]` - Available options
+- `value: string | string[]` - Selected value(s)
+- `onChange: (value: string | string[]) => void` - Change handler
+- `placeholder?: string` - Placeholder text
+- `searchable?: boolean` - Enable search functionality
+- `multiple?: boolean` - Allow multiple selections
+
+### Display Components
+
+#### Card
+
+A flexible card component for displaying content.
+
+```tsx
+import { Card, CardHeader, CardBody, CardFooter } from '@/components/display/Card';
+
+<Card>
+  <CardHeader>
+    <h3>Card Title</h3>
+  </CardHeader>
+  <CardBody>
+    <p>Card content goes here</p>
+  </CardBody>
+  <CardFooter>
+    <Button>Action</Button>
+  </CardFooter>
+</Card>
+```
+
+#### Modal
+
+A modal dialog component with overlay and animations.
+
+```tsx
+import { Modal } from '@/components/display/Modal';
+
+<Modal
+  isOpen={isModalOpen}
+  onClose={() => setIsModalOpen(false)}
+  title="Modal Title"
+  size="md"
+>
+  <p>Modal content</p>
+</Modal>
+```
+
+**Props:**
+- `isOpen: boolean` - Modal visibility
+- `onClose: () => void` - Close handler
+- `title?: string` - Modal title
+- `size?: 'sm' | 'md' | 'lg' | 'xl'` - Modal size
+
+#### Alert
+
+A component for displaying important messages and notifications.
+
+```tsx
+import { Alert } from '@/components/display/Alert';
+
+<Alert
+  type="success"
+  title="Success!"
+  message="Your changes have been saved."
+  dismissible
+  onDismiss={() => {}}
+/>
+```
+
+**Props:**
+- `type: 'success' | 'warning' | 'error' | 'info'` - Alert type
+- `title?: string` - Alert title
+- `message: string` - Alert message
+- `dismissible?: boolean` - Allow dismissal
+- `onDismiss?: () => void` - Dismiss handler
+
+### Navigation Components
+
+#### Tabs
+
+A tabbed interface component for organizing content.
+
+```tsx
+import { Tabs, TabList, Tab, TabPanels, TabPanel } from '@/components/navigation/Tabs';
+
+<Tabs>
+  <TabList>
+    <Tab>Tab 1</Tab>
+    <Tab>Tab 2</Tab>
+    <Tab>Tab 3</Tab>
+  </TabList>
+  <TabPanels>
+    <TabPanel>Content 1</TabPanel>
+    <TabPanel>Content 2</TabPanel>
+    <TabPanel>Content 3</TabPanel>
+  </TabPanels>
+</Tabs>
+```
+
+#### Breadcrumb
+
+A breadcrumb navigation component.
+
+```tsx
+import { Breadcrumb, BreadcrumbItem } from '@/components/navigation/Breadcrumb';
+
+<Breadcrumb>
+  <BreadcrumbItem href="/">Home</BreadcrumbItem>
+  <BreadcrumbItem href="/projects">Projects</BreadcrumbItem>
+  <BreadcrumbItem>Current Project</BreadcrumbItem>
+</Breadcrumb>
+```
+
+### Specialized Components
+
+#### ChatMessage
+
+A specialized component for displaying chat messages.
+
+```tsx
+import { ChatMessage } from '@/components/chat/ChatMessage';
+
+<ChatMessage
+  role="user"
+  content="Hello, how are you?"
+  timestamp={new Date()}
+  avatar="/path/to/avatar.jpg"
+/>
+```
+
+**Props:**
+- `role: 'user' | 'assistant' | 'system'` - Message role
+- `content: string` - Message content
+- `timestamp: Date` - Message timestamp
+- `avatar?: string` - Avatar image URL
+- `loading?: boolean` - Loading state for streaming
+
+#### ModelSelector
+
+A component for selecting AI models.
+
+```tsx
+import { ModelSelector } from '@/components/chat/ModelSelector';
+
+<ModelSelector
+  value={selectedModel}
+  onChange={setSelectedModel}
+  models={availableModels}
+  showProvider={true}
+/>
+```
+
+**Props:**
+- `value: string` - Selected model ID
+- `onChange: (modelId: string) => void` - Change handler
+- `models: Model[]` - Available models
+- `showProvider?: boolean` - Show provider information
+
+#### PluginCard
+
+A component for displaying plugin information.
+
+```tsx
+import { PluginCard } from '@/components/plugins/PluginCard';
+
+<PluginCard
+  plugin={plugin}
+  onInstall={() => {}}
+  onConfigure={() => {}}
+  installed={false}
+/>
+```
+
+**Props:**
+- `plugin: Plugin` - Plugin data
+- `onInstall: () => void` - Install handler
+- `onConfigure: () => void` - Configure handler
+- `installed: boolean` - Installation status
+
+## Styling and Theming
+
+### CSS Modules
+
+All components use CSS modules for scoped styling:
+
+```scss
+// Button.module.scss
+.button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &.primary {
+    background-color: var(--color-primary);
+    color: var(--color-primary-text);
+  }
+
+  &.secondary {
+    background-color: var(--color-secondary);
+    color: var(--color-secondary-text);
+  }
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+```
+
+### Theme Variables
+
+Components use CSS custom properties for theming:
+
+```css
+:root {
+  /* Colors */
+  --color-primary: #007bff;
+  --color-primary-text: #ffffff;
+  --color-secondary: #6c757d;
+  --color-secondary-text: #ffffff;
+  
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  
+  /* Typography */
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+}
+```
+
+### Dark Theme
+
+Dark theme support is built-in:
+
+```css
+[data-theme="dark"] {
+  --color-primary: #0d6efd;
+  --color-primary-text: #ffffff;
+  --color-background: #1a1a1a;
+  --color-surface: #2d2d2d;
+  --color-text: #ffffff;
+  --color-text-secondary: #b3b3b3;
+}
+```
+
+## Accessibility
+
+All components are built with accessibility in mind:
+
+### Keyboard Navigation
+
+- All interactive elements are keyboard accessible
+- Proper tab order and focus management
+- Keyboard shortcuts for common actions
+
+### Screen Reader Support
+
+- Semantic HTML elements
+- ARIA labels and descriptions
+- Live regions for dynamic content
+
+### Color Contrast
+
+- WCAG 2.1 AA compliant color contrast ratios
+- Support for high contrast mode
+- Color-blind friendly color schemes
+
+## Animation
+
+Components include smooth animations and transitions:
+
+### Fade Animations
+
+```tsx
+import { FadeIn } from '@/components/animations/FadeIn';
+
+<FadeIn duration={300} delay={100}>
+  <div>Content that fades in</div>
+</FadeIn>
+```
+
+### Slide Animations
+
+```tsx
+import { SlideIn } from '@/components/animations/SlideIn';
+
+<SlideIn direction="up" duration={400}>
+  <div>Content that slides in</div>
+</SlideIn>
+```
+
+## Usage Examples
+
+### Building a Chat Interface
+
+```tsx
+import { Container, Stack, ChatMessage, Input, Button } from '@/components';
+
+function ChatInterface() {
+  const [messages, setMessages] = useState([]);
+  const [inputValue, setInputValue] = useState('');
+
+  const sendMessage = () => {
+    if (inputValue.trim()) {
+      setMessages([...messages, {
+        id: Date.now(),
+        role: 'user',
+        content: inputValue,
+        timestamp: new Date()
+      }]);
+      setInputValue('');
+    }
+  };
+
+  return (
+    <Container>
+      <Stack direction="vertical" spacing={4}>
+        <div className="chat-messages">
+          {messages.map(message => (
+            <ChatMessage
+              key={message.id}
+              role={message.role}
+              content={message.content}
+              timestamp={message.timestamp}
+            />
+          ))}
+        </div>
+        
+        <div className="chat-input">
+          <Input
+            value={inputValue}
+            onChange={setInputValue}
+            placeholder="Type your message..."
+            onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+          />
+          <Button onClick={sendMessage}>Send</Button>
+        </div>
+      </Stack>
+    </Container>
+  );
+}
+```
+
+### Creating a Settings Form
+
+```tsx
+import { Card, CardHeader, CardBody, Input, Select, Button } from '@/components';
+
+function SettingsForm() {
+  const [settings, setSettings] = useState({
+    name: '',
+    email: '',
+    theme: 'light',
+    language: 'en'
+  });
+
+  return (
+    <Card>
+      <CardHeader>
+        <h2>Settings</h2>
+      </CardHeader>
+      <CardBody>
+        <Stack direction="vertical" spacing={4}>
+          <Input
+            label="Name"
+            value={settings.name}
+            onChange={(value) => setSettings({...settings, name: value})}
+          />
+          
+          <Input
+            label="Email"
+            type="email"
+            value={settings.email}
+            onChange={(value) => setSettings({...settings, email: value})}
+          />
+          
+          <Select
+            label="Theme"
+            value={settings.theme}
+            onChange={(value) => setSettings({...settings, theme: value})}
+            options={[
+              { value: 'light', label: 'Light' },
+              { value: 'dark', label: 'Dark' }
+            ]}
+          />
+          
+          <Button onClick={saveSettings}>Save Settings</Button>
+        </Stack>
+      </CardBody>
+    </Card>
+  );
+}
+```
+
+## Best Practices
+
+### Component Composition
+
+- Use composition over inheritance
+- Keep components focused and single-purpose
+- Accept children props for flexibility
+
+### Props Design
+
+- Use TypeScript interfaces for prop types
+- Provide sensible defaults
+- Make props optional when appropriate
+
+### Performance
+
+- Use React.memo for expensive components
+- Implement proper key props for lists
+- Avoid inline object/function creation in render
+
+### Testing
+
+- Write unit tests for component logic
+- Test accessibility features
+- Use visual regression testing
+
+## Contributing
+
+When contributing new components:
+
+1. **Follow the existing patterns** and conventions
+2. **Include TypeScript types** for all props
+3. **Add SCSS modules** for styling
+4. **Ensure accessibility** compliance
+5. **Write comprehensive tests**
+6. **Update documentation** with examples
+
+---
+
+*This component documentation is part of the NextChat Foundation Documentation System.*

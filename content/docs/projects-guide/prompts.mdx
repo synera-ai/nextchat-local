@@ -1,0 +1,241 @@
+---
+title: "Complete Prompt Reference"
+description: "Complete Prompt Reference - NextChat Documentation"
+lastModified: "2025-10-16T18:41:57.756Z"
+---
+
+# Complete Prompt Reference
+
+## Project Management Prompts
+
+### Core Operations
+- **`project new`** - Start new project workflow
+  - **Usage**: When beginning any new development work
+  - **Response**: Guides through project creation, template selection, and initial setup
+  - **Example**: "I need to add dark mode support" → AI suggests new project
+
+- **`project status`** - Show current project status
+  - **Usage**: Check progress on active projects
+  - **Response**: Displays current project information, stage, progress, and next steps
+  - **Example**: Shows "user-auth-feature (implementation, 4/7 tasks, 1 blocker)"
+
+- **`project continue`** - Resume last active project
+  - **Usage**: Resume work on interrupted projects
+  - **Response**: Loads most recent active project and shows current tasks
+  - **Example**: Continues where you left off on authentication implementation
+
+- **`project complete`** - Mark current project as complete and archive
+  - **Usage**: When project work is finished
+  - **Response**: Final project updates, moves to completed folder
+  - **Example**: Archives completed authentication project
+
+### Information and Discovery
+- **`project active`** - List all active projects
+  - **Usage**: Overview of current work in progress
+  - **Response**: Displays all projects in active folder with status
+  - **Example**: Shows list of 3 active projects with stages and progress
+
+- **`project backlog`** - Review ideas folder and suggest next work
+  - **Usage**: When looking for next project to tackle
+  - **Response**: Lists projects in ideas folder, suggests priorities
+  - **Example**: Shows 5 ideas, recommends "theme-system" as high priority
+
+- **`project templates`** - List available project templates
+  - **Usage**: When starting new project and need template guidance
+  - **Response**: Shows available templates and their purposes
+  - **Example**: Lists feature, bugfix, refactoring, documentation templates
+
+### Documentation and Tracking
+- **`project progress`** - Add progress log entry
+  - **Usage**: After completing work session
+  - **Response**: Updates progress log with current session work
+  - **Example**: Adds entry about completing API endpoint implementation
+
+- **`project decide`** - Document a key decision
+  - **Usage**: When making architectural or technical decisions
+  - **Response**: Records decision, rationale, alternatives, and impact
+  - **Example**: Documents choice of JWT over session-based auth
+
+- **`project block`** - Add/update blockers for current project
+  - **Usage**: When encountering obstacles or dependencies
+  - **Response**: Documents current issues, dependencies, and constraints
+  - **Example**: Records dependency on external API documentation
+
+- **`project handoff`** - Prepare handoff notes for context switch
+  - **Usage**: When switching between agents or contexts
+  - **Response**: Documents current state, next steps, and important notes
+  - **Example**: Prepares context for switching from planning to implementation
+
+### Validation and Quality
+- **`project validate`** - Check current project document completeness
+  - **Usage**: Ensure project documentation is complete
+  - **Response**: Validates project document against template structure
+  - **Example**: Reports missing sections in project document
+
+- **`status report`** - Generate detailed status report
+  - **Usage**: When detailed progress update is needed
+  - **Response**: Comprehensive status with metrics and next actions
+  - **Example**: Full status with all metrics and detailed next steps
+
+## Enhanced Project Management Prompts (New)
+
+### Task Management
+- **`project decompose`** - Break down current project into atomic tasks
+  - **Usage**: When project needs detailed task breakdown
+  - **Response**: Creates detailed task list with dependencies and estimates
+  - **Example**: Breaks down "user authentication" into 8 atomic tasks
+
+- **`project tasks`** - Show current project task breakdown
+  - **Usage**: View detailed task status and progress
+  - **Response**: Displays task list with status, assignees, and dependencies
+  - **Example**: Shows 12 tasks with 8 completed, 3 in-progress, 1 blocked
+
+- **`project dependencies`** - Display project dependency graph
+  - **Usage**: Understand task relationships and blocking issues
+  - **Response**: Shows visual dependency map and critical path
+  - **Example**: Displays which tasks block others and critical path analysis
+
+### Safety and Rollback
+- **`project rollback`** - Create rollback point for current changes
+  - **Usage**: Before making risky changes or major refactoring
+  - **Response**: Creates rollback checkpoint with current state
+  - **Example**: Creates rollback point before database schema changes
+
+- **`project checkpoint`** - Create human review checkpoint
+  - **Usage**: Before major architectural decisions or breaking changes
+  - **Response**: Creates human review gate with approval criteria
+  - **Example**: Creates checkpoint before API breaking changes
+
+### Automation and Workflows
+- **`project automate`** - Set up automated workflows for project
+  - **Usage**: Configure automated triggers and actions
+  - **Response**: Sets up commit-based automation and notifications
+  - **Example**: Configures auto-testing and deployment workflows
+
+### Project Intelligence
+- **`project embed`** - Generate project context for external tools
+  - **Usage**: Export project context for external analysis or tools
+  - **Response**: Creates portable project context and metadata
+  - **Example**: Exports project context for external project management tools
+
+- **`project extract`** - Extract project insights and metrics
+  - **Usage**: Analyze project performance and generate insights
+  - **Response**: Provides project analytics and performance metrics
+  - **Example**: Shows velocity trends, blocker patterns, and completion rates
+
+- **`project metrics`** - Show project performance metrics
+  - **Usage**: View current project performance and health
+  - **Response**: Displays key performance indicators and trends
+  - **Example**: Shows task completion rate, time estimates vs actual, blocker count
+
+### Project Lifecycle
+- **`project archive`** - Archive completed project with full context
+  - **Usage**: When project is fully complete and ready for archival
+  - **Response**: Creates comprehensive archive with all context and lessons learned
+  - **Example**: Archives completed project with retrospective and knowledge extraction
+
+## System and Guide Prompts
+
+### Help and Navigation
+- **`guide show`** - Display user guide index
+  - **Usage**: When user needs help with system usage
+  - **Response**: Shows guide directory structure and navigation
+  - **Example**: Displays index with links to all guide sections
+
+## Prompt Usage Examples
+
+### Starting a New Feature
+```
+User: "I need to implement user profiles"
+AI: "This looks like a significant feature. Should we start a new project for this?"
+User: "project new"
+AI: [Creates project document, guides through setup]
+```
+
+### Checking Current Work
+```
+User: "project status"
+AI: "Current project: user-profiles (stage: design, 2/5 tasks complete, 0 blockers). Next: Complete UI mockups."
+```
+
+### Resuming Interrupted Work
+```
+User: "project continue"
+AI: "Resuming: user-profiles project. Current stage: implementation. Next task: Create profile API endpoints."
+```
+
+### Documenting a Decision
+```
+User: "project decide"
+AI: "What decision would you like to document?"
+User: "We're using PostgreSQL for user data storage"
+AI: [Documents decision with rationale and alternatives]
+```
+
+### Handling a Blocker
+```
+User: "project block"
+AI: "What blocker would you like to document?"
+User: "Waiting for design approval from stakeholder"
+AI: [Documents blocker with priority and impact]
+```
+
+### Getting Help
+```
+User: "guide show"
+AI: [Displays guide index with navigation links]
+```
+
+## Advanced Usage Patterns
+
+### Multi-Project Management
+```
+User: "project active"
+AI: [Shows all active projects]
+User: "project continue" (selects specific project)
+AI: [Continues with selected project context]
+```
+
+### Quality Assurance
+```
+User: "project validate"
+AI: [Checks document completeness]
+User: "status report"
+AI: [Provides detailed status with all metrics]
+```
+
+### Context Switching
+```
+User: "project handoff"
+AI: [Prepares handoff notes for context switch]
+User: [Switches to different agent or context]
+New Agent: [Reads handoff notes and continues work]
+```
+
+## Prompt Response Format
+
+### Standard Response Structure
+- **Immediate action** - What the AI is doing
+- **Context information** - Relevant project details
+- **Next steps** - What happens next
+- **Status report** - Current project status (when applicable)
+
+### Error Handling
+- **Missing context** - AI requests clarification
+- **Invalid prompt** - AI suggests correct usage
+- **System issues** - AI provides troubleshooting guidance
+
+## Best Practices
+
+### When to Use Prompts
+- **Start of work sessions** - Use `project continue` or `project status`
+- **After significant changes** - Use `project progress` or `status report`
+- **When stuck** - Use `project block` to document issues
+- **Making decisions** - Use `project decide` to record choices
+- **Switching contexts** - Use `project handoff` for smooth transitions
+
+### Prompt Efficiency
+- **Be specific** - Use exact prompt phrases
+- **Provide context** - Give additional details when needed
+- **Follow up** - Use related prompts for complete workflows
+- **Stay organized** - Use prompts to maintain project structure

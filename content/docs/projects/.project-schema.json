@@ -1,0 +1,701 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Project Management Document Schema",
+  "description": "Schema for validating project management documents",
+  "type": "object",
+  "required": [
+    "metadata",
+    "humanContext",
+    "aiAgentContext",
+    "currentStage",
+    "progressLog",
+    "decisions",
+    "blockers",
+    "handoffNotes"
+  ],
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "required": ["projectId", "title", "stage", "createdDate", "lastUpdated"],
+      "properties": {
+        "projectId": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+$",
+          "description": "Unique project identifier in kebab-case"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 5,
+          "description": "Human-readable project title"
+        },
+        "stage": {
+          "type": "string",
+          "enum": ["idea", "plan", "design", "implementation", "testing", "review", "deployment", "completion"],
+          "description": "Current project stage"
+        },
+        "createdDate": {
+          "type": "string",
+          "format": "date",
+          "description": "ISO date when project was created"
+        },
+        "lastUpdated": {
+          "type": "string",
+          "format": "date",
+          "description": "ISO date when project was last updated"
+        },
+        "assignedAgents": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of AI agents assigned to this project"
+        },
+        "estimatedCompletion": {
+          "type": "string",
+          "format": "date",
+          "description": "Estimated completion date"
+        },
+        "priority": {
+          "type": "string",
+          "enum": ["low", "medium", "high", "critical"],
+          "default": "medium"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Project tags for categorization"
+        },
+        "nickname": {
+          "type": "string",
+          "pattern": "^[a-zA-Z]+(-[a-zA-Z]+)*$",
+          "minLength": 3,
+          "maxLength": 20,
+          "description": "Fun, unique nickname for the project"
+        },
+        "nicknameHistory": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["nickname", "date", "reason"],
+            "properties": {
+              "nickname": {
+                "type": "string"
+              },
+              "date": {
+                "type": "string",
+                "format": "date"
+              },
+              "reason": {
+                "type": "string",
+                "enum": ["auto-generated", "user-requested", "conflict-resolution"]
+              }
+            }
+          },
+          "description": "History of nickname changes"
+        },
+        "nicknameGenerated": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the nickname was generated"
+        }
+      }
+    },
+    "humanContext": {
+      "type": "object",
+      "required": ["problemStatement", "businessValue", "successCriteria"],
+      "properties": {
+        "problemStatement": {
+          "type": "string",
+          "minLength": 20,
+          "description": "Clear description of the problem or opportunity"
+        },
+        "businessValue": {
+          "type": "string",
+          "minLength": 10,
+          "description": "Business value and impact of this project"
+        },
+        "successCriteria": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "description": "Measurable success criteria"
+        },
+        "constraints": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Business and technical constraints"
+        },
+        "stakeholders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Key stakeholders and their interests"
+        }
+      }
+    },
+    "aiAgentContext": {
+      "type": "object",
+      "required": ["technicalRequirements", "dependencies", "acceptanceCriteria"],
+      "properties": {
+        "technicalRequirements": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "description": "Technical requirements for implementation"
+        },
+        "dependencies": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "type", "status"],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["project", "library", "service", "infrastructure", "other"]
+              },
+              "status": {
+                "type": "string",
+                "enum": ["pending", "in-progress", "completed", "blocked"]
+              },
+              "description": {
+                "type": "string"
+              }
+            }
+          },
+          "description": "Project dependencies"
+        },
+        "acceptanceCriteria": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "description": "Technical acceptance criteria"
+        },
+        "implementationGuidelines": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Implementation guidelines and best practices"
+        },
+        "fileReferences": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["path", "purpose"],
+            "properties": {
+              "path": {
+                "type": "string",
+                "description": "Absolute path to file"
+              },
+              "purpose": {
+                "type": "string",
+                "description": "Why this file is relevant"
+              }
+            }
+          },
+          "description": "Relevant codebase files"
+        }
+      }
+    },
+    "currentStage": {
+      "type": "object",
+      "required": ["stage", "description", "tasks"],
+      "properties": {
+        "stage": {
+          "type": "string",
+          "enum": ["idea", "plan", "design", "implementation", "testing", "review", "deployment", "completion"]
+        },
+        "description": {
+          "type": "string",
+          "minLength": 10,
+          "description": "Description of current stage activities"
+        },
+        "tasks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "description", "status", "assignedAgent"],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["pending", "in-progress", "completed", "blocked"]
+              },
+              "assignedAgent": {
+                "type": "string"
+              },
+              "estimatedHours": {
+                "type": "number",
+                "minimum": 0
+              },
+              "dependencies": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "description": "Current stage tasks"
+        },
+        "deliverables": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Expected deliverables for this stage"
+        }
+      }
+    },
+    "progressLog": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["date", "agent", "description"],
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "agent": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 10
+          },
+          "stage": {
+            "type": "string",
+            "enum": ["idea", "plan", "design", "implementation", "testing", "review", "deployment", "completion"]
+          },
+          "filesChanged": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "description": "Chronological log of project progress"
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["date", "decision", "rationale", "impact"],
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "decision": {
+            "type": "string",
+            "minLength": 10
+          },
+          "rationale": {
+            "type": "string",
+            "minLength": 20
+          },
+          "impact": {
+            "type": "string",
+            "minLength": 10
+          },
+          "alternatives": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "madeBy": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Key architectural and technical decisions"
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "description", "status", "priority"],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 10
+          },
+          "status": {
+            "type": "string",
+            "enum": ["open", "in-progress", "resolved", "deferred"]
+          },
+          "priority": {
+            "type": "string",
+            "enum": ["low", "medium", "high", "critical"]
+          },
+          "assignedTo": {
+            "type": "string"
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "resolvedDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "impact": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Current issues and dependencies blocking progress"
+    },
+    "handoffNotes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["date", "fromAgent", "toAgent", "context"],
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "fromAgent": {
+            "type": "string"
+          },
+          "toAgent": {
+            "type": "string"
+          },
+          "context": {
+            "type": "string",
+            "minLength": 20
+          },
+          "completedWork": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "nextSteps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "importantNotes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "description": "Context for agent task transitions"
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "description", "status"],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["code", "docs", "config", "test", "review"]
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "in-progress", "completed", "blocked", "cancelled"]
+          },
+          "priority": {
+            "type": "string",
+            "enum": ["low", "medium", "high", "critical"]
+          },
+          "estimatedHours": {
+            "type": "number",
+            "minimum": 0
+          },
+          "actualHours": {
+            "type": "number",
+            "minimum": 0
+          },
+          "assignee": {
+            "type": "string"
+          },
+          "dependencies": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "blocks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "commits": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "description": "Detailed task breakdown for the project"
+    },
+    "checkpoints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "type", "status"],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["human_review", "automated", "milestone"]
+          },
+          "description": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "approved", "rejected", "bypassed"]
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "approver": {
+            "type": "string"
+          },
+          "criteria": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "description": "Human review checkpoints and approval gates"
+    },
+    "rollbackPoints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "created", "commitHash"],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "created": {
+            "type": "string",
+            "format": "date"
+          },
+          "commitHash": {
+            "type": "string"
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "actions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "description": "Rollback points for safe project recovery"
+    },
+    "automation": {
+      "type": "object",
+      "properties": {
+        "workflows": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "trigger", "actions"],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "trigger": {
+                "type": "string",
+                "enum": ["commit", "pr", "schedule", "manual"]
+              },
+              "conditions": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "actions": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "notifications": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "condition", "action"],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "condition": {
+                "type": "string"
+              },
+              "action": {
+                "type": "string"
+              },
+              "enabled": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      },
+      "description": "Automated workflows and rules for the project"
+    },
+    "decomposition": {
+      "type": "object",
+      "properties": {
+        "isDecomposed": {
+          "type": "boolean",
+          "description": "Whether this project has been decomposed into sub-projects"
+        },
+        "parentProjectId": {
+          "type": "string",
+          "description": "ID of parent project if this is a sub-project"
+        },
+        "decompositionType": {
+          "type": "string",
+          "enum": ["domain-separation", "feature-infrastructure", "implementation-testing", "core-integration"],
+          "description": "Type of decomposition applied"
+        },
+        "subProjects": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["projectId", "title", "nickname"],
+            "properties": {
+              "projectId": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "nickname": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["pending", "in-progress", "completed", "blocked"]
+              },
+              "assignedAgent": {
+                "type": "string"
+              }
+            }
+          },
+          "description": "List of sub-projects if this is a parent project"
+        },
+        "dependencyType": {
+          "type": "string",
+          "enum": ["independent", "depends-on", "blocks", "sequential"],
+          "description": "Type of dependency relationship for sub-projects"
+        },
+        "dependsOn": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of project IDs this sub-project depends on"
+        },
+        "blocks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of project IDs this sub-project blocks"
+        },
+        "integrationPoints": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Points where this sub-project integrates with others"
+        },
+        "decompositionDate": {
+          "type": "string",
+          "format": "date",
+          "description": "When the project was decomposed"
+        },
+        "decompositionReason": {
+          "type": "string",
+          "description": "Reason for decomposing the project"
+        }
+      },
+      "description": "Project decomposition information for parallel work"
+    }
+  }
+}

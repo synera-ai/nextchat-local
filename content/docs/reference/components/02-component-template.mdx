@@ -1,0 +1,73 @@
+---
+title: "Component Documentation Template"
+description: "Template for documenting components"
+audience: ["developers", "ai-agents"]
+difficulty: "beginner"
+estimated-read-time: 3
+last-updated: 2025-10-15
+version: 1.0.0
+---
+
+# Component Template
+
+Use this template for documenting each component:
+
+## Component Name
+
+Brief description of what the component does.
+
+### Props
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `prop1` | `string` | Yes | Description |
+| `prop2` | `number` | No | Description |
+| `onClick` | `(e: Event) => void` | No | Callback when clicked |
+
+### Events
+
+| Event | Payload | Description |
+|-------|---------|-------------|
+| `change` | `{value: string}` | Emitted when value changes |
+| `submit` | `{data: any}` | Emitted on submit |
+
+### Slots/Children
+
+- `children` - Main content
+
+### Usage Example
+
+```tsx
+import { MyComponent } from '@nextchat/components';
+
+export function App() {
+  return (
+    <MyComponent 
+      prop1="value"
+      prop2={42}
+      onClick={() => console.log('clicked')}
+    >
+      Content goes here
+    </MyComponent>
+  );
+}
+```
+
+### Styling
+
+Supports CSS variables:
+- `--primary` - Primary color
+- `--white` - Background
+- `--black` - Text color
+
+### Accessibility
+
+- ✅ Keyboard navigation
+- ✅ ARIA labels
+- ✅ Screen reader support
+
+### Related Components
+
+- [OtherComponent](/docs//docs/OtherComponent.md)
+- [AnotherComponent](/docs//docs/AnotherComponent.md)
+

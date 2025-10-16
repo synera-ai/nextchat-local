@@ -1,0 +1,370 @@
+/* Fumadocs Design System Integration */
+
+/* Import design system tokens */
+@import '../design-system/tokens/colors.css';
+
+/* Fumadocs CSS Variables - Light Theme */
+:root {
+  /* Background colors */
+  --fumadocs-bg-primary: var(--ds-neutral-50);
+  --fumadocs-bg-secondary: var(--ds-neutral-100);
+  --fumadocs-bg-tertiary: var(--ds-neutral-200);
+  --fumadocs-bg-elevated: #ffffff;
+  
+  /* Text colors */
+  --fumadocs-text-primary: var(--ds-neutral-900);
+  --fumadocs-text-secondary: var(--ds-neutral-700);
+  --fumadocs-text-tertiary: var(--ds-neutral-500);
+  --fumadocs-text-disabled: var(--ds-neutral-400);
+  
+  /* Border colors */
+  --fumadocs-border-primary: var(--ds-neutral-200);
+  --fumadocs-border-secondary: var(--ds-neutral-300);
+  --fumadocs-border-focus: var(--ds-primary-500);
+  
+  /* Interactive colors */
+  --fumadocs-interactive-primary: var(--ds-primary-500);
+  --fumadocs-interactive-primary-hover: var(--ds-primary-600);
+  --fumadocs-interactive-primary-active: var(--ds-primary-700);
+  --fumadocs-interactive-secondary: var(--ds-neutral-200);
+  --fumadocs-interactive-secondary-hover: var(--ds-neutral-300);
+  
+  /* Status colors */
+  --fumadocs-status-success: var(--ds-semantic-success-500);
+  --fumadocs-status-warning: var(--ds-semantic-warning-500);
+  --fumadocs-status-error: var(--ds-semantic-error-500);
+  --fumadocs-status-info: var(--ds-semantic-info-500);
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+  /* Background colors */
+  --fumadocs-bg-primary: var(--ds-neutral-900);
+  --fumadocs-bg-secondary: var(--ds-neutral-800);
+  --fumadocs-bg-tertiary: var(--ds-neutral-700);
+  --fumadocs-bg-elevated: var(--ds-neutral-950);
+  
+  /* Text colors */
+  --fumadocs-text-primary: var(--ds-neutral-50);
+  --fumadocs-text-secondary: var(--ds-neutral-300);
+  --fumadocs-text-tertiary: var(--ds-neutral-400);
+  --fumadocs-text-disabled: var(--ds-neutral-600);
+  
+  /* Border colors */
+  --fumadocs-border-primary: var(--ds-neutral-700);
+  --fumadocs-border-secondary: var(--ds-neutral-600);
+  --fumadocs-border-focus: var(--ds-primary-400);
+  
+  /* Interactive colors */
+  --fumadocs-interactive-primary: var(--ds-primary-400);
+  --fumadocs-interactive-primary-hover: var(--ds-primary-300);
+  --fumadocs-interactive-primary-active: var(--ds-primary-500);
+  --fumadocs-interactive-secondary: var(--ds-neutral-700);
+  --fumadocs-interactive-secondary-hover: var(--ds-neutral-600);
+  
+  /* Status colors */
+  --fumadocs-status-success: var(--ds-semantic-success-400);
+  --fumadocs-status-warning: var(--ds-semantic-warning-400);
+  --fumadocs-status-error: var(--ds-semantic-error-400);
+  --fumadocs-status-info: var(--ds-semantic-info-400);
+}
+
+/* Fumadocs Layout Styles */
+.fumadocs-layout {
+  background-color: var(--fumadocs-bg-primary);
+  color: var(--fumadocs-text-primary);
+  min-height: 100vh;
+}
+
+/* Navigation Styles */
+.fumadocs-nav {
+  background-color: var(--fumadocs-bg-elevated);
+  border-bottom: 1px solid var(--fumadocs-border-primary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.fumadocs-nav-title {
+  color: var(--fumadocs-text-primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.fumadocs-nav-title:hover {
+  color: var(--fumadocs-interactive-primary);
+}
+
+/* Sidebar Styles */
+.fumadocs-sidebar {
+  background-color: var(--fumadocs-bg-secondary);
+  border-right: 1px solid var(--fumadocs-border-primary);
+}
+
+.fumadocs-sidebar-item {
+  color: var(--fumadocs-text-secondary);
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  transition: all 0.2s ease;
+}
+
+.fumadocs-sidebar-item:hover {
+  background-color: var(--fumadocs-interactive-secondary);
+  color: var(--fumadocs-text-primary);
+}
+
+.fumadocs-sidebar-item.active {
+  background-color: var(--fumadocs-interactive-primary);
+  color: white;
+}
+
+/* Content Styles */
+.fumadocs-content {
+  background-color: var(--fumadocs-bg-primary);
+  color: var(--fumadocs-text-primary);
+}
+
+.fumadocs-content h1,
+.fumadocs-content h2,
+.fumadocs-content h3,
+.fumadocs-content h4,
+.fumadocs-content h5,
+.fumadocs-content h6 {
+  color: var(--fumadocs-text-primary);
+  font-weight: 600;
+}
+
+.fumadocs-content h1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.fumadocs-content h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.fumadocs-content h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.fumadocs-content p {
+  color: var(--fumadocs-text-secondary);
+  line-height: 1.75;
+  margin-bottom: 1rem;
+}
+
+.fumadocs-content a {
+  color: var(--fumadocs-interactive-primary);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.fumadocs-content a:hover {
+  color: var(--fumadocs-interactive-primary-hover);
+  border-bottom-color: var(--fumadocs-interactive-primary-hover);
+}
+
+.fumadocs-content code {
+  background-color: var(--fumadocs-bg-tertiary);
+  color: var(--fumadocs-text-primary);
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+.fumadocs-content pre {
+  background-color: var(--fumadocs-bg-tertiary);
+  border: 1px solid var(--fumadocs-border-primary);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+.fumadocs-content pre code {
+  background-color: transparent;
+  padding: 0;
+  border-radius: 0;
+}
+
+.fumadocs-content blockquote {
+  border-left: 4px solid var(--fumadocs-interactive-primary);
+  background-color: var(--fumadocs-bg-secondary);
+  padding: 1rem 1.5rem;
+  margin: 1rem 0;
+  border-radius: 0 0.375rem 0.375rem 0;
+}
+
+.fumadocs-content blockquote p {
+  margin: 0;
+  color: var(--fumadocs-text-secondary);
+}
+
+/* Table Styles */
+.fumadocs-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  background-color: var(--fumadocs-bg-elevated);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.fumadocs-content th,
+.fumadocs-content td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--fumadocs-border-primary);
+}
+
+.fumadocs-content th {
+  background-color: var(--fumadocs-bg-secondary);
+  font-weight: 600;
+  color: var(--fumadocs-text-primary);
+}
+
+.fumadocs-content td {
+  color: var(--fumadocs-text-secondary);
+}
+
+.fumadocs-content tr:hover {
+  background-color: var(--fumadocs-bg-secondary);
+}
+
+/* List Styles */
+.fumadocs-content ul,
+.fumadocs-content ol {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.fumadocs-content li {
+  color: var(--fumadocs-text-secondary);
+  line-height: 1.75;
+  margin-bottom: 0.5rem;
+}
+
+/* Button Styles */
+.fumadocs-button {
+  background-color: var(--fumadocs-interactive-primary);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.fumadocs-button:hover {
+  background-color: var(--fumadocs-interactive-primary-hover);
+  color: white;
+}
+
+.fumadocs-button:active {
+  background-color: var(--fumadocs-interactive-primary-active);
+}
+
+.fumadocs-button-secondary {
+  background-color: var(--fumadocs-interactive-secondary);
+  color: var(--fumadocs-text-primary);
+}
+
+.fumadocs-button-secondary:hover {
+  background-color: var(--fumadocs-interactive-secondary-hover);
+  color: var(--fumadocs-text-primary);
+}
+
+/* Card Styles */
+.fumadocs-card {
+  background-color: var(--fumadocs-bg-elevated);
+  border: 1px solid var(--fumadocs-border-primary);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin: 1rem 0;
+}
+
+.fumadocs-card-header {
+  margin-bottom: 1rem;
+}
+
+.fumadocs-card-title {
+  color: var(--fumadocs-text-primary);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+}
+
+.fumadocs-card-description {
+  color: var(--fumadocs-text-secondary);
+  margin: 0;
+}
+
+/* Status Indicators */
+.fumadocs-status-success {
+  color: var(--fumadocs-status-success);
+}
+
+.fumadocs-status-warning {
+  color: var(--fumadocs-status-warning);
+}
+
+.fumadocs-status-error {
+  color: var(--fumadocs-status-error);
+}
+
+.fumadocs-status-info {
+  color: var(--fumadocs-status-info);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .fumadocs-content h1 {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+  }
+  
+  .fumadocs-content h2 {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+  
+  .fumadocs-content h3 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+  
+  .fumadocs-sidebar {
+    display: none;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .fumadocs-sidebar,
+  .fumadocs-nav {
+    display: none;
+  }
+  
+  .fumadocs-content {
+    background-color: white;
+    color: black;
+  }
+  
+  .fumadocs-content a {
+    color: black;
+    text-decoration: underline;
+  }
+}

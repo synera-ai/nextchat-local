@@ -1,0 +1,211 @@
+---
+title: "Architecture Overview"
+description: "Understanding NextChat's system design, core components, and architectural principles"
+audience: ["developers", "architects", "stakeholders"]
+difficulty: "intermediate"
+estimated-read-time: 10
+last-updated: 2025-10-15
+version: 1.0.0
+---
+
+# 🏗️ Architecture Overview
+
+## System Design Philosophy
+
+NextChat is built on three core principles:
+
+1. **Lightweight & Fast** - Minimal dependencies, optimized bundle size (~5MB)
+2. **Privacy First** - All data stored locally, no server-side storage required
+3. **Flexible & Extensible** - Support multiple AI providers, plugins, and integrations
+
+## Core Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                      User Interface Layer                    │
+│  (React Components + SCSS Styling + State Management)       │
+└──────────────────────┬──────────────────────────────────────┘
+                       │
+┌──────────────────────┴──────────────────────────────────────┐
+│                    Business Logic Layer                      │
+│  (Chat Management + Plugin System + Mask System)            │
+└──────────────────────┬──────────────────────────────────────┘
+                       │
+┌──────────────────────┴──────────────────────────────────────┐
+│                    Integration Layer                         │
+│  (API Routes + Provider Clients + State Persistence)        │
+└──────────────────────┬──────────────────────────────────────┘
+                       │
+            ┌──────────┴──────────┐
+            │                     │
+      ┌─────▼──────┐      ┌──────▼──────┐
+      │ AI Providers│      │ External    │
+      │ (OpenAI,   │      │ Services    │
+      │  Claude,   │      │ (MCP, etc.) │
+      │  Gemini)   │      │             │
+      └────────────┘      └─────────────┘
+```
+
+## Key Components
+
+### 1. **Frontend (React + Next.js)**
+- Single Page Application
+- Component-based architecture (50+ components)
+- SCSS modules for styling with CSS variables for theming
+- Dark mode support with automatic detection
+- Mobile-responsive design (mobile breakpoint at 600px)
+
+### 2. **State Management (Zustand)**
+- 10+ specialized stores (chat, config, plugin, mask, etc.)
+- Automatic persistence to localStorage
+- No complex state mutations required
+- Reactive updates with minimal re-renders
+
+### 3. **Chat System**
+- Session-based chat history
+- Message streaming support
+- Automatic history compression
+- Export functionality (Markdown, PDF, etc.)
+
+### 4. **Plugin System**
+- OpenAPI-based plugin architecture
+- Dynamic plugin discovery and loading
+- Plugin state management
+- Sandboxed plugin execution
+
+### 5. **Mask System**
+- Pre-configured AI personality templates
+- Customizable system prompts
+- Easy switching between masks
+- User-created mask support
+
+### 6. **Provider Integration**
+- Support for 15+ AI providers
+- Unified API client layer
+- Provider-specific configuration
+- Fallback and error handling
+
+## Technology Stack
+
+```
+Frontend:
+  - React 18 (UI framework)
+  - Next.js 14 (Framework)
+  - Zustand (State management)
+  - SCSS (Styling)
+  - TypeScript (Type safety)
+
+Backend:
+  - Next.js API routes (Serverless functions)
+  - Node.js runtime
+
+Deployment:
+  - Vercel (Recommended)
+  - Cloudflare Pages
+  - Self-hosted options (Docker, etc.)
+
+Storage:
+  - Browser localStorage (Primary)
+  - Optional: Vercel KV, Upstash
+```
+
+## Data Flow
+
+```
+User Input
+    │
+    ▼
+UI Component (Chat.tsx)
+    │
+    ▼
+Zustand Store (Update state)
+    │
+    ▼
+API Route (Next.js API)
+    │
+    ▼
+Provider Client (OpenAI, Claude, etc.)
+    │
+    ▼
+External AI Service
+    │
+    ▼
+Stream Response
+    │
+    ▼
+Update Store
+    │
+    ▼
+Re-render UI
+    │
+    ▼
+User Sees Response
+```
+
+## Module Organization
+
+```
+/app
+├── api/                    # API routes & provider clients
+├── components/             # React components
+├── core/                   # Core utilities & types
+├── hooks/                  # Custom React hooks
+├── store/                  # Zustand stores
+├── styles/                 # Global styles & theme
+└── utils/                  # Helper functions
+```
+
+## Responsive Design
+
+- **Desktop** (> 600px): Sidebar + content layout
+- **Mobile** (≤ 600px): Full-width layout with collapsible sidebar
+- **Tablet**: Auto-adjusts using CSS variables
+- **Theme**: Automatic dark mode detection
+
+## Security Considerations
+
+✅ **Built-in Security:**
+- HTTPS required for API calls
+- API keys never stored server-side
+- All data stays in user's browser
+- No user tracking
+- Open source (auditable)
+
+⚠️ **User Responsibilities:**
+- Keep API keys private (never share)
+- Use strong passwords
+- Enable 2FA where available
+- Audit third-party plugins
+
+## Performance Optimization
+
+- Code splitting and lazy loading
+- Component memoization
+- Message streaming for real-time responses
+- History compression to reduce token usage
+- Local caching for frequently accessed data
+- Minimal bundle size (~5MB gzipped)
+
+## Scalability
+
+### Horizontal
+- Supports unlimited chats (localStorage limits ~5-50MB)
+- Multiple AI providers can be used simultaneously
+- Plugin system allows adding new providers dynamically
+
+### Vertical
+- Can handle large conversation histories
+- Automatic message compression
+- Efficient state updates
+- Optimized re-renders
+
+## Next Steps
+
+- **For Users**: [Quick Reference](/docs//docs/05-quick-reference.md)
+- **For Developers**: [Tier 2: Developers](../developers/)
+- **For AI Agents**: [Tier 3: AI Developers](../ai-developers/)
+- **For Architects**: [Tier 5: Architecture](../architecture/)
+
+---
+
+**See Also**: [Project Management](/docs//docs/03-project-management.md) | [AI Agent Integration](/docs//docs/04-ai-agent-integration.md)

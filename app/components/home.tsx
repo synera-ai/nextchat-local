@@ -91,6 +91,13 @@ const ProjectsPage = dynamic(
   },
 );
 
+const DocsPage = dynamic(
+  async () => (await import("./docs-page")).DocsPage,
+  {
+    loading: () => <Loading noLogo />,
+  },
+);
+
 export function useSwitchTheme() {
   const config = useAppConfig();
 
@@ -212,6 +219,7 @@ function Screen() {
             <Route path={Path.Settings} element={<Settings />} />
             <Route path={Path.McpMarket} element={<McpMarketPage />} />
             <Route path={Path.Projects} element={<ProjectsPage />} />
+            <Route path={Path.Docs} element={<DocsPage />} />
           </Routes>
         </WindowContent>
       </>

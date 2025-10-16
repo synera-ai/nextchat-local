@@ -1,0 +1,106 @@
+/* Design System Color Tokens */
+
+/* Primary Color Scale */
+:root {
+  --ds-primary-50: #f0f9ff;
+  --ds-primary-100: #e0f2fe;
+  --ds-primary-200: #bae6fd;
+  --ds-primary-300: #7dd3fc;
+  --ds-primary-400: #38bdf8;
+  --ds-primary-500: #0ea5e9;
+  --ds-primary-600: #0284c7;
+  --ds-primary-700: #0369a1;
+  --ds-primary-800: #075985;
+  --ds-primary-900: #0c4a6e;
+  --ds-primary-950: #082f49;
+}
+
+/* Secondary Color Scale */
+:root {
+  --ds-secondary-50: #f8fafc;
+  --ds-secondary-100: #f1f5f9;
+  --ds-secondary-200: #e2e8f0;
+  --ds-secondary-300: #cbd5e1;
+  --ds-secondary-400: #94a3b8;
+  --ds-secondary-500: #64748b;
+  --ds-secondary-600: #475569;
+  --ds-secondary-700: #334155;
+  --ds-secondary-800: #1e293b;
+  --ds-secondary-900: #0f172a;
+  --ds-secondary-950: #020617;
+}
+
+/* Neutral Color Scale */
+:root {
+  --ds-neutral-50: #fafafa;
+  --ds-neutral-100: #f5f5f5;
+  --ds-neutral-200: #e5e5e5;
+  --ds-neutral-300: #d4d4d4;
+  --ds-neutral-400: #a3a3a3;
+  --ds-neutral-500: #737373;
+  --ds-neutral-600: #525252;
+  --ds-neutral-700: #404040;
+  --ds-neutral-800: #262626;
+  --ds-neutral-900: #171717;
+  --ds-neutral-950: #0a0a0a;
+}
+
+/* Semantic Success Colors */
+:root {
+  --ds-semantic-success-50: #f0fdf4;
+  --ds-semantic-success-100: #dcfce7;
+  --ds-semantic-success-200: #bbf7d0;
+  --ds-semantic-success-300: #86efac;
+  --ds-semantic-success-400: #4ade80;
+  --ds-semantic-success-500: #22c55e;
+  --ds-semantic-success-600: #16a34a;
+  --ds-semantic-success-700: #15803d;
+  --ds-semantic-success-800: #166534;
+  --ds-semantic-success-900: #14532d;
+  --ds-semantic-success-950: #052e16;
+}
+
+/* Semantic Warning Colors */
+:root {
+  --ds-semantic-warning-50: #fffbeb;
+  --ds-semantic-warning-100: #fef3c7;
+  --ds-semantic-warning-200: #fde68a;
+  --ds-semantic-warning-300: #fcd34d;
+  --ds-semantic-warning-400: #fbbf24;
+  --ds-semantic-warning-500: #f59e0b;
+  --ds-semantic-warning-600: #d97706;
+  --ds-semantic-warning-700: #b45309;
+  --ds-semantic-warning-800: #92400e;
+  --ds-semantic-warning-900: #78350f;
+  --ds-semantic-warning-950: #451a03;
+}
+
+/* Semantic Error Colors */
+:root {
+  --ds-semantic-error-50: #fef2f2;
+  --ds-semantic-error-100: #fee2e2;
+  --ds-semantic-error-200: #fecaca;
+  --ds-semantic-error-300: #fca5a5;
+  --ds-semantic-error-400: #f87171;
+  --ds-semantic-error-500: #ef4444;
+  --ds-semantic-error-600: #dc2626;
+  --ds-semantic-error-700: #b91c1c;
+  --ds-semantic-error-800: #991b1b;
+  --ds-semantic-error-900: #7f1d1d;
+  --ds-semantic-error-950: #450a0a;
+}
+
+/* Semantic Info Colors */
+:root {
+  --ds-semantic-info-50: #eff6ff;
+  --ds-semantic-info-100: #dbeafe;
+  --ds-semantic-info-200: #bfdbfe;
+  --ds-semantic-info-300: #93c5fd;
+  --ds-semantic-info-400: #60a5fa;
+  --ds-semantic-info-500: #3b82f6;
+  --ds-semantic-info-600: #2563eb;
+  --ds-semantic-info-700: #1d4ed8;
+  --ds-semantic-info-800: #1e40af;
+  --ds-semantic-info-900: #1e3a8a;
+  --ds-semantic-info-950: #172554;
+}

@@ -1,0 +1,200 @@
+---
+title: "Quick Reference"
+description: "Quick reference guide with common commands, links, FAQs, and resources"
+audience: ["everyone"]
+difficulty: "beginner"
+estimated-read-time: 5
+last-updated: 2025-10-15
+version: 1.0.0
+---
+
+# ⚡ Quick Reference
+
+Fast access to common commands, links, and frequently asked questions.
+
+## Quick Navigation Links
+
+| Link | Purpose |
+|------|---------|
+| [app.nextchat.club](https://app.nextchat.club) | Web app |
+| [GitHub Repo](https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web) | Source code |
+| [Discord Community](https://discord.gg/nextchat) | Community chat |
+| [Issue Tracker](https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web/issues) | Bug reports |
+| [Discussions](https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web/discussions) | Discussions |
+
+## Common Shortcuts
+
+**Web App:**
+- `Ctrl + N` / `Cmd + N` - New chat
+- `Ctrl + ,` / `Cmd + ,` - Settings
+- `Ctrl + K` / `Cmd + K` - Search
+- `Ctrl + /` / `Cmd + /` - Help
+
+**Desktop App:**
+- All web shortcuts work
+- `Alt + ←` / `Cmd + ←` - Back
+- `Alt + →` / `Cmd + →` - Forward
+
+## API Keys
+
+### How to Get Them
+
+| Provider | Link | Cost | Setup Time |
+|----------|------|------|-----------|
+| **OpenAI** | [platform.openai.com/api-keys](https://platform.openai.com/api-keys) | ~$0.003/1K tokens | 5 min |
+| **Claude** | [console.anthropic.com/keys](https://console.anthropic.com/keys) | ~$0.003/1K tokens | 5 min |
+| **DeepSeek** | [platform.deepseek.com](https://platform.deepseek.com) | ~$0.0001/1K tokens | 5 min |
+| **Gemini** | [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey) | Free tier available | 2 min |
+
+### Adding Keys in NextChat
+
+1. Click ⚙️ Settings
+2. Scroll to "Model Provider"
+3. Choose your provider
+4. Paste API key
+5. Click Save
+
+## Project Structure
+
+```
+/docs
+├── foundation/              (Foundation Tier - You are here)
+├── developers/              (Tier 2 - For developers)
+├── ai-developers/           (Tier 3 - For AI agents)
+├── reference/               (Tier 4 - API & components)
+└── architecture/            (Tier 5 - Design & architecture)
+
+/app
+├── api/                     (API routes)
+├── components/              (React components)
+├── store/                   (State management)
+├── styles/                  (CSS & theming)
+└── utils/                   (Helper functions)
+```
+
+## Frequently Asked Questions
+
+### Q: Why is my API key not working?
+**A:** Check that:
+- API key is valid (test on provider's website)
+- API key is for correct provider
+- You have API credits available
+- No typos in the key
+- Try in Incognito mode to clear cache
+
+### Q: How do I switch AI models?
+**A:** 
+- Mid-chat: Settings → Model Provider → Select new provider
+- New chat: Chat list → + New → Model selector appears
+- Chat history stays with current model
+
+### Q: Can I use multiple AI providers?
+**A:** 
+- Yes! Add multiple API keys in Settings
+- Switch providers any time
+- Each provider has separate settings
+
+### Q: Is my data private?
+**A:**
+- ✅ Yes - All stored locally in your browser
+- ✅ No tracking or analytics
+- ✅ Can use offline mode (for compatible models)
+- Use Privacy Mode to never save chats
+
+### Q: How do I export my chats?
+**A:**
+- Right-click chat → Export
+- Choose format: Markdown, PDF, or JSON
+- Check browser downloads folder
+
+### Q: Why is the UI slow?
+**A:**
+- Check browser version (use latest)
+- Clear browser cache (Ctrl+Shift+Delete)
+- Disable browser extensions
+- Use Chrome/Firefox for best performance
+- Try reducing chat history
+
+### Q: Can I deploy my own instance?
+**A:**
+- Yes! See deployment guides:
+  - [Vercel](/docs/../docs/vercel-en.md)
+  - [Cloudflare Pages](/docs/../docs/cloudflare-pages-en.md)
+  - [Self-hosted with Docker](https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web#docker)
+
+### Q: How do I contribute code?
+**A:**
+1. Check [Project Management](/docs//docs/03-project-management.md)
+2. Find a project to work on
+3. Fork the repo & create branch
+4. Follow project guidelines
+5. Submit PR when ready
+
+### Q: Where can I report bugs?
+**A:**
+- [GitHub Issues](https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web/issues)
+- Include: OS, browser, steps to reproduce
+- Check existing issues first
+
+### Q: How do I request features?
+**A:**
+- [GitHub Discussions](https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web/discussions)
+- [Feature Requests](https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web/issues?q=label%3A%22feature%20request%22)
+- Describe use case clearly
+
+## Keyboard Shortcuts Reference
+
+### Navigation
+| Shortcut | Action |
+|----------|--------|
+| `Ctrl/Cmd + N` | New chat |
+| `Ctrl/Cmd + K` | Search chats |
+| `Ctrl/Cmd + ,` | Open settings |
+| `ESC` | Close modal |
+
+### Editing
+| Shortcut | Action |
+|----------|--------|
+| `Ctrl/Cmd + A` | Select all |
+| `Ctrl/Cmd + Z` | Undo |
+| `Ctrl/Cmd + Y` | Redo |
+
+### Chat
+| Shortcut | Action |
+|----------|--------|
+| `Enter` | Send message |
+| `Shift + Enter` | New line |
+| `Ctrl/Cmd + ↑` | Edit last message |
+
+## Common Issues & Solutions
+
+| Issue | Solution |
+|-------|----------|
+| App won't load | Clear cache, try incognito, check internet |
+| Can't add API key | Check key format, try different browser |
+| Chats not syncing | Check sync settings, refresh page |
+| Slow responses | Check internet speed, switch provider |
+| Components look broken | Update browser, clear cache |
+| Mobile app crashes | Restart app, update OS |
+
+## Resources
+
+### Documentation
+- [User Manual](/docs/../user-manual-en.md) - Complete user guide
+- [FAQ](/docs/../faq-en.md) - Extended FAQ
+- [Deployment Guides](../) - Deployment options
+
+### Community
+- [GitHub](https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web) - Source code
+- [Discord](https://discord.gg/nextchat) - Community
+- [Issues](https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web/issues) - Support
+
+### Next Steps
+- **Just started?** → [Getting Started](/docs//docs/01-getting-started.md)
+- **Want to code?** → [Project Management](/docs//docs/03-project-management.md)
+- **Need architecture?** → [Architecture Overview](/docs//docs/02-architecture-overview.md)
+- **AI questions?** → [AI Agent Integration](/docs//docs/04-ai-agent-integration.md)
+
+---
+
+**Last Updated**: 2025-10-15 | **Version**: 1.0.0

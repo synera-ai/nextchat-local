@@ -1,0 +1,762 @@
+---
+title: "AI Debugging Techniques"
+description: "AI Debugging Techniques - NextChat Documentation"
+lastModified: "2025-10-16T18:41:57.731Z"
+---
+
+# AI Debugging Techniques
+
+## Introduction
+
+This guide provides comprehensive debugging techniques specifically designed for AI agents working with document-driven architecture and project management systems. These techniques help identify, diagnose, and resolve issues efficiently while maintaining system integrity.
+
+## Core Debugging Principles
+
+### 1. Systematic Approach
+- **Start with Documentation**: Always check project documentation first
+- **Follow the Data Flow**: Trace data through the system
+- **Isolate the Problem**: Narrow down the scope of the issue
+- **Document Everything**: Record all findings and solutions
+
+### 2. Project-Aware Debugging
+- **Check Project Context**: Ensure you understand the project scope
+- **Validate Against Goals**: Verify the issue doesn't conflict with project objectives
+- **Update Project Status**: Document debugging progress in project files
+- **Follow Project Constraints**: Respect any project-specific limitations
+
+### 3. Version-Controlled Debugging
+- **Track Changes**: Use version control to understand what changed
+- **Create Debug Branches**: Use separate branches for debugging work
+- **Commit Debugging Progress**: Regular commits with clear messages
+- **Document Solutions**: Update documentation with debugging insights
+
+## Common Debugging Scenarios
+
+### Project System Issues
+
+#### Issue: Project Not Loading
+```typescript
+// Debug: Project not loading
+async function debugProjectLoading(projectId: string) {
+  console.log(`Debugging project loading for: ${projectId}`);
+  
+  try {
+    // Step 1: Check if project file exists
+    const projectManager = new ProjectManager(config);
+    const projectFilePath = await projectManager.getProjectFilePath(projectId);
+    
+    if (!projectFilePath) {
+      console.error(`Project file not found for: ${projectId}`);
+      return { error: 'Project file not found', step: 'file-existence' };
+    }
+    
+    console.log(`Project file found at: ${projectFilePath}`);
+    
+    // Step 2: Check file permissions
+    try {
+      await fs.access(projectFilePath, fs.constants.R_OK);
+      console.log('File is readable');
+    } catch (error) {
+      console.error('File permission error:', error);
+      return { error: 'File not readable', step: 'permissions' };
+    }
+    
+    // Step 3: Check file content
+    const content = await fs.readFile(projectFilePath, 'utf-8');
+    console.log(`File size: ${content.length} characters`);
+    
+    // Step 4: Validate YAML frontmatter
+    const yamlMatch = content.match(/^---\n([\s\S]*?)\n---/);
+    if (!yamlMatch) {
+      console.error('No YAML frontmatter found');
+      return { error: 'Invalid YAML frontmatter', step: 'yaml-parsing' };
+    }
+    
+    // Step 5: Parse YAML
+    try {
+      const metadata = yaml.load(yamlMatch[1]);
+      console.log('YAML parsed successfully:', metadata);
+    } catch (error) {
+      console.error('YAML parsing error:', error);
+      return { error: 'YAML parsing failed', step: 'yaml-parsing' };
+    }
+    
+    // Step 6: Try to load project
+    const project = await projectManager.getProject(projectId);
+    if (project) {
+      console.log('Project loaded successfully');
+      return { success: true, project };
+    } else {
+      console.error('Project loading returned null');
+      return { error: 'Project loading failed', step: 'project-loading' };
+    }
+    
+  } catch (error) {
+    console.error('Unexpected error during debugging:', error);
+    return { error: error.message, step: 'unexpected' };
+  }
+}
+```
+
+#### Issue: Project Validation Failing
+```typescript
+// Debug: Project validation issues
+async function debugProjectValidation(projectId: string) {
+  console.log(`Debugging project validation for: ${projectId}`);
+  
+  try {
+    const projectManager = new ProjectManager(config);
+    const project = await projectManager.getProject(projectId);
+    
+    if (!project) {
+      return { error: 'Project not found' };
+    }
+    
+    const validator = new ProjectValidator();
+    
+    // Step 1: Validate metadata
+    console.log('Validating project metadata...');
+    const metadataValidation = validator.validateProjectMetadata(project.project);
+    console.log('Metadata validation result:', metadataValidation);
+    
+    if (!metadataValidation.isValid) {
+      console.log('Metadata validation errors:', metadataValidation.errors);
+      console.log('Metadata validation warnings:', metadataValidation.warnings);
+    }
+    
+    // Step 2: Validate context
+    console.log('Validating project context...');
+    const contextValidation = validator.validateProjectContext(project.context);
+    console.log('Context validation result:', contextValidation);
+    
+    if (!contextValidation.isValid) {
+      console.log('Context validation errors:', contextValidation.errors);
+      console.log('Context validation warnings:', contextValidation.warnings);
+    }
+    
+    // Step 3: Validate file content
+    console.log('Validating project file content...');
+    const projectFilePath = await projectManager.getProjectFilePath(projectId);
+    const content = await fs.readFile(projectFilePath, 'utf-8');
+    const fileValidation = validator.validateProjectFile(content);
+    console.log('File validation result:', fileValidation);
+    
+    // Step 4: Generate comprehensive report
+    const report = {
+      projectId,
+      metadataValidation,
+      contextValidation,
+      fileValidation,
+      overallValid: metadataValidation.isValid && contextValidation.isValid && fileValidation.isValid,
+      totalErrors: metadataValidation.errors.length + contextValidation.errors.length + fileValidation.errors.length,
+      totalWarnings: metadataValidation.warnings.length + contextValidation.warnings.length + fileValidation.warnings.length
+    };
+    
+    console.log('Validation report:', report);
+    return report;
+    
+  } catch (error) {
+    console.error('Validation debugging failed:', error);
+    return { error: error.message };
+  }
+}
+```
+
+### Component Issues
+
+#### Issue: React Component Not Rendering
+```typescript
+// Debug: React component rendering issues
+function debugComponentRendering(Component: React.ComponentType, props: any) {
+  console.log('Debugging component rendering...');
+  console.log('Component:', Component.name);
+  console.log('Props:', props);
+  
+  // Step 1: Check if component is defined
+  if (!Component) {
+    console.error('Component is undefined');
+    return { error: 'Component undefined' };
+  }
+  
+  // Step 2: Check props
+  if (!props) {
+    console.warn('Props are undefined');
+  }
+  
+  // Step 3: Try to render component
+  try {
+    const element = React.createElement(Component, props);
+    console.log('Component element created successfully');
+    
+    // Step 4: Check for common issues
+    if (props.className && typeof props.className !== 'string') {
+      console.warn('className prop is not a string:', props.className);
+    }
+    
+    if (props.children && !Array.isArray(props.children) && typeof props.children !== 'string') {
+      console.warn('children prop has unexpected type:', typeof props.children);
+    }
+    
+    return { success: true, element };
+    
+  } catch (error) {
+    console.error('Component rendering error:', error);
+    return { error: error.message };
+  }
+}
+
+// Usage in component
+export function ProjectStatus({ className = '', showDetails = false }: ProjectStatusProps) {
+  // Debug component rendering
+  const debugResult = debugComponentRendering(ProjectStatus, { className, showDetails });
+  if (debugResult.error) {
+    console.error('Component rendering debug failed:', debugResult.error);
+  }
+  
+  // Rest of component implementation...
+}
+```
+
+#### Issue: Hook Not Working
+```typescript
+// Debug: Custom hook issues
+function debugCustomHook(hookName: string, hookFunction: Function, ...args: any[]) {
+  console.log(`Debugging hook: ${hookName}`);
+  console.log('Hook function:', hookFunction.name);
+  console.log('Arguments:', args);
+  
+  try {
+    // Step 1: Check if hook is a function
+    if (typeof hookFunction !== 'function') {
+      console.error('Hook is not a function');
+      return { error: 'Hook not a function' };
+    }
+    
+    // Step 2: Check if we're in a React component
+    if (typeof window !== 'undefined' && !document.querySelector('[data-reactroot]')) {
+      console.warn('Not in a React environment');
+    }
+    
+    // Step 3: Try to call the hook
+    const result = hookFunction(...args);
+    console.log('Hook result:', result);
+    
+    // Step 4: Validate result
+    if (result === undefined) {
+      console.warn('Hook returned undefined');
+    }
+    
+    if (result && typeof result === 'object') {
+      console.log('Hook returned object with keys:', Object.keys(result));
+    }
+    
+    return { success: true, result };
+    
+  } catch (error) {
+    console.error('Hook debugging error:', error);
+    return { error: error.message };
+  }
+}
+
+// Usage in hook
+export function useProject(projectId: string) {
+  // Debug hook usage
+  const debugResult = debugCustomHook('useProject', useProject, projectId);
+  if (debugResult.error) {
+    console.error('Hook debug failed:', debugResult.error);
+  }
+  
+  // Rest of hook implementation...
+}
+```
+
+### Performance Issues
+
+#### Issue: Slow Project Loading
+```typescript
+// Debug: Performance issues
+async function debugPerformance(operation: string, operationFunction: Function, ...args: any[]) {
+  console.log(`Debugging performance for: ${operation}`);
+  
+  const startTime = performance.now();
+  const startMemory = process.memoryUsage();
+  
+  try {
+    // Step 1: Run the operation
+    const result = await operationFunction(...args);
+    
+    const endTime = performance.now();
+    const endMemory = process.memoryUsage();
+    
+    // Step 2: Calculate metrics
+    const duration = endTime - startTime;
+    const memoryDelta = {
+      rss: endMemory.rss - startMemory.rss,
+      heapUsed: endMemory.heapUsed - startMemory.heapUsed,
+      heapTotal: endMemory.heapTotal - startMemory.heapTotal,
+      external: endMemory.external - startMemory.external
+    };
+    
+    // Step 3: Analyze performance
+    const performanceReport = {
+      operation,
+      duration: `${duration.toFixed(2)}ms`,
+      memoryDelta,
+      isSlow: duration > 1000, // Consider slow if > 1 second
+      memoryLeak: memoryDelta.heapUsed > 10 * 1024 * 1024 // Consider leak if > 10MB
+    };
+    
+    console.log('Performance report:', performanceReport);
+    
+    if (performanceReport.isSlow) {
+      console.warn(`Operation ${operation} is slow: ${duration.toFixed(2)}ms`);
+    }
+    
+    if (performanceReport.memoryLeak) {
+      console.warn(`Potential memory leak in ${operation}: ${(memoryDelta.heapUsed / 1024 / 1024).toFixed(2)}MB`);
+    }
+    
+    return { success: true, result, performance: performanceReport };
+    
+  } catch (error) {
+    const endTime = performance.now();
+    const duration = endTime - startTime;
+    
+    console.error(`Performance debugging failed for ${operation}:`, error);
+    console.log(`Failed after: ${duration.toFixed(2)}ms`);
+    
+    return { error: error.message, duration: `${duration.toFixed(2)}ms` };
+  }
+}
+
+// Usage
+async function loadProjectsWithDebug() {
+  return debugPerformance(
+    'loadProjects',
+    async () => {
+      const manager = new ProjectManager(config);
+      return await manager.getActiveProjects();
+    }
+  );
+}
+```
+
+### System Integration Issues
+
+#### Issue: Provider Not Working
+```typescript
+// Debug: React provider issues
+function debugProvider(Provider: React.ComponentType, context: React.Context<any>) {
+  console.log('Debugging provider...');
+  console.log('Provider:', Provider.name);
+  console.log('Context:', context);
+  
+  // Step 1: Check if provider is defined
+  if (!Provider) {
+    console.error('Provider is undefined');
+    return { error: 'Provider undefined' };
+  }
+  
+  // Step 2: Check if context is defined
+  if (!context) {
+    console.error('Context is undefined');
+    return { error: 'Context undefined' };
+  }
+  
+  // Step 3: Check context default value
+  console.log('Context default value:', context._currentValue);
+  
+  // Step 4: Check if provider is being used
+  const providerElement = document.querySelector('[data-provider]');
+  if (!providerElement) {
+    console.warn('Provider element not found in DOM');
+  }
+  
+  return { success: true };
+}
+
+// Usage in provider
+export function ProjectSystemProvider({ children, config }: ProjectSystemProviderProps) {
+  // Debug provider
+  const debugResult = debugProvider(ProjectSystemProvider, ProjectSystemContext);
+  if (debugResult.error) {
+    console.error('Provider debug failed:', debugResult.error);
+  }
+  
+  // Rest of provider implementation...
+}
+```
+
+## Debugging Tools and Utilities
+
+### Debug Logger
+```typescript
+// Debug logging utility
+export class DebugLogger {
+  private static instance: DebugLogger;
+  private logs: Array<{ timestamp: string; level: string; message: string; data?: any }> = [];
+  private isEnabled: boolean = process.env.NODE_ENV === 'development';
+
+  static getInstance(): DebugLogger {
+    if (!DebugLogger.instance) {
+      DebugLogger.instance = new DebugLogger();
+    }
+    return DebugLogger.instance;
+  }
+
+  log(level: 'info' | 'warn' | 'error' | 'debug', message: string, data?: any): void {
+    if (!this.isEnabled) return;
+
+    const logEntry = {
+      timestamp: new Date().toISOString(),
+      level,
+      message,
+      data
+    };
+
+    this.logs.push(logEntry);
+    console[level](`[${level.toUpperCase()}] ${message}`, data || '');
+  }
+
+  info(message: string, data?: any): void {
+    this.log('info', message, data);
+  }
+
+  warn(message: string, data?: any): void {
+    this.log('warn', message, data);
+  }
+
+  error(message: string, data?: any): void {
+    this.log('error', message, data);
+  }
+
+  debug(message: string, data?: any): void {
+    this.log('debug', message, data);
+  }
+
+  getLogs(): Array<{ timestamp: string; level: string; message: string; data?: any }> {
+    return [...this.logs];
+  }
+
+  clearLogs(): void {
+    this.logs = [];
+  }
+
+  exportLogs(): string {
+    return JSON.stringify(this.logs, null, 2);
+  }
+}
+
+// Usage
+const logger = DebugLogger.getInstance();
+logger.info('Project loading started', { projectId: 'test-project' });
+logger.error('Project loading failed', { error: 'File not found' });
+```
+
+### Error Boundary for Debugging
+```typescript
+// Error boundary with debugging
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error?: Error;
+  errorInfo?: React.ErrorInfo;
+  debugInfo?: any;
+}
+
+export class DebugErrorBoundary extends React.Component<
+  React.PropsWithChildren<{}>,
+  ErrorBoundaryState
+> {
+  constructor(props: React.PropsWithChildren<{}>) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return {
+      hasError: true,
+      error,
+      debugInfo: {
+        timestamp: new Date().toISOString(),
+        userAgent: navigator.userAgent,
+        url: window.location.href,
+        stack: error.stack
+      }
+    };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
+    const logger = DebugLogger.getInstance();
+    
+    logger.error('Error boundary caught error', {
+      error: error.message,
+      stack: error.stack,
+      componentStack: errorInfo.componentStack,
+      debugInfo: this.state.debugInfo
+    });
+
+    this.setState({
+      error,
+      errorInfo,
+      debugInfo: {
+        ...this.state.debugInfo,
+        componentStack: errorInfo.componentStack
+      }
+    });
+  }
+
+  render(): React.ReactNode {
+    if (this.state.hasError) {
+      return (
+        <div className="error-boundary">
+          <h2>Something went wrong</h2>
+          <details>
+            <summary>Error Details</summary>
+            <pre>{this.state.error?.message}</pre>
+            <pre>{this.state.error?.stack}</pre>
+            <pre>{this.state.errorInfo?.componentStack}</pre>
+            <pre>{JSON.stringify(this.state.debugInfo, null, 2)}</pre>
+          </details>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+```
+
+### Performance Monitor
+```typescript
+// Performance monitoring utility
+export class PerformanceMonitor {
+  private static instance: PerformanceMonitor;
+  private metrics: Map<string, Array<{ timestamp: number; duration: number; memory?: any }>> = new Map();
+
+  static getInstance(): PerformanceMonitor {
+    if (!PerformanceMonitor.instance) {
+      PerformanceMonitor.instance = new PerformanceMonitor();
+    }
+    return PerformanceMonitor.instance;
+  }
+
+  startTimer(operation: string): () => void {
+    const startTime = performance.now();
+    const startMemory = process.memoryUsage();
+
+    return () => {
+      const endTime = performance.now();
+      const endMemory = process.memoryUsage();
+      const duration = endTime - startTime;
+
+      const metric = {
+        timestamp: Date.now(),
+        duration,
+        memory: {
+          rss: endMemory.rss - startMemory.rss,
+          heapUsed: endMemory.heapUsed - startMemory.heapUsed
+        }
+      };
+
+      if (!this.metrics.has(operation)) {
+        this.metrics.set(operation, []);
+      }
+
+      this.metrics.get(operation)!.push(metric);
+
+      // Keep only last 100 measurements
+      const measurements = this.metrics.get(operation)!;
+      if (measurements.length > 100) {
+        measurements.shift();
+      }
+    };
+  }
+
+  getMetrics(operation?: string): any {
+    if (operation) {
+      const measurements = this.metrics.get(operation) || [];
+      return {
+        operation,
+        count: measurements.length,
+        average: measurements.reduce((sum, m) => sum + m.duration, 0) / measurements.length,
+        latest: measurements[measurements.length - 1]
+      };
+    }
+
+    const allMetrics: any = {};
+    for (const [op, measurements] of this.metrics) {
+      allMetrics[op] = {
+        count: measurements.length,
+        average: measurements.reduce((sum, m) => sum + m.duration, 0) / measurements.length,
+        latest: measurements[measurements.length - 1]
+      };
+    }
+    return allMetrics;
+  }
+
+  clearMetrics(): void {
+    this.metrics.clear();
+  }
+}
+
+// Usage
+const monitor = PerformanceMonitor.getInstance();
+const endTimer = monitor.startTimer('project-loading');
+// ... do work ...
+endTimer();
+console.log('Performance metrics:', monitor.getMetrics('project-loading'));
+```
+
+## Debugging Workflow
+
+### 1. Initial Assessment
+```typescript
+// Initial debugging assessment
+async function initialDebugAssessment(issue: string, context: any) {
+  const logger = DebugLogger.getInstance();
+  
+  logger.info('Starting debug assessment', { issue, context });
+  
+  // Step 1: Document the issue
+  const issueReport = {
+    timestamp: new Date().toISOString(),
+    issue,
+    context,
+    environment: {
+      nodeVersion: process.version,
+      platform: process.platform,
+      userAgent: typeof window !== 'undefined' ? navigator.userAgent : 'N/A'
+    }
+  };
+  
+  logger.info('Issue report created', issueReport);
+  
+  // Step 2: Check system health
+  const systemHealth = await checkSystemHealth();
+  logger.info('System health check', systemHealth);
+  
+  // Step 3: Identify potential causes
+  const potentialCauses = identifyPotentialCauses(issue, context);
+  logger.info('Potential causes identified', potentialCauses);
+  
+  return {
+    issueReport,
+    systemHealth,
+    potentialCauses,
+    nextSteps: generateDebuggingPlan(potentialCauses)
+  };
+}
+```
+
+### 2. Systematic Investigation
+```typescript
+// Systematic debugging investigation
+async function systematicInvestigation(issue: string, potentialCauses: string[]) {
+  const logger = DebugLogger.getInstance();
+  const results: any[] = [];
+  
+  for (const cause of potentialCauses) {
+    logger.info(`Investigating cause: ${cause}`);
+    
+    try {
+      const result = await investigateCause(cause, issue);
+      results.push({ cause, result, status: 'completed' });
+      logger.info(`Investigation completed for: ${cause}`, result);
+      
+      if (result.isRootCause) {
+        logger.info(`Root cause found: ${cause}`, result);
+        break;
+      }
+    } catch (error) {
+      results.push({ cause, error: error.message, status: 'failed' });
+      logger.error(`Investigation failed for: ${cause}`, error);
+    }
+  }
+  
+  return results;
+}
+```
+
+### 3. Solution Implementation
+```typescript
+// Solution implementation and validation
+async function implementSolution(issue: string, rootCause: any, solution: any) {
+  const logger = DebugLogger.getInstance();
+  
+  logger.info('Implementing solution', { issue, rootCause, solution });
+  
+  try {
+    // Step 1: Implement the solution
+    const implementationResult = await executeSolution(solution);
+    logger.info('Solution implemented', implementationResult);
+    
+    // Step 2: Validate the solution
+    const validationResult = await validateSolution(issue, solution);
+    logger.info('Solution validated', validationResult);
+    
+    // Step 3: Test the solution
+    const testResult = await testSolution(issue, solution);
+    logger.info('Solution tested', testResult);
+    
+    // Step 4: Document the solution
+    await documentSolution(issue, rootCause, solution, {
+      implementation: implementationResult,
+      validation: validationResult,
+      testing: testResult
+    });
+    
+    return {
+      success: true,
+      implementation: implementationResult,
+      validation: validationResult,
+      testing: testResult
+    };
+    
+  } catch (error) {
+    logger.error('Solution implementation failed', error);
+    return {
+      success: false,
+      error: error.message
+    };
+  }
+}
+```
+
+## Best Practices
+
+### 1. Documentation
+- **Document Everything**: Record all debugging steps and findings
+- **Update Project Status**: Keep project documentation current
+- **Create Debug Reports**: Generate comprehensive debug reports
+- **Share Knowledge**: Document solutions for future reference
+
+### 2. Testing
+- **Test Solutions**: Always test fixes thoroughly
+- **Regression Testing**: Ensure fixes don't break other functionality
+- **Performance Testing**: Verify performance impact of solutions
+- **Integration Testing**: Test in realistic environments
+
+### 3. Prevention
+- **Learn from Issues**: Use debugging insights to prevent future issues
+- **Improve Monitoring**: Enhance system monitoring based on debugging findings
+- **Update Documentation**: Keep documentation current to prevent confusion
+- **Code Reviews**: Use debugging insights to improve code review processes
+
+## Getting Started
+
+1. **Understand the System**: Familiarize yourself with the project management system
+2. **Learn the Tools**: Master the debugging tools and utilities
+3. **Practice Techniques**: Use the provided examples to practice debugging
+4. **Document Everything**: Keep detailed records of all debugging activities
+5. **Share Knowledge**: Contribute to the debugging knowledge base
+
+## Next Steps
+
+- [AI Troubleshooting Guides](/docs/troubleshooting/README.md)
+- [AI Monitoring Guides](/docs/monitoring/README.md)
+- [AI Optimization Guides](/docs/optimization/README.md)
+- [AI Maintenance Guides](/docs/maintenance/README.md)
+
+---
+
+*This debugging guide is part of the AI Coder Documentation system and follows document-driven architecture principles.*

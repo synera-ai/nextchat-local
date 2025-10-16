@@ -1,0 +1,211 @@
+---
+title: "Commit Integration System"
+description: "Commit Integration System - NextChat Documentation"
+lastModified: "2025-10-16T18:41:57.754Z"
+---
+
+# Commit Integration System
+
+## Overview
+Comprehensive system for integrating regular commits with project management workflows, ensuring version-controlled development with proper project tracking.
+
+## Commit Strategy Framework
+
+### 1. Commit Types and Triggers
+
+#### Phase Commits
+- **Trigger**: End of each project phase (Ideas → Plan → Design → Implementation → Testing → Review → Deployment → Completion)
+- **Message Format**: `phase({project}): complete {phase-name} phase [v{major}.{minor}.{patch}]`
+- **Content**: Phase summary, deliverables, and next phase preparation
+
+#### Milestone Commits
+- **Trigger**: When reaching significant project milestones
+- **Message Format**: `milestone({project}): reach {milestone-name} milestone [v{major}.{minor}.{patch}]`
+- **Content**: Milestone achievements, progress metrics, and next milestone planning
+
+#### Feature Commits
+- **Trigger**: When completing major features or components
+- **Message Format**: `feat({project}): implement {feature-name} [v{major}.{minor}.{patch}]`
+- **Content**: Feature implementation details, testing results, and integration notes
+
+#### Daily Commits
+- **Trigger**: End of each development day
+- **Message Format**: `daily({project}): {date} progress update [v{major}.{minor}.{patch}]`
+- **Content**: Daily progress summary, blockers, and next day planning
+
+#### Blocker Resolution Commits
+- **Trigger**: When resolving project blockers
+- **Message Format**: `fix({project}): resolve {blocker-description} [v{major}.{minor}.{patch}]`
+- **Content**: Blocker resolution details, impact assessment, and prevention measures
+
+#### Project Completion Commits
+- **Trigger**: When completing entire projects
+- **Message Format**: `complete({project}): project completion and retrospective [v{major}.{minor}.{patch}]`
+- **Content**: Project summary, lessons learned, and next version planning
+
+### 2. Commit Message Standards
+
+#### Standard Format
+```
+{type}({project}): {description} [v{major}.{minor}.{patch}]
+
+{detailed-description}
+
+- Files changed: {count} files
+- Lines added: {count} lines
+- Lines removed: {count} lines
+- Tasks completed: {completed}/{total}
+- Blockers resolved: {count} blockers
+- Next phase: {next-phase}
+```
+
+#### Type Categories
+- **phase**: Project phase completion
+- **milestone**: Milestone achievement
+- **feat**: New feature implementation
+- **fix**: Bug fix or blocker resolution
+- **refactor**: Code refactoring
+- **docs**: Documentation updates
+- **test**: Testing implementation
+- **daily**: Daily progress updates
+- **complete**: Project completion
+
+### 3. Automated Commit Triggers
+
+#### Git Hooks Integration
+```bash
+# Pre-commit hook
+#!/bin/bash
+# Validate project context and file changes
+# Check project document updates
+# Validate commit message format
+
+# Post-commit hook
+#!/bin/bash
+# Update project progress log
+# Update project metrics
+# Trigger project status update
+# Send notifications if configured
+```
+
+#### CI/CD Integration
+- **Build Triggers**: Automatic builds on phase and milestone commits
+- **Test Execution**: Automated testing on feature commits
+- **Deployment Triggers**: Deployment on project completion commits
+- **Quality Gates**: Quality checks on all commit types
+
+### 4. Commit Workflow Integration
+
+#### Project Phase Workflow
+1. **Start Phase**: Create phase branch, update project document
+2. **Work in Phase**: Regular daily commits, feature commits
+3. **Complete Phase**: Phase commit, merge to main, update project
+4. **Next Phase**: Create new phase branch, continue workflow
+
+#### Milestone Workflow
+1. **Plan Milestone**: Define milestone criteria and timeline
+2. **Work Toward Milestone**: Regular commits with milestone progress
+3. **Reach Milestone**: Milestone commit, celebrate achievement
+4. **Next Milestone**: Plan and begin next milestone work
+
+#### Feature Workflow
+1. **Plan Feature**: Define feature requirements and acceptance criteria
+2. **Implement Feature**: Feature commits with progress updates
+3. **Test Feature**: Testing commits with validation results
+4. **Complete Feature**: Feature completion commit with integration notes
+
+### 5. Commit Quality Assurance
+
+#### Pre-Commit Validation
+- **Project Context**: Verify work is associated with active project
+- **File Changes**: Validate all changed files are tracked in project
+- **Message Format**: Ensure commit message follows standard format
+- **Code Quality**: Run linting and basic quality checks
+
+#### Post-Commit Actions
+- **Project Updates**: Update project progress log automatically
+- **Metrics Tracking**: Update project metrics and statistics
+- **Notification**: Notify team members of significant commits
+- **Documentation**: Update relevant documentation
+
+### 6. Commit Analytics and Reporting
+
+#### Commit Metrics
+- **Frequency**: Commits per day/week/month
+- **Size**: Lines changed per commit
+- **Types**: Distribution of commit types
+- **Projects**: Commits per project
+- **Phases**: Commits per project phase
+
+#### Progress Tracking
+- **Velocity**: Commits per time period
+- **Quality**: Commit message quality and completeness
+- **Consistency**: Adherence to commit standards
+- **Impact**: Impact of commits on project progress
+
+#### Reporting
+- **Daily Reports**: Daily commit summary and progress
+- **Weekly Reports**: Weekly commit analysis and trends
+- **Monthly Reports**: Monthly commit statistics and insights
+- **Project Reports**: Project-specific commit analysis
+
+### 7. Integration with Project Management
+
+#### Project Document Updates
+- **Progress Log**: Automatic progress log updates
+- **Task Tracking**: Task completion tracking
+- **Blocker Management**: Blocker resolution tracking
+- **Milestone Tracking**: Milestone achievement tracking
+
+#### Version Control Integration
+- **Version Bumping**: Automatic version increment on major commits
+- **Tagging**: Automatic tagging on milestone and completion commits
+- **Branching**: Strategic branching for phases and features
+- **Merging**: Controlled merging with project context
+
+### 8. Commit Best Practices
+
+#### Commit Frequency
+- **Minimum**: At least one commit per day when actively working
+- **Maximum**: No more than 10 commits per day (consolidate if needed)
+- **Optimal**: 3-5 commits per day for active development
+
+#### Commit Size
+- **Small**: Focus on single logical changes
+- **Atomic**: Each commit should be independently deployable
+- **Complete**: Include all related changes in single commit
+- **Tested**: Only commit tested and validated changes
+
+#### Commit Messages
+- **Clear**: Use clear, descriptive language
+- **Consistent**: Follow standard format consistently
+- **Complete**: Include all relevant information
+- **Contextual**: Provide sufficient context for future reference
+
+### 9. Commit Recovery and Rollback
+
+#### Rollback Strategies
+- **Phase Rollback**: Rollback to previous phase
+- **Milestone Rollback**: Rollback to previous milestone
+- **Feature Rollback**: Rollback specific feature
+- **Daily Rollback**: Rollback to previous day
+
+#### Recovery Procedures
+- **Commit Recovery**: Recover lost or corrupted commits
+- **Branch Recovery**: Recover lost or corrupted branches
+- **Project Recovery**: Recover project state from commits
+- **Data Recovery**: Recover lost project data
+
+### 10. Commit Training and Adoption
+
+#### Team Training
+- **Commit Standards**: Train team on commit standards
+- **Workflow Integration**: Train on commit workflow integration
+- **Tool Usage**: Train on commit tools and automation
+- **Best Practices**: Train on commit best practices
+
+#### Adoption Strategies
+- **Gradual Rollout**: Implement gradually across team
+- **Tool Support**: Provide tools to support adoption
+- **Monitoring**: Monitor adoption and provide feedback
+- **Continuous Improvement**: Continuously improve system based on feedback

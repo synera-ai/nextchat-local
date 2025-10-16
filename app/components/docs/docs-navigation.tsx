@@ -1,7 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link, useLocation } from "react-router-dom";
 import { Path } from "../../constant";
 
 interface DocsNavigationProps {
@@ -9,12 +8,13 @@ interface DocsNavigationProps {
 }
 
 export function DocsNavigation({ className }: DocsNavigationProps) {
-  const pathname = usePathname();
+  const location = useLocation();
+  const pathname = location.pathname;
 
   const navigationItems = [
     {
       title: "Documentation",
-      href: "/docs",
+      href: Path.Docs,
       icon: "📚",
       description: "Comprehensive documentation system",
     },
@@ -39,13 +39,37 @@ export function DocsNavigation({ className }: DocsNavigationProps) {
   ];
 
   return (
-    <nav className={`docs-navigation ${className || ""}`}>
-      <div className="nav-header">
-        <h2>NextChat</h2>
-        <p>Documentation & Tools</p>
+    <nav className={`docs-navigation ${className || ""}`} style={{
+      padding: '1rem',
+      background: 'var(--white)',
+      border: 'var(--border-in-light)',
+      borderRadius: '8px',
+      marginBottom: '1rem'
+    }}>
+      <div className="nav-header" style={{
+        marginBottom: '1rem',
+        paddingBottom: '1rem',
+        borderBottom: 'var(--border-in-light)'
+      }}>
+        <h2 style={{
+          margin: '0 0 0.5rem 0',
+          color: 'var(--black)',
+          fontSize: '1.5rem',
+          fontWeight: '600'
+        }}>NextChat</h2>
+        <p style={{
+          margin: '0',
+          color: 'var(--black)',
+          opacity: '0.7',
+          fontSize: '0.9rem'
+        }}>Documentation & Tools</p>
       </div>
 
-      <div className="nav-items">
+      <div className="nav-items" style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '0.5rem'
+      }}>
         {navigationItems.map((item) => {
           const isActive =
             pathname === item.href || pathname.startsWith(item.href + "/");
@@ -53,13 +77,41 @@ export function DocsNavigation({ className }: DocsNavigationProps) {
           return (
             <Link
               key={item.href}
-              href={item.href}
+              to={item.href}
               className={`nav-item ${isActive ? "active" : ""}`}
+              style={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: '0.75rem',
+                padding: '0.75rem',
+                borderRadius: '8px',
+                textDecoration: 'none',
+                transition: 'all 0.2s ease',
+                background: isActive ? 'var(--primary)' : 'transparent',
+                color: isActive ? 'var(--white)' : 'var(--black)'
+              }}
             >
-              <div className="nav-item-icon">{item.icon}</div>
-              <div className="nav-item-content">
-                <h3>{item.title}</h3>
-                <p>{item.description}</p>
+              <div className="nav-item-icon" style={{
+                fontSize: '1.25rem',
+                flexShrink: '0',
+                marginTop: '0.125rem'
+              }}>{item.icon}</div>
+              <div className="nav-item-content" style={{
+                flex: '1'
+              }}>
+                <h3 style={{
+                  margin: '0 0 0.25rem 0',
+                  fontSize: '0.9rem',
+                  fontWeight: '600',
+                  color: isActive ? 'var(--white)' : 'var(--black)'
+                }}>{item.title}</h3>
+                <p style={{
+                  margin: '0',
+                  fontSize: '0.8rem',
+                  color: isActive ? 'var(--white)' : 'var(--black)',
+                  opacity: isActive ? '1' : '0.7',
+                  lineHeight: '1.4'
+                }}>{item.description}</p>
               </div>
             </Link>
           );

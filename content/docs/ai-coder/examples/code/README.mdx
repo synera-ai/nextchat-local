@@ -1,0 +1,984 @@
+---
+title: "AI Code Examples"
+description: "AI Code Examples - NextChat Documentation"
+lastModified: "2025-10-16T18:41:57.731Z"
+---
+
+# AI Code Examples
+
+## Introduction
+
+This section provides practical code examples specifically designed for AI agents working with document-driven architecture and project management systems. These examples demonstrate best practices, common patterns, and real-world implementations.
+
+## Project Management Examples
+
+### Basic Project Creation
+
+```typescript
+// Example: Creating a new project
+import { ProjectManager } from '../utils/project-manager';
+import { ProjectMetadata, ProjectContext } from '../types/project';
+
+async function createNewProject() {
+  const manager = new ProjectManager(config);
+  await manager.initialize();
+
+  const metadata: ProjectMetadata = {
+    projectId: 'feature-user-authentication',
+    title: 'User Authentication System',
+    stage: 'plan',
+    createdDate: '2025-01-15',
+    lastUpdated: '2025-01-15',
+    priority: 'high',
+    tags: ['authentication', 'security', 'user-management'],
+    version: 'v1.0.0',
+    assignedAgents: ['implementation-agent'],
+    estimatedCompletion: '2025-01-25'
+  };
+
+  const context: ProjectContext = {
+    problemStatement: 'Need to implement secure user authentication system with JWT tokens and role-based access control.',
+    businessValue: [
+      'Improved security for user data',
+      'Better user experience with single sign-on',
+      'Compliance with security standards'
+    ],
+    successCriteria: [
+      'JWT token authentication implemented',
+      'Role-based access control working',
+      'Password hashing and validation',
+      'Session management',
+      'Security testing completed'
+    ],
+    constraints: [
+      'Must use existing database schema',
+      'Should integrate with current user system',
+      'Must comply with security policies'
+    ],
+    stakeholders: [
+      'Security Team',
+      'Frontend Team',
+      'Backend Team',
+      'Product Manager'
+    ],
+    technicalRequirements: [
+      'Implement JWT token generation and validation',
+      'Create user registration and login endpoints',
+      'Add password hashing with bcrypt',
+      'Implement role-based middleware',
+      'Add session management',
+      'Create authentication tests'
+    ],
+    dependencies: [
+      {
+        name: 'Database Schema',
+        type: 'codebase',
+        status: 'available',
+        description: 'Existing user table structure'
+      },
+      {
+        name: 'Security Policies',
+        type: 'documentation',
+        status: 'available',
+        description: 'Company security requirements'
+      }
+    ],
+    acceptanceCriteria: [
+      'All authentication endpoints working',
+      'JWT tokens properly generated and validated',
+      'Password security meets requirements',
+      'Role-based access control functional',
+      'All tests passing',
+      'Security review completed'
+    ],
+    implementationGuidelines: [
+      'Follow existing code patterns',
+      'Use TypeScript for type safety',
+      'Write comprehensive tests',
+      'Document all API endpoints',
+      'Follow security best practices'
+    ],
+    fileReferences: [
+      '/app/api/auth.ts',
+      '/app/middleware/auth.ts',
+      '/app/types/user.ts',
+      '/app/utils/jwt.ts'
+    ]
+  };
+
+  const result = await manager.createProject(metadata, context, 'implementation-agent');
+  
+  if (result.success) {
+    console.log('Project created successfully:', result.result);
+  } else {
+    console.error('Failed to create project:', result.error);
+  }
+}
+```
+
+### Project Status Monitoring
+
+```typescript
+// Example: Monitoring project status
+import { useProjectSystem } from '../core/providers/project-provider';
+
+function ProjectStatusMonitor() {
+  const { getActiveProjects, getSystemHealth } = useProjectSystem();
+  const [projects, setProjects] = useState([]);
+  const [health, setHealth] = useState(null);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [activeProjects, systemHealth] = await Promise.all([
+          getActiveProjects(),
+          getSystemHealth()
+        ]);
+        
+        setProjects(activeProjects);
+        setHealth(systemHealth);
+      } catch (error) {
+        console.error('Failed to load project data:', error);
+      }
+    };
+
+    loadData();
+    
+    // Refresh every 30 seconds
+    const interval = setInterval(loadData, 30000);
+    return () => clearInterval(interval);
+  }, [getActiveProjects, getSystemHealth]);
+
+  return (
+    <div className="project-monitor">
+      <h2>Project Status Monitor</h2>
+      
+      <div className="system-health">
+        <h3>System Health: {health?.score}/100</h3>
+        <div className="health-details">
+          <p>Active Projects: {health?.details?.activeProjects}</p>
+          <p>Total Projects: {health?.details?.totalProjects}</p>
+          <p>Completed: {health?.details?.completedProjects}</p>
+        </div>
+      </div>
+
+      <div className="projects-list">
+        {projects.map(project => (
+          <ProjectCard key={project.project.projectId} project={project} />
+        ))}
+      </div>
+    </div>
+  );
+}
+```
+
+### Project Validation
+
+```typescript
+// Example: Validating project data
+import { ProjectValidator } from '../utils/project-validator';
+
+async function validateProjectExample() {
+  const validator = new ProjectValidator();
+  
+  // Example project metadata
+  const metadata = {
+    projectId: 'feature-payment-system',
+    title: 'Payment Processing System',
+    stage: 'implementation',
+    createdDate: '2025-01-10',
+    lastUpdated: '2025-01-15',
+    priority: 'critical',
+    tags: ['payment', 'fintech', 'security'],
+    version: 'v1.0.0'
+  };
+
+  // Example project context
+  const context = {
+    problemStatement: 'Need to implement secure payment processing with multiple payment methods.',
+    businessValue: ['Enable online payments', 'Improve user experience', 'Increase revenue'],
+    successCriteria: ['Payment processing working', 'Multiple payment methods', 'Security compliance'],
+    constraints: ['PCI compliance required', 'Must integrate with existing system'],
+    stakeholders: ['Finance Team', 'Security Team', 'Product Team'],
+    technicalRequirements: ['Payment gateway integration', 'Security implementation', 'Testing'],
+    dependencies: [],
+    acceptanceCriteria: ['All payment methods working', 'Security tests passing'],
+    implementationGuidelines: ['Follow security standards', 'Write comprehensive tests'],
+    fileReferences: ['/app/api/payments.ts', '/app/types/payment.ts']
+  };
+
+  // Validate the project
+  const validation = validator.validateProject(metadata, context);
+  
+  console.log('Validation Results:');
+  console.log('Valid:', validation.isValid);
+  console.log('Errors:', validation.errors);
+  console.log('Warnings:', validation.warnings);
+  console.log('Suggestions:', validation.suggestions);
+  
+  return validation;
+}
+```
+
+## Component Examples
+
+### Project Card Component
+
+```typescript
+// Example: Reusable project card component
+import React from 'react';
+import { ProjectContextResult } from '../core/types/project';
+import styles from './project-card.module.scss';
+
+interface ProjectCardProps {
+  project: ProjectContextResult;
+  onUpdate?: (projectId: string, updates: any) => void;
+  onDelete?: (projectId: string) => void;
+  className?: string;
+}
+
+export function ProjectCard({ 
+  project, 
+  onUpdate, 
+  onDelete, 
+  className = '' 
+}: ProjectCardProps) {
+  const { project: metadata, status, health, validation } = project;
+  
+  const healthScore = health?.score || 0;
+  const healthColor = healthScore >= 80 ? 'green' : healthScore >= 60 ? 'yellow' : 'red';
+  
+  const handleUpdate = () => {
+    if (onUpdate) {
+      onUpdate(metadata.projectId, { lastUpdated: new Date().toISOString().split('T')[0] });
+    }
+  };
+
+  const handleDelete = () => {
+    if (onDelete && window.confirm('Are you sure you want to delete this project?')) {
+      onDelete(metadata.projectId);
+    }
+  };
+
+  return (
+    <div className={`${styles.projectCard} ${className}`}>
+      <div className={styles.header}>
+        <h3 className={styles.title}>{metadata.title}</h3>
+        <div className={styles.badges}>
+          <span className={`${styles.badge} ${styles[`priority-${metadata.priority}`]}`}>
+            {metadata.priority}
+          </span>
+          <span className={`${styles.badge} ${styles[`stage-${metadata.stage}`]}`}>
+            {metadata.stage}
+          </span>
+          <span className={`${styles.badge} ${styles[`health-${healthColor}`]}`}>
+            {healthScore}/100
+          </span>
+        </div>
+      </div>
+      
+      <div className={styles.meta}>
+        <div className={styles.metaItem}>
+          <span className={styles.label}>Version:</span>
+          <span className={styles.value}>{metadata.version}</span>
+        </div>
+        <div className={styles.metaItem}>
+          <span className={styles.label}>Last Updated:</span>
+          <span className={styles.value}>{metadata.lastUpdated}</span>
+        </div>
+        {metadata.assignedAgents && metadata.assignedAgents.length > 0 && (
+          <div className={styles.metaItem}>
+            <span className={styles.label}>Agents:</span>
+            <span className={styles.value}>{metadata.assignedAgents.join(', ')}</span>
+          </div>
+        )}
+      </div>
+
+      {status && (
+        <div className={styles.progress}>
+          <div className={styles.progressItem}>
+            <span className={styles.label}>Tasks:</span>
+            <span className={styles.value}>
+              {status.tasksCompleted}/{status.totalTasks}
+            </span>
+          </div>
+          <div className={styles.progressItem}>
+            <span className={styles.label}>Blockers:</span>
+            <span className={`${styles.value} ${status.activeBlockers > 0 ? styles.warning : styles.success}`}>
+              {status.activeBlockers}
+            </span>
+          </div>
+        </div>
+      )}
+
+      {validation && !validation.isValid && (
+        <div className={styles.validation}>
+          {validation.errors.length > 0 && (
+            <div className={styles.errors}>
+              <span className={styles.label}>Errors:</span>
+              <span className={styles.count}>{validation.errors.length}</span>
+            </div>
+          )}
+          {validation.warnings.length > 0 && (
+            <div className={styles.warnings}>
+              <span className={styles.label}>Warnings:</span>
+              <span className={styles.count}>{validation.warnings.length}</span>
+            </div>
+          )}
+        </div>
+      )}
+
+      <div className={styles.actions}>
+        <button onClick={handleUpdate} className={styles.updateButton}>
+          Update
+        </button>
+        <button onClick={handleDelete} className={styles.deleteButton}>
+          Delete
+        </button>
+      </div>
+
+      {metadata.tags && metadata.tags.length > 0 && (
+        <div className={styles.tags}>
+          {metadata.tags.map((tag, index) => (
+            <span key={index} className={styles.tag}>{tag}</span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+### Custom Hook Example
+
+```typescript
+// Example: Custom hook for project management
+import { useState, useEffect, useCallback } from 'react';
+import { useProjectSystem } from '../core/providers/project-provider';
+import { ProjectContextResult, ProjectMetadata } from '../core/types/project';
+
+export function useProjectManagement() {
+  const { 
+    getActiveProjects, 
+    createProject, 
+    updateProject, 
+    moveProject,
+    getSystemHealth 
+  } = useProjectSystem();
+  
+  const [projects, setProjects] = useState<ProjectContextResult[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [systemHealth, setSystemHealth] = useState(null);
+
+  const loadProjects = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      const [activeProjects, health] = await Promise.all([
+        getActiveProjects(),
+        getSystemHealth()
+      ]);
+      
+      setProjects(activeProjects);
+      setSystemHealth(health);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load projects');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [getActiveProjects, getSystemHealth]);
+
+  const createNewProject = useCallback(async (
+    metadata: ProjectMetadata, 
+    context: any
+  ) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      const result = await createProject(metadata, context, 'system');
+      
+      if (result.success) {
+        await loadProjects(); // Refresh the list
+        return result;
+      } else {
+        throw new Error(result.error || 'Failed to create project');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to create project');
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [createProject, loadProjects]);
+
+  const updateExistingProject = useCallback(async (
+    projectId: string, 
+    updates: Partial<ProjectMetadata>
+  ) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      const result = await updateProject(projectId, updates, 'system');
+      
+      if (result.success) {
+        await loadProjects(); // Refresh the list
+        return result;
+      } else {
+        throw new Error(result.error || 'Failed to update project');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update project');
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [updateProject, loadProjects]);
+
+  const moveProjectToStage = useCallback(async (
+    projectId: string, 
+    newStage: string
+  ) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      const result = await moveProject(projectId, newStage, 'system');
+      
+      if (result.success) {
+        await loadProjects(); // Refresh the list
+        return result;
+      } else {
+        throw new Error(result.error || 'Failed to move project');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to move project');
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [moveProject, loadProjects]);
+
+  useEffect(() => {
+    loadProjects();
+  }, [loadProjects]);
+
+  return {
+    projects,
+    systemHealth,
+    isLoading,
+    error,
+    loadProjects,
+    createNewProject,
+    updateExistingProject,
+    moveProjectToStage
+  };
+}
+```
+
+## Utility Examples
+
+### Project Search Utility
+
+```typescript
+// Example: Advanced project search functionality
+import { ProjectManager } from '../utils/project-manager';
+import { ProjectSearchResult, ProjectStage, ProjectPriority } from '../types/project';
+
+export class ProjectSearchService {
+  private manager: ProjectManager;
+
+  constructor(manager: ProjectManager) {
+    this.manager = manager;
+  }
+
+  async searchProjects(
+    searchTerm: string,
+    filters: {
+      stage?: ProjectStage[];
+      priority?: ProjectPriority[];
+      tags?: string[];
+      assignedAgents?: string[];
+      dateRange?: {
+        start: string;
+        end: string;
+      };
+    } = {}
+  ): Promise<ProjectSearchResult> {
+    try {
+      // Get all projects
+      const allProjects = await this.manager.getActiveProjects();
+      
+      // Apply text search
+      let filteredProjects = allProjects;
+      
+      if (searchTerm) {
+        const term = searchTerm.toLowerCase();
+        filteredProjects = filteredProjects.filter(project => 
+          project.project.title.toLowerCase().includes(term) ||
+          project.project.projectId.toLowerCase().includes(term) ||
+          project.context.problemStatement.toLowerCase().includes(term) ||
+          project.project.tags.some(tag => tag.toLowerCase().includes(term))
+        );
+      }
+
+      // Apply filters
+      if (filters.stage && filters.stage.length > 0) {
+        filteredProjects = filteredProjects.filter(project => 
+          filters.stage!.includes(project.project.stage)
+        );
+      }
+
+      if (filters.priority && filters.priority.length > 0) {
+        filteredProjects = filteredProjects.filter(project => 
+          filters.priority!.includes(project.project.priority)
+        );
+      }
+
+      if (filters.tags && filters.tags.length > 0) {
+        filteredProjects = filteredProjects.filter(project => 
+          filters.tags!.some(tag => project.project.tags.includes(tag))
+        );
+      }
+
+      if (filters.assignedAgents && filters.assignedAgents.length > 0) {
+        filteredProjects = filteredProjects.filter(project => 
+          project.project.assignedAgents?.some(agent => 
+            filters.assignedAgents!.includes(agent)
+          )
+        );
+      }
+
+      if (filters.dateRange) {
+        const startDate = new Date(filters.dateRange.start);
+        const endDate = new Date(filters.dateRange.end);
+        
+        filteredProjects = filteredProjects.filter(project => {
+          const projectDate = new Date(project.project.createdDate);
+          return projectDate >= startDate && projectDate <= endDate;
+        });
+      }
+
+      return {
+        projects: filteredProjects,
+        totalCount: filteredProjects.length,
+        searchTerm,
+        filters
+      };
+    } catch (error) {
+      console.error('Search failed:', error);
+      throw new Error(`Search failed: ${error.message}`);
+    }
+  }
+
+  async getProjectSuggestions(searchTerm: string): Promise<string[]> {
+    try {
+      const projects = await this.manager.getActiveProjects();
+      const suggestions = new Set<string>();
+      
+      projects.forEach(project => {
+        // Add project titles
+        if (project.project.title.toLowerCase().includes(searchTerm.toLowerCase())) {
+          suggestions.add(project.project.title);
+        }
+        
+        // Add project IDs
+        if (project.project.projectId.toLowerCase().includes(searchTerm.toLowerCase())) {
+          suggestions.add(project.project.projectId);
+        }
+        
+        // Add tags
+        project.project.tags.forEach(tag => {
+          if (tag.toLowerCase().includes(searchTerm.toLowerCase())) {
+            suggestions.add(tag);
+          }
+        });
+      });
+      
+      return Array.from(suggestions).slice(0, 10);
+    } catch (error) {
+      console.error('Failed to get suggestions:', error);
+      return [];
+    }
+  }
+}
+```
+
+### Project Analytics Utility
+
+```typescript
+// Example: Project analytics and reporting
+import { ProjectContextResult } from '../types/project';
+
+export class ProjectAnalytics {
+  static calculateProjectMetrics(projects: ProjectContextResult[]) {
+    const metrics = {
+      totalProjects: projects.length,
+      byStage: {} as Record<string, number>,
+      byPriority: {} as Record<string, number>,
+      byHealth: {
+        excellent: 0, // 90-100
+        good: 0,      // 70-89
+        fair: 0,      // 50-69
+        poor: 0       // 0-49
+      },
+      averageHealth: 0,
+      totalTasks: 0,
+      completedTasks: 0,
+      totalBlockers: 0,
+      validationIssues: 0
+    };
+
+    let totalHealthScore = 0;
+
+    projects.forEach(project => {
+      const { project: metadata, status, health, validation } = project;
+      
+      // Count by stage
+      metrics.byStage[metadata.stage] = (metrics.byStage[metadata.stage] || 0) + 1;
+      
+      // Count by priority
+      metrics.byPriority[metadata.priority] = (metrics.byPriority[metadata.priority] || 0) + 1;
+      
+      // Health analysis
+      const healthScore = health?.score || 0;
+      totalHealthScore += healthScore;
+      
+      if (healthScore >= 90) metrics.byHealth.excellent++;
+      else if (healthScore >= 70) metrics.byHealth.good++;
+      else if (healthScore >= 50) metrics.byHealth.fair++;
+      else metrics.byHealth.poor++;
+      
+      // Task analysis
+      if (status) {
+        metrics.totalTasks += status.totalTasks;
+        metrics.completedTasks += status.tasksCompleted;
+        metrics.totalBlockers += status.activeBlockers;
+      }
+      
+      // Validation issues
+      if (validation) {
+        metrics.validationIssues += validation.errors.length + validation.warnings.length;
+      }
+    });
+
+    metrics.averageHealth = projects.length > 0 ? totalHealthScore / projects.length : 0;
+
+    return metrics;
+  }
+
+  static generateProjectReport(projects: ProjectContextResult[]): string {
+    const metrics = this.calculateProjectMetrics(projects);
+    
+    const report = `
+# Project Analytics Report
+Generated: ${new Date().toISOString()}
+
+## Overview
+- **Total Projects**: ${metrics.totalProjects}
+- **Average Health Score**: ${metrics.averageHealth.toFixed(1)}/100
+- **Total Tasks**: ${metrics.totalTasks}
+- **Completed Tasks**: ${metrics.completedTasks}
+- **Completion Rate**: ${metrics.totalTasks > 0 ? ((metrics.completedTasks / metrics.totalTasks) * 100).toFixed(1) : 0}%
+- **Active Blockers**: ${metrics.totalBlockers}
+- **Validation Issues**: ${metrics.validationIssues}
+
+## Distribution by Stage
+${Object.entries(metrics.byStage)
+  .map(([stage, count]) => `- **${stage}**: ${count} projects`)
+  .join('\n')}
+
+## Distribution by Priority
+${Object.entries(metrics.byPriority)
+  .map(([priority, count]) => `- **${priority}**: ${count} projects`)
+  .join('\n')}
+
+## Health Distribution
+- **Excellent (90-100)**: ${metrics.byHealth.excellent} projects
+- **Good (70-89)**: ${metrics.byHealth.good} projects
+- **Fair (50-69)**: ${metrics.byHealth.fair} projects
+- **Poor (0-49)**: ${metrics.byHealth.poor} projects
+
+## Recommendations
+${this.generateRecommendations(metrics)}
+`;
+
+    return report;
+  }
+
+  private static generateRecommendations(metrics: any): string {
+    const recommendations = [];
+    
+    if (metrics.byHealth.poor > 0) {
+      recommendations.push(`- Address ${metrics.byHealth.poor} projects with poor health scores`);
+    }
+    
+    if (metrics.totalBlockers > 0) {
+      recommendations.push(`- Resolve ${metrics.totalBlockers} active blockers`);
+    }
+    
+    if (metrics.validationIssues > 0) {
+      recommendations.push(`- Fix ${metrics.validationIssues} validation issues`);
+    }
+    
+    if (metrics.byStage.plan > metrics.byStage.implementation) {
+      recommendations.push('- Consider moving more projects from planning to implementation');
+    }
+    
+    if (recommendations.length === 0) {
+      recommendations.push('- All projects are in good health!');
+    }
+    
+    return recommendations.join('\n');
+  }
+}
+```
+
+## Testing Examples
+
+### Unit Test Example
+
+```typescript
+// Example: Comprehensive unit tests
+import { ProjectValidator } from '../utils/project-validator';
+import { ProjectMetadata, ProjectContext } from '../types/project';
+
+describe('ProjectValidator', () => {
+  let validator: ProjectValidator;
+
+  beforeEach(() => {
+    validator = new ProjectValidator();
+  });
+
+  describe('validateProjectMetadata', () => {
+    it('should validate correct project metadata', () => {
+      const metadata: ProjectMetadata = {
+        projectId: 'test-project',
+        title: 'Test Project',
+        stage: 'plan',
+        createdDate: '2025-01-15',
+        lastUpdated: '2025-01-15',
+        priority: 'medium',
+        tags: ['test'],
+        version: 'v1.0.0'
+      };
+
+      const result = validator.validateProjectMetadata(metadata);
+      
+      expect(result.isValid).toBe(true);
+      expect(result.errors).toHaveLength(0);
+    });
+
+    it('should reject invalid project ID', () => {
+      const metadata: ProjectMetadata = {
+        projectId: 'Invalid Project ID!', // Invalid characters
+        title: 'Test Project',
+        stage: 'plan',
+        createdDate: '2025-01-15',
+        lastUpdated: '2025-01-15',
+        priority: 'medium',
+        tags: ['test'],
+        version: 'v1.0.0'
+      };
+
+      const result = validator.validateProjectMetadata(metadata);
+      
+      expect(result.isValid).toBe(false);
+      expect(result.errors.some(e => e.field === 'projectId')).toBe(true);
+    });
+
+    it('should reject missing required fields', () => {
+      const metadata = {
+        projectId: 'test-project',
+        // Missing title, stage, etc.
+      } as ProjectMetadata;
+
+      const result = validator.validateProjectMetadata(metadata);
+      
+      expect(result.isValid).toBe(false);
+      expect(result.errors.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('validateProjectContext', () => {
+    it('should validate complete project context', () => {
+      const context: ProjectContext = {
+        problemStatement: 'Need to implement a new feature for better user experience.',
+        businessValue: ['Improved user satisfaction', 'Increased engagement'],
+        successCriteria: ['Feature implemented', 'Tests passing', 'Documentation complete'],
+        constraints: ['Must be backward compatible', 'Performance requirements'],
+        stakeholders: ['Product Team', 'Engineering Team'],
+        technicalRequirements: ['API implementation', 'Database changes', 'Frontend updates'],
+        dependencies: [],
+        acceptanceCriteria: ['All tests passing', 'Code review approved'],
+        implementationGuidelines: ['Follow coding standards', 'Write tests'],
+        fileReferences: ['/app/api/feature.ts', '/app/components/Feature.tsx']
+      };
+
+      const result = validator.validateProjectContext(context);
+      
+      expect(result.isValid).toBe(true);
+      expect(result.errors).toHaveLength(0);
+    });
+
+    it('should warn about incomplete context', () => {
+      const context: ProjectContext = {
+        problemStatement: 'Short problem', // Too short
+        businessValue: [], // Empty
+        successCriteria: ['Only one criteria'], // Too few
+        constraints: [],
+        stakeholders: [],
+        technicalRequirements: [],
+        dependencies: [],
+        acceptanceCriteria: [],
+        implementationGuidelines: [],
+        fileReferences: []
+      };
+
+      const result = validator.validateProjectContext(context);
+      
+      expect(result.warnings.length).toBeGreaterThan(0);
+    });
+  });
+});
+```
+
+## Integration Examples
+
+### API Integration Example
+
+```typescript
+// Example: Integrating with external APIs
+import { ProjectManager } from '../utils/project-manager';
+
+export class ProjectAPIIntegration {
+  private manager: ProjectManager;
+  private apiBaseUrl: string;
+
+  constructor(manager: ProjectManager, apiBaseUrl: string) {
+    this.manager = manager;
+    this.apiBaseUrl = apiBaseUrl;
+  }
+
+  async syncWithExternalSystem(projectId: string): Promise<void> {
+    try {
+      const project = await this.manager.getProject(projectId);
+      if (!project) {
+        throw new Error(`Project ${projectId} not found`);
+      }
+
+      // Prepare data for external API
+      const externalData = {
+        id: project.project.projectId,
+        name: project.project.title,
+        status: project.project.stage,
+        priority: project.project.priority,
+        health: project.health?.score || 0,
+        lastUpdated: project.project.lastUpdated,
+        metadata: {
+          version: project.project.version,
+          tags: project.project.tags,
+          assignedAgents: project.project.assignedAgents
+        }
+      };
+
+      // Send to external API
+      const response = await fetch(`${this.apiBaseUrl}/projects/${projectId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.EXTERNAL_API_TOKEN}`
+        },
+        body: JSON.stringify(externalData)
+      });
+
+      if (!response.ok) {
+        throw new Error(`API request failed: ${response.statusText}`);
+      }
+
+      console.log(`Successfully synced project ${projectId} with external system`);
+    } catch (error) {
+      console.error(`Failed to sync project ${projectId}:`, error);
+      throw error;
+    }
+  }
+
+  async importFromExternalSystem(externalProjectId: string): Promise<string> {
+    try {
+      // Fetch from external API
+      const response = await fetch(`${this.apiBaseUrl}/projects/${externalProjectId}`, {
+        headers: {
+          'Authorization': `Bearer ${process.env.EXTERNAL_API_TOKEN}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch project: ${response.statusText}`);
+      }
+
+      const externalData = await response.json();
+
+      // Convert to internal format
+      const metadata = {
+        projectId: externalData.id,
+        title: externalData.name,
+        stage: externalData.status,
+        createdDate: new Date().toISOString().split('T')[0],
+        lastUpdated: externalData.lastUpdated,
+        priority: externalData.priority,
+        tags: externalData.metadata.tags || [],
+        version: externalData.metadata.version || 'v1.0.0'
+      };
+
+      const context = {
+        problemStatement: `Imported project: ${externalData.name}`,
+        businessValue: ['Imported from external system'],
+        successCriteria: ['Project successfully imported'],
+        constraints: [],
+        stakeholders: [],
+        technicalRequirements: [],
+        dependencies: [],
+        acceptanceCriteria: [],
+        implementationGuidelines: [],
+        fileReferences: []
+      };
+
+      // Create project
+      const result = await this.manager.createProject(metadata, context, 'import-agent');
+      
+      if (result.success) {
+        return result.result.projectId;
+      } else {
+        throw new Error(result.error || 'Failed to create project');
+      }
+    } catch (error) {
+      console.error(`Failed to import project ${externalProjectId}:`, error);
+      throw error;
+    }
+  }
+}
+```
+
+## Getting Started
+
+1. **Review Examples**: Study the provided code examples
+2. **Understand Patterns**: Learn the common patterns and practices
+3. **Start Simple**: Begin with basic examples and build complexity
+4. **Test Everything**: Write tests for all your code
+5. **Document Changes**: Keep documentation current
+6. **Iterate and Improve**: Continuously refine your implementations
+
+## Next Steps
+
+- [AI Project Examples](/docs/projects/README.md)
+- [AI Integration Examples](/docs/integration/README.md)
+- [AI Testing Examples](/docs/testing/README.md)
+- [AI Deployment Examples](/docs/deployment/README.md)
+- [AI Maintenance Examples](/docs/maintenance/README.md)
+
+---
+
+*These examples are part of the AI Coder Documentation system and follow document-driven architecture principles.*
