@@ -566,3 +566,134 @@ npm run dev
 Port 3000 is where the user accesses the app. If it works on 3001 but not 3000, 
 the testing was invalid and wasted time. Always test on the production port.
 
+
+---
+
+## Critical Learnings from Phase 2 Testing Attempts
+
+### Key Discovery: PageContainer Integration Has Issues
+
+**Problem Identified:**
+When attempting to migrate settings.tsx to use PageContainer, the page goes blank. This occurred twice:
+1. First attempt: Full settings migration → blank page
+2. Second attempt: Minimal test page with PageContainer → blank page
+
+**Root Cause Analysis:**
+The PageContainer component or its integration has unresolved issues that need debugging:
+- Components render to blank page (no errors visible)
+- SCSS imports were problematic (fixed)
+- Client/Server component boundary issues (partially fixed)
+- Props may not be passing correctly to nested components
+- Context provider may have integration issues
+
+**Decision:**
+PageContainer needs to be debugged and validated BEFORE attempting settings.tsx migration.
+
+### Base Path Insight
+
+**Important Discovery:**
+The app loads and works from base path (http://localhost:3000/) but takes a long time.
+This is the correct path to test on - NOT sub-routes like /test.
+
+**Rule: Always test from base path first**
+- Main app loads at: http://localhost:3000/
+- Settings page accessible via menu in main app
+- This is production behavior
+- Sub-routes like /test may have different loading patterns
+
+### What This Means for Phase 2
+
+**Current Status:**
+- ❌ Cannot migrate settings.tsx yet (PageContainer not working)
+- ❌ Test pages fail (blank screen)
+- ❌ Root cause not yet identified
+
+**Required Before Continuing:**
+1. Debug PageContainer component
+2. Test with simple component example
+3. Verify props passing works
+4. Verify context provider works
+5. Document working pattern
+6. THEN attempt settings migration
+
+**Next Approach:**
+Instead of trying to migrate settings directly, we need to:
+1. Create a minimal working example of PageContainer
+2. Debug why it's going blank
+3. Fix the issue
+4. Document the working pattern
+5. Apply to settings.tsx with confidence
+
+### Testing Environment Rules (Updated)
+
+**Port 3000 Mandatory:**
+- Always test on http://localhost:3000
+- Start dev server: npm run dev
+- Wait for "Ready on localhost:3000"
+- If port 3001 appears, restart dev server
+
+**Base Path First:**
+- Always test main app at http://localhost:3000/ first
+- Verify main app loads and works
+- Then test other routes/features
+- Sub-paths may behave differently than main app
+
+**Loading Time:**
+- Main app may take 10+ seconds to load initially
+- This is normal
+- Wait for full page render before testing
+- Don't assume blank page = failure immediately
+
+### Revised Phase 2 Strategy
+
+Given the discoveries above, Phase 2 needs a different approach:
+
+**Phase 2 (Fully Revised):**
+
+Step 1: Debug PageContainer
+- Create absolute minimal example
+- Test in browser
+- Add console logging
+- Find the issue
+
+Step 2: Fix PageContainer
+- Once issue identified, fix it
+- Test minimal example works
+- Document the fix
+
+Step 3: Test with Settings Components
+- Create test config using real settings components
+- Test props passing
+- Test tab switching
+
+Step 4: Migrate Settings
+- Use proven working pattern
+- Apply to settings.tsx
+- Test full functionality
+
+Step 5: Complete Testing
+- All 5 tabs working
+- Keyboard nav works
+- A11y compliance
+- No console errors
+
+**Timeline:**
+This is more thorough but reduces risk of repeated failures.
+
+### Important Reminders
+
+🔴 **DO NOT:**
+- Test on port 3001 (it's a fallback)
+- Test on sub-routes without testing base path first
+- Assume blank page immediately means failure (loading takes time)
+- Skip debugging when something doesn't work
+- Try same approach twice if it failed
+
+🟢 **DO:**
+- Test on port 3000 (production port)
+- Test main app first before sub-routes
+- Wait 10+ seconds for initial load
+- Debug systematically
+- Try different approaches when stuck
+- Document what you learn
+

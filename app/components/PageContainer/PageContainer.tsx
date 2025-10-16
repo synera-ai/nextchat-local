@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useMemo } from "react";
 import { PageConfig } from "../../config/pages";
 import { PageConfigProvider } from "../../providers/PageConfigProvider";
