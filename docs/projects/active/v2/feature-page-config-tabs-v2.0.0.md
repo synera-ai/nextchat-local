@@ -697,3 +697,164 @@ This is more thorough but reduces risk of repeated failures.
 - Try different approaches when stuck
 - Document what you learn
 
+
+---
+
+## CRITICAL: Port Management & Load Time Rules
+
+### Port Management is KEY to Success
+
+**Rule: Port 3000 is the ONLY valid testing port**
+
+Why this matters:
+- Port 3000: User's production access point
+- Port 3001: Auto-fallback (not user-controlled, not production)
+- Testing on 3001 gives invalid results
+- Results won't match actual user experience
+- WASTED TIME if wrong port
+
+### Strict Port Protocol
+
+**Before EVERY browser test session:**
+
+```bash
+Step 1: Kill all Node processes
+  lsof -i :3000 | grep -v COMMAND | awk '{print $2}' | xargs kill -9 2>/dev/null || true
+  lsof -i :3001 | grep -v COMMAND | awk '{print $2}' | xargs kill -9 2>/dev/null || true
+
+Step 2: Kill npm/yarn processes
+  pkill -f "npm run dev" 2>/dev/null || true
+  pkill -f "yarn dev" 2>/dev/null || true
+  
+Step 3: Wait for ports to clear
+  sleep 2
+
+Step 4: Start fresh dev server
+  npm run dev
+
+Step 5: Verify output shows "localhost:3000" (NOT 3001!)
+  
+Step 6: Wait max 5 seconds for app to load at http://localhost:3000
+
+Step 7: Only then proceed with testing
+```
+
+### Load Time Expectations (UPDATED)
+
+**Rule: Page load should NEVER exceed 5 seconds**
+
+Timing breakdown:
+- Dev server startup: 1-2 seconds
+- Initial page load: 2-3 seconds
+- Subsequent navigation: < 1 second
+
+**If it takes longer than 5 seconds:**
+❌ Something is wrong
+❌ Port may be wrong
+❌ Dev server may not have restarted
+❌ Browser cache may be stale
+❌ Network may have issues
+
+**What to do if load > 5 seconds:**
+1. Stop dev server (Ctrl+C)
+2. Kill all processes on ports 3000 and 3001
+3. Restart dev server
+4. Clear browser cache (Ctrl+Shift+Delete)
+5. Try again
+
+### Port Verification Checklist
+
+**BEFORE starting any test, verify:**
+
+- [ ] Dev server output shows "Ready on localhost:3000" (not 3001!)
+- [ ] Browser URL bar shows "localhost:3000" (not localhost:3001!)
+- [ ] curl http://localhost:3000 returns HTML (not error)
+- [ ] curl http://localhost:3001 should fail/be refused
+
+**To verify programmatically:**
+```bash
+# Should succeed with 200 status
+curl -s -o /dev/null -w "%{http_code}" http://localhost:3000
+
+# Should fail or timeout
+curl -s -o /dev/null -w "%{http_code}" http://localhost:3001
+```
+
+### Failure Indicators & Recovery
+
+**Indicator: Port shows 3001 instead of 3000**
+→ Dev server started on fallback port
+→ Solution: Kill all processes and restart
+→ This indicates port 3000 was blocked
+
+**Indicator: Load time > 5 seconds**
+→ Dev server may have stalled
+→ Solution: Restart dev server
+→ Could indicate memory/resource issues
+
+**Indicator: Blank page after 5 seconds**
+→ Not a load time issue
+→ Actual rendering problem
+→ May be PageContainer issue
+→ Continue with testing protocol
+
+### Session Startup Template
+
+When starting Phase 2 work, ALWAYS do:
+
+```bash
+# 1. Kill everything
+lsof -i :3000 | grep -v COMMAND | awk '{print $2}' | xargs kill -9 2>/dev/null || true
+lsof -i :3001 | grep -v COMMAND | awk '{print $2}' | xargs kill -9 2>/dev/null || true
+pkill -f "npm run dev" 2>/dev/null || true
+sleep 2
+
+# 2. Start fresh
+npm run dev > /tmp/dev-server.log 2>&1 &
+sleep 3
+
+# 3. Verify
+if curl -s http://localhost:3000 | head -5 | grep -q "html\|DOCTYPE"; then
+  echo "✅ Server running on port 3000 - READY FOR TESTING"
+else
+  echo "❌ Server not responding on port 3000"
+  echo "Dev server output:"
+  tail -20 /tmp/dev-server.log
+  exit 1
+fi
+
+# 4. Now safe to proceed with browser testing
+```
+
+### What NOT to Do
+
+❌ Do NOT test on port 3001
+❌ Do NOT assume 3001 is "close enough"
+❌ Do NOT skip port verification
+❌ Do NOT wait more than 5 seconds for initial load
+❌ Do NOT test without killing old processes first
+❌ Do NOT continue if URL shows 3001 in browser
+
+### Why Port Management Matters for This Project
+
+The page-configurable tab system tests revealed:
+1. First blank page: Could have been port issue (was on 3001)
+2. Second blank page: Definitely port issue (3001 fallback)
+3. Port issue masked actual PageContainer bugs
+4. Wasted time debugging wrong environment
+
+**Lesson:** Always ensure port 3000 first, then debug actual code.
+
+### Integration with Testing Checkpoints
+
+**Add to Pre-Browser Testing Checklist:**
+- [ ] Port 3000 is available (checked with lsof)
+- [ ] All old processes killed
+- [ ] Dev server restarted fresh
+- [ ] Server output shows "localhost:3000" (not 3001)
+- [ ] curl http://localhost:3000 returns 200 status
+- [ ] Page loads in < 5 seconds
+- [ ] Browser URL bar shows localhost:3000
+
+**Only when ALL above pass: Proceed to browser testing**
+
