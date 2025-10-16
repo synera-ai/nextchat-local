@@ -133,6 +133,7 @@ export function DocsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [showSearch, setShowSearch] = useState(false);
+  const [navLayout, setNavLayout] = useState<"side" | "top">("side");
 
   // Load documentation sections
   useEffect(() => {
@@ -391,21 +392,75 @@ Plugins are TypeScript classes implementing the Plugin interface.
               </div>
             )}
           </div>
+          <button
+            className={styles.layoutToggle}
+            onClick={() => setNavLayout(navLayout === "side" ? "top" : "side")}
+            aria-label={`Switch to ${
+              navLayout === "side" ? "top" : "side"
+            } navigation`}
+            title={`Switch to ${
+              navLayout === "side" ? "top" : "side"
+            } navigation`}
+          >
+            {navLayout === "side" ? "≡ Side" : "⊕ Top"}
+          </button>
         </div>
       </header>
 
-      <div className={styles.docsContainer}>
-        {/* Sidebar Navigation */}
-        <aside className={styles.docsSidebar}>
-          <nav className={styles.sidebarNav}>
-            {Object.entries(groupedSections).map(([category, sections]) => (
-              <div key={category} className={styles.navSection}>
-                <h3 className={styles.navCategory}>{category}</h3>
-                <ul className={styles.navList}>
-                  {sections.map((section) => (
-                    <li key={section.id}>
+      <div
+        className={`${styles.docsContainer} ${
+          navLayout === "top" ? styles.topNav : ""
+        }`}
+      >
+        {/* Side Navigation */}
+        {navLayout === "side" && (
+          <aside className={styles.docsSidebar}>
+            <nav className={styles.sidebarNav}>
+              {Object.entries(groupedSections).map(([category, sections]) => (
+                <div key={category} className={styles.navSection}>
+                  <h3 className={styles.navCategory}>{category}</h3>
+                  <ul className={styles.navList}>
+                    {sections.map((section) => (
+                      <li key={section.id}>
+                        <button
+                          className={`${styles.navLink} ${
+                            activeSection === section.id ? styles.active : ""
+                          }`}
+                          onClick={() => handleSectionChange(section.id)}
+                          aria-current={
+                            activeSection === section.id ? "page" : undefined
+                          }
+                        >
+                          <span className={styles.navIcon}>{section.icon}</span>
+                          <span className={styles.navLabel}>
+                            {section.title}
+                          </span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </nav>
+
+            <div className={styles.sidebarFooter}>
+              <ProjectIntegration />
+            </div>
+          </aside>
+        )}
+
+        {/* Top Navigation */}
+        {navLayout === "top" && (
+          <div className={styles.topNavigation}>
+            <nav className={styles.topNav}>
+              {Object.entries(groupedSections).map(([category, sections]) => (
+                <div key={category} className={styles.topNavCategory}>
+                  <h4 className={styles.topNavCategoryTitle}>{category}</h4>
+                  <div className={styles.topNavLinks}>
+                    {sections.map((section) => (
                       <button
-                        className={`${styles.navLink} ${
+                        key={section.id}
+                        className={`${styles.topNavLink} ${
                           activeSection === section.id ? styles.active : ""
                         }`}
                         onClick={() => handleSectionChange(section.id)}
@@ -413,20 +468,18 @@ Plugins are TypeScript classes implementing the Plugin interface.
                           activeSection === section.id ? "page" : undefined
                         }
                       >
-                        <span className={styles.navIcon}>{section.icon}</span>
-                        <span className={styles.navLabel}>{section.title}</span>
+                        <span className={styles.topNavIcon}>
+                          {section.icon}
+                        </span>
+                        {section.title}
                       </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </nav>
-
-          <div className={styles.sidebarFooter}>
-            <ProjectIntegration />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </nav>
           </div>
-        </aside>
+        )}
 
         {/* Main Content */}
         <main className={styles.docsContent}>
