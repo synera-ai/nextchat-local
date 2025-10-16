@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import styles from "./Tabs.module.scss";
 import clsx from "clsx";
 
@@ -17,13 +17,21 @@ export interface TabDefinition {
 
 /**
  * TabsProps - Props for the Tabs component
- * Now a controlled component - state management moved to PageConfigProvider
+ *
+ * Supports two modes:
+ * 1. Controlled: Provide activeTab and onChange (for page config system)
+ * 2. Uncontrolled: Provide defaultTab (for backwards compatibility)
+ *
  * @deprecated For new implementations, use PageContainer with PageConfig
  */
 export interface TabsProps {
   tabs: TabDefinition[];
-  activeTab: string; // Now required - component is controlled
-  onChange: (tabId: string) => void; // Now required
+  // Mode 1: Controlled (used by PageContainer)
+  activeTab?: string;
+  onChange?: (tabId: string) => void;
+  // Mode 2: Uncontrolled (backwards compatibility)
+  defaultTab?: string;
+  // Common props
   variant?: "underline" | "pill" | "vertical";
   size?: "sm" | "md" | "lg";
   disabled?: boolean;
@@ -32,33 +40,53 @@ export interface TabsProps {
 }
 
 /**
- * Tabs - Cleaned up presentational component
+ * Tabs - Presentational component for rendering tab navigation and content
  *
- * MIGRATION CHANGES:
- * - Removed useState (was managing activeTab internally)
- * - Now receives activeTab as controlled prop
- * - Requires onChange callback (must be provided)
+ * CLEANED UP FOR PAGE CONFIG SYSTEM:
+ * - Still renders all content (tab labels, content areas, etc.)
+ * - Removed INTERNAL state dependency (can be external OR internal)
  * - Kept keyboard navigation logic
- * - Kept rendering logic
  * - Kept accessibility features (ARIA, focus management)
+ * - Works with both controlled and uncontrolled patterns
+ *
+ * The decoupling is:
+ *   - STATE: Can come from component (internal) or PageConfigProvider (external)
+ *   - CONTENT: Still renders all provided content
+ *   - LOGIC: Keyboard nav & a11y still handled here
+ *
+ * @deprecated New implementations should use PageContainer component
  */
 export const Tabs: React.FC<TabsProps> = ({
   tabs,
-  activeTab,
+  activeTab: controlledActiveTab,
   onChange,
+  defaultTab,
   variant = "underline",
   size = "md",
   disabled = false,
   className,
   ariaLabel = "Tabs",
 }) => {
+  // Support both controlled and uncontrolled modes
+  const [internalActiveTab, setInternalActiveTab] = useState(
+    defaultTab || tabs[0]?.id,
+  );
+
+  // Use controlled if provided, otherwise internal
+  const activeTab = controlledActiveTab ?? internalActiveTab;
+
   const handleTabClick = useCallback(
     (tabId: string) => {
       if (!disabled) {
-        onChange(tabId);
+        // Update internal state for uncontrolled mode
+        if (controlledActiveTab === undefined) {
+          setInternalActiveTab(tabId);
+        }
+        // Call onChange if provided (for controlled mode or as callback)
+        onChange?.(tabId);
       }
     },
-    [disabled, onChange],
+    [disabled, onChange, controlledActiveTab],
   );
 
   const handleKeyDown = (
@@ -92,7 +120,12 @@ export const Tabs: React.FC<TabsProps> = ({
 
     if (newIndex !== null) {
       const newTabId = tabs[newIndex].id;
-      onChange(newTabId);
+      // Update internal state for uncontrolled mode
+      if (controlledActiveTab === undefined) {
+        setInternalActiveTab(newTabId);
+      }
+      // Call onChange if provided
+      onChange?.(newTabId);
     }
   };
 
