@@ -5,7 +5,11 @@
     {
       "title": "Foundation",
       "pages": [
-        "foundation/getting-started"
+        "foundation/getting-started",
+        "foundation/architecture-overview",
+        "foundation/project-management",
+        "foundation/ai-agent-integration",
+        "foundation/quick-reference"
       ]
     },
     {
