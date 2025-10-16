@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { DocsNavigation } from "./docs/docs-navigation";
 import { ProjectIntegration } from "./docs/project-integration";
@@ -13,6 +13,21 @@ interface DocSection {
   content: string;
   path: string;
   icon: string;
+  category: string;
+  relatedSections?: string[];
+}
+
+interface TableOfContentsItem {
+  level: number;
+  title: string;
+  id: string;
+}
+
+interface SearchResult {
+  sectionId: string;
+  sectionTitle: string;
+  excerpt: string;
+  relevance: number;
 }
 
 export function DocsPage() {
@@ -21,13 +36,21 @@ export function DocsPage() {
   const [activeSection, setActiveSection] = useState<string>("overview");
   const [docSections, setDocSections] = useState<DocSection[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [showSearch, setShowSearch] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [tableOfContents, setTableOfContents] = useState<TableOfContentsItem[]>(
+    [],
+  );
 
+  // Load documentation sections
   useEffect(() => {
-    // Load documentation sections
     const sections: DocSection[] = [
       {
         id: "overview",
         title: "Overview",
+        category: "Getting Started",
         description: "NextChat documentation overview and getting started",
         content: `
 # NextChat Documentation
@@ -82,11 +105,13 @@ app/
 - **Settings**: Configuration management
         `,
         path: "/docs",
-        icon: "📚"
+        icon: "📚",
+        relatedSections: ["api", "components"],
       },
       {
         id: "api",
         title: "API Reference",
+        category: "Development",
         description: "Complete API documentation for developers",
         content: `
 # API Reference
@@ -152,11 +177,13 @@ interface ClientConfig {
 \`\`\`
         `,
         path: "/docs/api",
-        icon: "🔧"
+        icon: "🔧",
+        relatedSections: ["overview", "components"],
       },
       {
         id: "components",
         title: "Components",
+        category: "Development",
         description: "UI component library and documentation",
         content: `
 # Component Library
@@ -220,11 +247,13 @@ Components use CSS modules for styling:
 \`\`\`
         `,
         path: "/docs/components",
-        icon: "🧩"
+        icon: "🧩",
+        relatedSections: ["plugins", "api"],
       },
       {
         id: "plugins",
         title: "Plugin System",
+        category: "Development",
         description: "Plugin development and integration guide",
         content: `
 # Plugin System
@@ -309,20 +338,107 @@ pluginManager.register(new MyPlugin());
 5. **Testing**: Write comprehensive tests
         `,
         path: "/docs/plugins",
-        icon: "🔌"
-      }
+        icon: "🔌",
+        relatedSections: ["components", "api"],
+      },
     ];
 
     setDocSections(sections);
     setLoading(false);
   }, []);
 
+  // Handle search functionality
+  useEffect(() => {
+    if (searchQuery.trim() === "") {
+      setSearchResults([]);
+      return;
+    }
+
+    const query = searchQuery.toLowerCase();
+    const results: SearchResult[] = [];
+
+    docSections.forEach((section) => {
+      const contentLower = section.content.toLowerCase();
+      const titleMatch = section.title.toLowerCase().includes(query);
+      const contentMatches = (contentLower.match(new RegExp(query, "g")) || [])
+        .length;
+
+      if (titleMatch || contentMatches > 0) {
+        const relevance = titleMatch ? 10 : contentMatches;
+        const lines = section.content.split("\n");
+        const matchedLine = lines.find((line) =>
+          line.toLowerCase().includes(query),
+        );
+        const excerpt = matchedLine?.substring(0, 100) || section.description;
+
+        results.push({
+          sectionId: section.id,
+          sectionTitle: section.title,
+          excerpt: excerpt,
+          relevance: relevance,
+        });
+      }
+    });
+
+    setSearchResults(results.sort((a, b) => b.relevance - a.relevance));
+  }, [searchQuery, docSections]);
+
+  // Generate table of contents from markdown
+  useEffect(() => {
+    const currentSection = docSections.find(
+      (section) => section.id === activeSection,
+    );
+    if (!currentSection) return;
+
+    const headings: TableOfContentsItem[] = [];
+    const lines = currentSection.content.split("\n");
+
+    lines.forEach((line, index) => {
+      const match = line.match(/^(#+)\s+(.+)$/);
+      if (match) {
+        const level = match[1].length;
+        const title = match[2];
+        headings.push({
+          level,
+          title,
+          id: `heading-${index}`,
+        });
+      }
+    });
+
+    setTableOfContents(headings);
+  }, [activeSection, docSections]);
+
   const handleSectionChange = (sectionId: string) => {
     setActiveSection(sectionId);
+    setShowSearch(false);
+    setSearchQuery("");
     navigate(`/docs/${sectionId}`);
   };
 
-  const currentSection = docSections.find(section => section.id === activeSection);
+  const handleCopyCode = (code: string) => {
+    navigator.clipboard.writeText(code);
+    // You could add a toast notification here
+  };
+
+  const currentSection = docSections.find(
+    (section) => section.id === activeSection,
+  );
+  const relatedSections =
+    currentSection?.relatedSections
+      ?.map((id) => docSections.find((section) => section.id === id))
+      .filter(Boolean) || [];
+
+  const groupedSections = useMemo(() => {
+    const grouped: { [key: string]: DocSection[] } = {};
+    docSections.forEach((section) => {
+      if (!grouped[section.category]) {
+        grouped[section.category] = [];
+      }
+      grouped[section.category].push(section);
+    });
+    return grouped;
+  }, [docSections]);
 
   if (loading) {
     return (
@@ -338,28 +454,54 @@ pluginManager.register(new MyPlugin());
   return (
     <div className={styles.docsPage}>
       <div className={styles.docsContainer}>
-        <aside className={styles.docsSidebar}>
+        {/* Sidebar */}
+        <aside
+          className={`${styles.docsSidebar} ${
+            sidebarOpen ? "" : styles.sidebarCollapsed
+          }`}
+        >
+          <div className={styles.sidebarHeader}>
+            <button
+              className={styles.sidebarToggle}
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              aria-label="Toggle sidebar"
+            >
+              ☰
+            </button>
+          </div>
+
           <DocsNavigation className={styles.docsNav} />
-          
+
+          {/* Categorized Navigation */}
           <div className={styles.sectionNav}>
-            <h3>Documentation Sections</h3>
-            <nav>
-              {docSections.map((section) => (
-                <button
-                  key={section.id}
-                  className={`${styles.sectionButton} ${
-                    activeSection === section.id ? styles.active : ""
-                  }`}
-                  onClick={() => handleSectionChange(section.id)}
-                >
-                  <span className={styles.sectionIcon}>{section.icon}</span>
-                  <div className={styles.sectionInfo}>
-                    <h4>{section.title}</h4>
-                    <p>{section.description}</p>
-                  </div>
-                </button>
-              ))}
-            </nav>
+            <h3>Sections</h3>
+            {Object.entries(groupedSections).map(([category, sections]) => (
+              <div key={category} className={styles.categoryGroup}>
+                <h4 className={styles.categoryTitle}>{category}</h4>
+                <nav>
+                  {sections.map((section) => (
+                    <button
+                      key={section.id}
+                      className={`${styles.sectionButton} ${
+                        activeSection === section.id ? styles.active : ""
+                      }`}
+                      onClick={() => handleSectionChange(section.id)}
+                      aria-current={
+                        activeSection === section.id ? "page" : undefined
+                      }
+                    >
+                      <span className={styles.sectionIcon} aria-hidden="true">
+                        {section.icon}
+                      </span>
+                      <div className={styles.sectionInfo}>
+                        <h5>{section.title}</h5>
+                        <p>{section.description}</p>
+                      </div>
+                    </button>
+                  ))}
+                </nav>
+              </div>
+            ))}
           </div>
 
           <div className={styles.projectIntegration}>
@@ -367,29 +509,190 @@ pluginManager.register(new MyPlugin());
           </div>
         </aside>
 
+        {/* Main Content */}
         <main className={styles.docsContent}>
-          <div className={styles.contentHeader}>
-            <h1>{currentSection?.title}</h1>
-            <p>{currentSection?.description}</p>
+          {/* Search Bar */}
+          <div className={styles.searchContainer}>
+            <div className={styles.searchBox}>
+              <input
+                type="search"
+                placeholder="Search documentation..."
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setShowSearch(e.target.value.length > 0);
+                }}
+                className={styles.searchInput}
+                aria-label="Search documentation"
+              />
+              <span className={styles.searchIcon} aria-hidden="true">
+                🔍
+              </span>
+            </div>
+
+            {/* Search Results */}
+            {showSearch && searchResults.length > 0 && (
+              <div className={styles.searchResults}>
+                <div className={styles.searchResultsHeader}>
+                  <h4>Search Results ({searchResults.length})</h4>
+                </div>
+                {searchResults.map((result) => (
+                  <button
+                    key={result.sectionId}
+                    className={styles.searchResultItem}
+                    onClick={() => {
+                      handleSectionChange(result.sectionId);
+                      setShowSearch(false);
+                    }}
+                  >
+                    <h5>{result.sectionTitle}</h5>
+                    <p>{result.excerpt}</p>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
-          
-          <div className={styles.contentBody}>
-            <div 
-              className={styles.markdownContent}
-              dangerouslySetInnerHTML={{
-                __html: currentSection?.content
-                  ?.replace(/\n/g, '<br>')
-                  ?.replace(/```([^`]+)```/g, '<pre><code>$1</code></pre>')
-                  ?.replace(/`([^`]+)`/g, '<code>$1</code>')
-                  ?.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-                  ?.replace(/\*([^*]+)\*/g, '<em>$1</em>')
-                  ?.replace(/^# (.*$)/gm, '<h1>$1</h1>')
-                  ?.replace(/^## (.*$)/gm, '<h2>$1</h2>')
-                  ?.replace(/^### (.*$)/gm, '<h3>$1</h3>')
-                  ?.replace(/^- (.*$)/gm, '<li>$1</li>')
-                  ?.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>') || ''
-              }}
-            />
+
+          {/* Breadcrumb Navigation */}
+          <div className={styles.breadcrumb}>
+            <a href="/#/" aria-label="Home">
+              Home
+            </a>
+            <span>/</span>
+            <a href="/#/docs">Documentation</a>
+            <span>/</span>
+            <span aria-current="page">{currentSection?.title}</span>
+          </div>
+
+          {/* Content Header */}
+          <div className={styles.contentHeader}>
+            <div className={styles.headerTitle}>
+              <span className={styles.headerIcon} aria-hidden="true">
+                {currentSection?.icon}
+              </span>
+              <div>
+                <p className={styles.breadcrumbText}>
+                  {currentSection?.category}
+                </p>
+                <h1>{currentSection?.title}</h1>
+              </div>
+            </div>
+            <p className={styles.headerDescription}>
+              {currentSection?.description}
+            </p>
+          </div>
+
+          <div className={styles.contentWrapper}>
+            {/* Table of Contents (Desktop) */}
+            {tableOfContents.length > 0 && (
+              <aside className={styles.tableOfContents}>
+                <h4>On this page</h4>
+                <nav aria-label="Document outline">
+                  <ul>
+                    {tableOfContents.map((item) => (
+                      <li
+                        key={item.id}
+                        style={{ marginLeft: `${(item.level - 1) * 1}rem` }}
+                      >
+                        <a href={`#${item.id}`}>{item.title}</a>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              </aside>
+            )}
+
+            {/* Main Content Body */}
+            <div className={styles.contentBody}>
+              <div
+                className={styles.markdownContent}
+                dangerouslySetInnerHTML={{
+                  __html:
+                    currentSection?.content
+                      ?.replace(/\n/g, "<br>")
+                      ?.replace(
+                        /```([^`]+)```/g,
+                        (match, code) =>
+                          `<div class="${styles.codeBlock}"><button class="${
+                            styles.copyButton
+                          }" onclick="navigator.clipboard.writeText(\`${code
+                            .trim()
+                            .replace(
+                              /\`/g,
+                              "\\`",
+                            )}\`)">Copy</button><pre><code>${code}</code></pre></div>`,
+                      )
+                      ?.replace(/`([^`]+)`/g, "<code>$1</code>")
+                      ?.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+                      ?.replace(/\*([^*]+)\*/g, "<em>$1</em>")
+                      ?.replace(/^# (.*$)/gm, "<h1>$1</h1>")
+                      ?.replace(/^## (.*$)/gm, "<h2>$1</h2>")
+                      ?.replace(/^### (.*$)/gm, "<h3>$1</h3>")
+                      ?.replace(/^- (.*$)/gm, "<li>$1</li>")
+                      ?.replace(/(<li>.*<\/li>)/s, "<ul>$1</ul>") || "",
+                }}
+              />
+
+              {/* Related Documents */}
+              {relatedSections.length > 0 && (
+                <div className={styles.relatedDocs}>
+                  <h3>Related Documentation</h3>
+                  <div className={styles.relatedDocsGrid}>
+                    {relatedSections.map((section) => (
+                      <button
+                        key={section.id}
+                        className={styles.relatedDocCard}
+                        onClick={() => handleSectionChange(section.id)}
+                      >
+                        <span className={styles.relatedDocIcon}>
+                          {section.icon}
+                        </span>
+                        <h4>{section.title}</h4>
+                        <p>{section.description}</p>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Footer Navigation */}
+          <div className={styles.footerNavigation}>
+            {docSections.length > 0 && (
+              <>
+                {activeSection !== docSections[0].id && (
+                  <button
+                    className={styles.footerNav}
+                    onClick={() => {
+                      const currentIndex = docSections.findIndex(
+                        (s) => s.id === activeSection,
+                      );
+                      if (currentIndex > 0) {
+                        handleSectionChange(docSections[currentIndex - 1].id);
+                      }
+                    }}
+                  >
+                    ← Previous
+                  </button>
+                )}
+                {activeSection !== docSections[docSections.length - 1].id && (
+                  <button
+                    className={styles.footerNav}
+                    onClick={() => {
+                      const currentIndex = docSections.findIndex(
+                        (s) => s.id === activeSection,
+                      );
+                      if (currentIndex < docSections.length - 1) {
+                        handleSectionChange(docSections[currentIndex + 1].id);
+                      }
+                    }}
+                  >
+                    Next →
+                  </button>
+                )}
+              </>
+            )}
           </div>
         </main>
       </div>
