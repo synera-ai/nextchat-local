@@ -858,3 +858,189 @@ The page-configurable tab system tests revealed:
 
 **Only when ALL above pass: Proceed to browser testing**
 
+
+---
+
+## MANDATORY: Safe Port Closure Protocol
+
+### Rule: ALWAYS Close Ports When Done
+
+**Critical Importance:**
+- Leaving ports open interferes with next session
+- Next developer will get port conflicts
+- Causes wasted debugging time
+- Blocks fresh dev server starts
+- Prevents clean testing environment
+
+### Safe Port Closure Procedure
+
+**When you are DONE working on this project:**
+
+```bash
+# Step 1: Stop the dev server gracefully
+Ctrl+C  (in the terminal where npm run dev is running)
+
+# Step 2: Wait for graceful shutdown
+sleep 2
+
+# Step 3: Kill any remaining Node processes
+pkill -f "npm run dev" 2>/dev/null || true
+pkill -f "yarn dev" 2>/dev/null || true
+pkill -f "next dev" 2>/dev/null || true
+
+# Step 4: Force-kill any stubborn processes on the ports
+lsof -i :3000 | grep -v COMMAND | awk '{print $2}' | xargs kill -9 2>/dev/null || true
+lsof -i :3001 | grep -v COMMAND | awk '{print $2}' | xargs kill -9 2>/dev/null || true
+
+# Step 5: Verify ports are clean
+lsof -i :3000 2>/dev/null || echo "✅ Port 3000 is clean"
+lsof -i :3001 2>/dev/null || echo "✅ Port 3001 is clean"
+
+# Step 6: Confirm
+echo "✅ All ports safely closed - ready for next session"
+```
+
+### Integration with Session Workflow
+
+**Session Start:**
+```bash
+# Kill old processes (clean slate)
+[See Port Management Protocol above]
+
+# Start fresh dev server
+npm run dev
+
+# Verify port 3000 is active
+```
+
+**Session End (MANDATORY):**
+```bash
+# Close all ports safely
+[See Safe Port Closure Procedure above]
+
+# Verify ports are clean
+# Commit any changes
+git status
+```
+
+### What Happens If You Don't Close Ports
+
+**Scenario: Developer leaves port 3000 running**
+
+Next developer/session attempts:
+```
+❌ npm run dev
+→ Port 3000 already in use
+→ Falls back to port 3001
+→ Tests all pass on 3001 (but should be on 3000)
+→ Finds weird issues during actual deployment (on 3000)
+→ Wastes hours debugging
+→ Discovers issue was port all along
+→ Frustration and wasted time
+```
+
+**Scenario: Ports are properly closed**
+
+Next developer/session:
+```
+✅ npm run dev
+→ Starts cleanly on port 3000
+→ Tests on correct production port
+→ Everything works as expected
+→ No wasted debugging time
+→ Happy developer
+```
+
+### Port Cleanup Checklist
+
+**Before closing your work session:**
+
+- [ ] Dev server stopped (Ctrl+C)
+- [ ] npm/yarn processes killed
+- [ ] Port 3000 is free (lsof -i :3000)
+- [ ] Port 3001 is free (lsof -i :3001)
+- [ ] Browser can no longer access http://localhost:3000
+- [ ] Changes committed to git
+- [ ] Project file updated with session notes
+
+### Emergency Port Cleanup
+
+**If ports are stuck and won't respond:**
+
+```bash
+# Nuclear option - kill ALL Node processes
+killall node 2>/dev/null || true
+killall npm 2>/dev/null || true
+
+# Wait and verify
+sleep 2
+lsof -i :3000 || echo "Port 3000 clean"
+lsof -i :3001 || echo "Port 3001 clean"
+```
+
+### Why This Matters for Phase 2+
+
+Phase 2 is debugging PageContainer (why pages go blank).
+
+**If ports aren't properly closed:**
+- Developer starts fresh session on port 3001 (fallback)
+- Tests pass on 3001
+- Still fails on 3000 (actual production)
+- Thinks they fixed it (but they didn't)
+- Wastes massive time
+
+**With proper port closure:**
+- Next developer starts fresh on port 3000 (guaranteed)
+- Tests happen on correct port
+- Results are valid
+- No wasted debugging
+
+### Session End Checklist (MANDATORY)
+
+Every time you finish working on this project:
+
+- [ ] npm run dev process stopped
+- [ ] All Node processes killed
+- [ ] Port 3000 verified clean
+- [ ] Port 3001 verified clean
+- [ ] Git status checked
+- [ ] All changes committed
+- [ ] Project file updated
+- [ ] This checklist completed
+
+**Failure to complete this checklist = Setting up next developer for failure**
+
+### Reminder Script
+
+Add this to your shell profile for easy cleanup:
+
+```bash
+# Add to ~/.zshrc or ~/.bashrc
+cleanup-nextchat-ports() {
+  echo "🔌 Closing NextChat ports..."
+  pkill -f "npm run dev" 2>/dev/null || true
+  pkill -f "yarn dev" 2>/dev/null || true
+  pkill -f "next dev" 2>/dev/null || true
+  sleep 1
+  lsof -i :3000 | grep -v COMMAND | awk '{print $2}' | xargs kill -9 2>/dev/null || true
+  lsof -i :3001 | grep -v COMMAND | awk '{print $2}' | xargs kill -9 2>/dev/null || true
+  echo "✅ Ports cleaned"
+  lsof -i :3000 2>/dev/null || echo "✅ Port 3000 is clean"
+  lsof -i :3001 2>/dev/null || echo "✅ Port 3001 is clean"
+}
+
+# Then you can just run: cleanup-nextchat-ports
+```
+
+### Critical Final Note
+
+**Leaving ports open is a form of technical debt.**
+
+It seems like a small thing ("I'll clean it up later"), but:
+- It wastes time for the next person
+- It causes confusion and false debugging
+- It makes the development environment unreliable
+- It violates the principle of "leave the codebase better than you found it"
+
+**Clean up your ports like you clean up your code.**
+
