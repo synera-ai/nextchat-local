@@ -1,4 +1,4 @@
-import { PageConfig } from "./types";
+import { createPageConfig, createTab, createSection } from "./factory";
 import { SettingsGeneral } from "../../components/settings/SettingsGeneral";
 import { SettingsChat } from "../../components/settings/SettingsChat";
 import { SettingsAPI } from "../../components/settings/SettingsAPI";
@@ -9,69 +9,31 @@ import { SettingsDanger } from "../../components/settings/SettingsDanger";
  * Settings page configuration
  * Defines the tab structure and content components for the Settings page
  */
-export const settingsPageConfig: PageConfig = {
-  id: "settings",
-  title: "Settings",
-  subtitle: "Configure your application",
-  layout: "multi",
-  tabs: [
-    {
-      id: "general",
-      label: "General",
-      sections: [
-        {
-          id: "general-section",
-          label: "General Settings",
-          component: SettingsGeneral,
-        },
-      ],
-    },
-    {
-      id: "chat",
-      label: "Chat",
-      sections: [
-        {
-          id: "chat-section",
-          label: "Chat Settings",
-          component: SettingsChat,
-        },
-      ],
-    },
-    {
-      id: "api",
-      label: "API",
-      sections: [
-        {
-          id: "api-section",
-          label: "API Configuration",
-          component: SettingsAPI,
-        },
-      ],
-    },
-    {
-      id: "sync",
-      label: "Sync",
-      sections: [
-        {
-          id: "sync-section",
-          label: "Sync & Storage",
-          component: SettingsSync,
-        },
-      ],
-    },
-    {
-      id: "danger",
-      label: "Danger Zone",
-      sections: [
-        {
-          id: "danger-section",
-          label: "Danger Zone",
-          component: SettingsDanger,
-        },
-      ],
-    },
+export const settingsPageConfig = createPageConfig(
+  "settings",
+  "Settings",
+  [
+    createTab("general", "General", [
+      createSection("general-section", "General Settings", SettingsGeneral),
+    ]),
+    createTab("chat", "Chat", [
+      createSection("chat-section", "Chat Settings", SettingsChat),
+    ]),
+    createTab("api", "API", [
+      createSection("api-section", "API Configuration", SettingsAPI),
+    ]),
+    createTab("sync", "Sync", [
+      createSection("sync-section", "Sync & Storage", SettingsSync),
+    ]),
+    createTab("danger", "Danger Zone", [
+      createSection("danger-section", "Danger Zone", SettingsDanger),
+    ]),
   ],
-  headerConfig: {
-    showClose: true,
+  {
+    subtitle: "Configure your application",
+    layout: "multi",
+    headerConfig: {
+      showClose: true,
+    },
   },
-};
+);
