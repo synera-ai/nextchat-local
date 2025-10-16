@@ -2,6 +2,11 @@
   display: flex;
   flex-direction: column;
   width: 100%;
+  border: var(--border-in-light);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+  background-color: var(--white);
 }
 
 // Tab List (container for tab buttons)
@@ -109,13 +114,10 @@
   flex-shrink: 0;
 }
 
-// Tab Panels - Matches List component styling
+// Tab Panels
 .tab-panels {
   padding: var(--spacing-md);
   background-color: var(--white);
-  border: var(--border-in-light);
-  border-radius: 10px;
-  box-shadow: var(--card-shadow);
 }
 
 .tab-panel {
