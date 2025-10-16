@@ -1,5 +1,6 @@
-// CSS variables are already defined globally via design system
-// The design tokens are available as CSS variables
+@import "../../design-system/tokens/colors";
+@import "../../design-system/tokens/spacing";
+@import "../../design-system/tokens/typography";
 
 .pageContainer {
   display: flex;
