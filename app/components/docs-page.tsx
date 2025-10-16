@@ -22,6 +22,108 @@ interface SearchResult {
   excerpt: string;
 }
 
+// Proper markdown to HTML converter
+function markdownToHtml(markdown: string): string {
+  let html = markdown;
+
+  // Escape HTML special chars first to prevent XSS
+  html = html
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+
+  // Re-unescape for our markdown syntax
+  html = html.replace(/&lt;br\/&gt;/g, "<br/>");
+
+  // Code blocks (triple backticks) - must be before inline code
+  html = html.replace(/```([\s\S]*?)```/g, (match, code) => {
+    return `<pre><code>${code.trim()}</code></pre>`;
+  });
+
+  // Headings - must be before inline formatting
+  html = html.replace(/^### (.*?)$/gm, "<h3>$1</h3>");
+  html = html.replace(/^## (.*?)$/gm, "<h2>$1</h2>");
+  html = html.replace(/^# (.*?)$/gm, "<h1>$1</h1>");
+
+  // Horizontal rules
+  html = html.replace(/^---$/gm, "<hr/>");
+
+  // Lists - handle - items
+  const listRegex = /^((?:- .*(?:\n|$))+)/gm;
+  html = html.replace(listRegex, (match) => {
+    const items = match
+      .split("\n")
+      .filter((line) => line.trim().startsWith("-"))
+      .map((line) => {
+        const content = line.replace(/^- /, "").trim();
+        return `<li>${content}</li>`;
+      })
+      .join("");
+    return `<ul>${items}</ul>`;
+  });
+
+  // Bold and italic (must be before inline code)
+  html = html.replace(/\*\*\*([^\*]+)\*\*\*/g, "<strong><em>$1</em></strong>");
+  html = html.replace(/\*\*([^\*]+)\*\*/g, "<strong>$1</strong>");
+  html = html.replace(/\*([^\*]+)\*/g, "<em>$1</em>");
+  html = html.replace(/__([^_]+)__/g, "<strong>$1</strong>");
+  html = html.replace(/_([^_]+)_/g, "<em>$1</em>");
+
+  // Inline code
+  html = html.replace(/`([^`]+)`/g, "<code>$1</code>");
+
+  // Links
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+
+  // Line breaks - convert consecutive newlines to paragraph breaks
+  html = html.replace(/\n\n+/g, "</p><p>");
+
+  // Single line breaks to br (except in code blocks)
+  const parts = html.split(/<(pre|code)>/);
+  for (let i = 0; i < parts.length; i++) {
+    if (i % 2 === 0) {
+      // Not inside code block
+      parts[i] = parts[i].replace(/\n/g, "<br/>");
+    }
+  }
+  html = parts.join("<");
+
+  // Wrap remaining text in paragraphs if not already wrapped
+  const lines = html.split("\n");
+  let inBlock = false;
+  let result = [];
+
+  for (const line of lines) {
+    if (
+      line.startsWith("<h") ||
+      line.startsWith("<ul") ||
+      line.startsWith("<ol") ||
+      line.startsWith("<pre") ||
+      line.startsWith("<hr") ||
+      line.startsWith("<p") ||
+      line.trim() === ""
+    ) {
+      result.push(line);
+      inBlock = line.startsWith("<");
+    } else if (line.trim()) {
+      if (!inBlock && !line.startsWith("<p")) {
+        result.push(`<p>${line}</p>`);
+      } else {
+        result.push(line);
+      }
+    }
+  }
+
+  html = result.join("\n");
+
+  // Clean up empty tags
+  html = html.replace(/<p><\/p>/g, "");
+  html = html.replace(/<p>(<h[1-6])/g, "$1");
+  html = html.replace(/(<\/h[1-6]>)<\/p>/g, "$1");
+
+  return html;
+}
+
 export function DocsPage() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -371,21 +473,7 @@ Plugins are TypeScript classes implementing the Plugin interface.
               <div
                 className={styles.markdown}
                 dangerouslySetInnerHTML={{
-                  __html:
-                    currentSection.content
-                      ?.replace(/\n/g, "<br/>")
-                      ?.replace(
-                        /```([\s\S]*?)```/g,
-                        "<pre><code>$1</code></pre>",
-                      )
-                      ?.replace(/`([^`]+)`/g, "<code>$1</code>")
-                      ?.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
-                      ?.replace(/\*([^*]+)\*/g, "<em>$1</em>")
-                      ?.replace(/^### (.*$)/gm, "<h3>$1</h3>")
-                      ?.replace(/^## (.*$)/gm, "<h2>$1</h2>")
-                      ?.replace(/^# (.*$)/gm, "<h1>$1</h1>")
-                      ?.replace(/^- (.*$)/gm, "<li>$1</li>")
-                      ?.replace(/(<li>.*<\/li>)/s, "<ul>$1</ul>") || "",
+                  __html: markdownToHtml(currentSection.content),
                 }}
               />
             </div>
