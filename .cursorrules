@@ -44,6 +44,8 @@ Examples:
 - refactor-mcp-market-v2.1.0.md
 - bugfix-login-flow-v1.0.1.md
 - documentation-api-guide-v1.0.0.md
+- audit-system-security-v1.0.0.md
+- plan-enterprise-roadmap-v1.0.0.md
 ```
 
 ### Directory Structure (Version-Organized)
@@ -66,6 +68,60 @@ Examples:
     └── v2.0.0/
 ```
 
+## Project Document Management
+
+### Document Structure Compliance
+- All project documents must follow the template structure in `./docs/projects/templates/`
+- Metadata section must be complete and current
+- All required sections must be filled out before moving to active status
+
+### Stage Transitions
+- Only move projects from ideas to active when planning is complete
+- Update stage field when advancing through lifecycle stages
+- Document stage transitions in progress log
+
+### Progress Tracking
+- Add progress log entries after each work session
+- Include files changed, stage updates, and key accomplishments
+- Maintain chronological order in progress logs
+
+### Decision Documentation
+- Document all architectural and technical decisions
+- Include rationale, alternatives considered, and impact assessment
+- Record decision maker and date
+
+### Blocker Management
+- Update blockers section when issues arise
+- Include priority, assignment, and impact information
+- Mark blockers as resolved when addressed
+
+### Handoff Protocol
+- Complete current work before handoffs
+- Document context for receiving agent
+- Include completed work summary and next steps
+- Add important warnings or considerations
+
+## Validation Requirements
+
+### Before Moving to Active
+- All metadata fields completed
+- Human context section filled out
+- AI agent context section completed
+- Initial tasks defined
+- Dependencies identified
+
+### During Development
+- Progress log updated regularly
+- Decisions documented as made
+- Blockers tracked and updated
+- File references maintained
+
+### Before Completion
+- All acceptance criteria met
+- Lessons learned documented
+- Cross-references updated
+- Archive preparation complete
+
 ## Commit Integration Rules
 
 ### Regular Commit Requirements
@@ -83,6 +139,8 @@ feat(user-auth): implement JWT authentication [v1.0.0]
 refactor(mcp-market): decompose monolithic component [v2.1.0]
 docs(api): add comprehensive API documentation [v1.0.0]
 fix(login): resolve password validation issue [v1.0.1]
+audit(security): complete security assessment [v1.0.0]
+plan(enterprise): create roadmap document [v1.0.0]
 ```
 
 ### Automated Commit Triggers
@@ -168,6 +226,20 @@ fix(login): resolve password validation issue [v1.0.1]
 - **VALIDATED**: Path references must be portable across different environments
 - **UTILITY**: Use `app/utils/path.ts` functions for consistent path handling
 
+## Integration Points
+
+### Codebase References
+- **MANDATORY**: Use relative file paths in project documents
+- **FORBIDDEN**: Absolute paths like `/Users/username/` or `C:\Users\`
+- **REQUIRED**: Use `./` prefix for current directory references
+- Reference existing documentation and code using relative paths
+- Maintain alignment with codebase structure
+
+### Cross-Project Dependencies
+- Document dependencies between projects
+- Update related projects when completing work
+- Maintain dependency tracking
+
 ## Automation Integration
 
 ### Git Hooks
@@ -201,3 +273,24 @@ fix(login): resolve password validation issue [v1.0.1]
 - Reference project versions and phases
 - Preserve decision history and rationale
 - Track version progression and plan adherence
+
+## Rule Compliance Validation
+
+### Automatic Validation
+- **File Naming**: Validate all project files follow version-first convention
+- **Directory Structure**: Ensure projects are in correct version directories
+- **Metadata Completeness**: Check all required metadata fields are present
+- **Relative Paths**: Validate all file references use relative paths
+- **Commit Messages**: Ensure commit messages reference project versions
+
+### Manual Validation Checklist
+- [ ] Project follows version-first naming convention
+- [ ] Project is in correct version directory (v1/, v2/, v3/)
+- [ ] All metadata fields are complete and current
+- [ ] Progress log is updated with recent work
+- [ ] All file references use relative paths
+- [ ] Commit messages reference project versions
+- [ ] Dependencies are documented and up-to-date
+- [ ] Acceptance criteria are clearly defined
+- [ ] Project constraints are respected
+- [ ] Architectural decisions are documented

@@ -1,12 +1,12 @@
 import { loader } from 'fumadocs-core/source';
-import { createMDXSource } from 'fumadocs-core/mdx';
 import { icons } from 'lucide-react';
 
 export const source = loader({
   baseUrl: '/docs',
-  source: createMDXSource({
+  source: {
     contentPath: './content/docs',
-  }),
+    meta: './content/docs/meta.json',
+  },
 });
 
 export const { getPage, getPages, pageTree } = source;

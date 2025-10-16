@@ -20,6 +20,13 @@
       ]
     },
     {
+      "title": "Human Developer",
+      "pages": [
+        "human-developer/index",
+        "human-developer/getting-started/index"
+      ]
+    },
+    {
       "title": "AI Coder",
       "pages": [
         "ai-coder/index",
@@ -40,8 +47,34 @@
       "title": "Projects",
       "pages": [
         "projects/index",
+        "projects/README",
+        "projects/AGENT_PROMPTS",
         "projects/templates/feature",
         "projects/plans/plan-analysis-framework"
+      ]
+    },
+    {
+      "title": "Deployment",
+      "pages": [
+        "bt-en",
+        "vercel-en",
+        "cloudflare-pages-en"
+      ]
+    },
+    {
+      "title": "User Guides",
+      "pages": [
+        "user-manual-en",
+        "faq-en",
+        "mcp-en",
+        "synchronise-chat-logs-en"
+      ]
+    },
+    {
+      "title": "System",
+      "pages": [
+        "translation",
+        "documentation-maintenance-plan"
       ]
     }
   ]
