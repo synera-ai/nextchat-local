@@ -30,7 +30,13 @@ import {
   showConfirm,
   showToast,
 } from "./ui-lib";
-import { Tabs } from "./ui/base/Tabs";
+import { PageContainer } from "./PageContainer";
+import {
+  createPageConfig,
+  createTab,
+  createSection,
+} from "../config/pages/factory";
+import { PageConfig } from "../config/pages";
 import { SettingsGeneral } from "./settings/SettingsGeneral";
 import { SettingsChat } from "./settings/SettingsChat";
 import { SettingsAPI } from "./settings/SettingsAPI";
@@ -487,6 +493,80 @@ function SyncItems() {
   }, [syncStore]);
 
   const [showSyncConfigModal, setShowSyncConfigModal] = useState(false);
+
+  // Call hooks at top level, not inside useMemo
+  const syncStore = useSyncStore();
+  const chatStore = useChatStore();
+
+  // Create dynamic page config with access to component props and state
+  const settingsPageConfig: PageConfig = useMemo(
+    () =>
+      createPageConfig(
+        "settings",
+        "Settings",
+        [
+          createTab("general", "General", [
+            createSection(
+              "general-section",
+              "General Settings",
+              SettingsGeneral,
+              {
+                config,
+                updateConfig,
+                currentVersion,
+                hasNewVersion,
+                isCheckingUpdate: checkingUpdate,
+                updateUrl,
+                onCheckUpdate: () => checkUpdate(true),
+              },
+            ),
+          ]),
+          createTab("chat", "Chat", [
+            createSection("chat-section", "Chat Settings", SettingsChat, {
+              config,
+              updateConfig,
+            }),
+          ]),
+          createTab("models", "Models & APIs", [
+            createSection("api-section", "API Configuration", SettingsAPI, {
+              config,
+              updateConfig,
+              accessStore,
+            }),
+          ]),
+          createTab("sync", "Sync & Storage", [
+            createSection("sync-section", "Sync & Storage", SettingsSync, {
+              syncStore,
+              onConfigClick: () => setShowSyncConfigModal(true),
+            }),
+          ]),
+          createTab("danger", "Danger Zone", [
+            createSection("danger-section", "Danger Zone", SettingsDanger, {
+              chatStore,
+              appConfig: config,
+            }),
+          ]),
+        ],
+        {
+          subtitle: "Configure your application",
+          layout: "multi",
+          headerConfig: {
+            showClose: true,
+          },
+        },
+      ),
+    [
+      config,
+      updateConfig,
+      currentVersion,
+      hasNewVersion,
+      checkingUpdate,
+      updateUrl,
+      accessStore,
+      syncStore,
+      chatStore,
+    ],
+  );
 
   const stateOverview = useMemo(() => {
     const sessions = chatStore.sessions;
@@ -1515,63 +1595,7 @@ export function Settings() {
         </div>
       </div>
       <div className={styles["settings"]}>
-        <Tabs
-          tabs={[
-            {
-              id: "general",
-              label: "General",
-              content: (
-                <SettingsGeneral
-                  config={config}
-                  updateConfig={updateConfig}
-                  currentVersion={currentVersion}
-                  hasNewVersion={hasNewVersion}
-                  isCheckingUpdate={checkingUpdate}
-                  updateUrl={updateUrl}
-                  onCheckUpdate={() => checkUpdate(true)}
-                />
-              ),
-            },
-            {
-              id: "chat",
-              label: "Chat",
-              content: (
-                <SettingsChat config={config} updateConfig={updateConfig} />
-              ),
-            },
-            {
-              id: "models",
-              label: "Models & APIs",
-              content: (
-                <SettingsAPI
-                  config={config}
-                  updateConfig={updateConfig}
-                  accessStore={accessStore}
-                />
-              ),
-            },
-            {
-              id: "sync",
-              label: "Sync & Storage",
-              content: (
-                <SettingsSync
-                  syncStore={useSyncStore()}
-                  onConfigClick={() => setShowSyncConfigModal(true)}
-                />
-              ),
-            },
-            {
-              id: "danger",
-              label: "Danger Zone",
-              content: (
-                <SettingsDanger chatStore={useChatStore()} appConfig={config} />
-              ),
-            },
-          ]}
-          defaultTab="general"
-          variant="underline"
-          ariaLabel="Settings Categories"
-        />
+        <PageContainer config={settingsPageConfig} defaultTab="general" />
       </div>
     </ErrorBoundary>
   );
